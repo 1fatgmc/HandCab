@@ -29,7 +29,7 @@
 #define CHOSEN_KEYPAD_2_FUNCTION     FUNCTION_2
 #define CHOSEN_KEYPAD_3_FUNCTION     FUNCTION_3
 #define CHOSEN_KEYPAD_4_FUNCTION     FUNCTION_4
-#define CHOSEN_KEYPAD_5_FUNCTION     NEXT_THROTTLE
+#define CHOSEN_KEYPAD_5_FUNCTION     FUNCTION_5
 #define CHOSEN_KEYPAD_6_FUNCTION     SPEED_MULTIPLIER
 #define CHOSEN_KEYPAD_7_FUNCTION     DIRECTION_REVERSE
 #define CHOSEN_KEYPAD_8_FUNCTION     E_STOP
@@ -47,7 +47,7 @@
 #define CHOSEN_KEYPAD_2_DISPLAY_NAME     "2 Horn"
 #define CHOSEN_KEYPAD_3_DISPLAY_NAME     "3 F3"
 #define CHOSEN_KEYPAD_4_DISPLAY_NAME     "4 F4"
-#define CHOSEN_KEYPAD_5_DISPLAY_NAME     "5 Nxt Ttl"
+#define CHOSEN_KEYPAD_5_DISPLAY_NAME     "5 F5"
 #define CHOSEN_KEYPAD_6_DISPLAY_NAME     "6 X Spd"
 #define CHOSEN_KEYPAD_7_DISPLAY_NAME     "7 Rev"
 #define CHOSEN_KEYPAD_8_DISPLAY_NAME     "8 Estop"
@@ -57,14 +57,6 @@
 // if you change the following line to true, it will take you to the Loco Function Labels screen directly
 
 #define HASH_SHOWS_FUNCTIONS_INSTEAD_OF_KEY_DEFS         false
-
-// ********************************************************************************************
-
-// define the number of throttles that you want.
-// to use multiple throttles, one of the keys or buttons will need to be defined as NEXT_THROTTLE.  (keypad 5 is by default)
-// Maximum supported by the DccExController is 6
-
-// #define MAX_THROTTLES                 2          // uncomment and increase the number if you always need more that two throttles
 
 // ********************************************************************************************
 

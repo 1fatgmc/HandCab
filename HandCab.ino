@@ -162,7 +162,6 @@ int currentSpeedStep;   // set to maximum possible
 // throttle
 int currentThrottleIndex = 0;
 char currentThrottleIndexChar = '0';
-int maxThrottles = MAX_THROTTLES;
 
 int heartBeatPeriod = 10; // default to 10 seconds
 long lastServerResponseTime;  // seconds since start of Arduino
@@ -907,9 +906,7 @@ void enterWitServer() {
 
 void disconnectWitServer() {
   debug_println("disconnectWitServer()");
-  for (int i=0; i<maxThrottles; i++) {
-    releaseAllLocos();
-  }
+  releaseAllLocos();
   wiThrottleProtocol.disconnect();
   debug_println("Disconnected from wiThrottle server\n");
   clearOledArray(); oledText[0] = MSG_DISCONNECTED;
@@ -1003,19 +1000,8 @@ void rotary_onButtonClick() {
       }
       rotaryEncoderButtonLastTimePressed = millis();
 
-      // if (encoderButtonAction == SPEED_STOP_THEN_TOGGLE_DIRECTION) {
-      //   if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar)>0) {
-      //     if (currentSpeed[currentThrottleIndex] != 0) {
-      //       // wiThrottleProtocol.setSpeed(currentThrottleIndexChar, 0);
-      //       speedSet(currentThrottleIndex,0);
-      //     } else {
-      //       if (toggleDirectionOnEncoderButtonPressWhenStationary) toggleDirection(currentThrottleIndex);
-      //     }
-      //     currentSpeed[currentThrottleIndex] = 0;
-      //   }
-      // } else {
-        doDirectAction(encoderButtonAction);
-      // }
+      doDirectAction(encoderButtonAction);
+
       debug_println("encoder button pressed");
       writeOledSpeed();
     }  else {
@@ -1039,9 +1025,6 @@ void rotary_loop() {
     if ( (millis() - rotaryEncoderButtonLastTimePressed) < rotaryEncoderButtonEncoderDebounceTime) {   //ignore the encoder change if the button was pressed recently
       debug_println("encoder button debounce - in Rotary_loop()");
       return;
-    // } else {
-    //   debug_print("encoder button debounce - time since last press: ");
-    //   debug_println(millis() - rotaryEncoderButtonLastTimePressed);
     }
 
     if (abs(encoderValue-lastEncoderValue) > 800) { // must have passed through zero
@@ -1731,10 +1714,10 @@ void doDirectAction(int buttonAction) {
         powerToggle();
         break; 
       }
-      case NEXT_THROTTLE: {
-        nextThrottle();
-        break; 
-      }
+      // case NEXT_THROTTLE: {
+      //   nextThrottle();
+      //   break; 
+      // }
       case SPEED_STOP_THEN_TOGGLE_DIRECTION: {
         stopThenToggleDirection();
         break; 
@@ -1886,14 +1869,6 @@ void doMenu() {
                 writeOledSpeed();
                 break;
               }
-            case EXTRA_MENU_CHAR_INCREASE_MAX_THROTTLES: { //increase number of Throttles
-                changeNumberOfThrottles(true);
-                break;
-              }
-            case EXTRA_MENU_CHAR_DECREASE_MAX_THROTTLES: { // decrease numbe rof throttles
-                changeNumberOfThrottles(false);
-                break;
-              }
             case EXTRA_MENU_CHAR_DISCONNECT: { // disconnect   
                 if (witConnectionState == CONNECTION_STATE_CONNECTED) {
                   witConnectionState = CONNECTION_STATE_DISCONNECTED;
@@ -1962,9 +1937,7 @@ void resetFunctionLabels() {
 }
 
 void resetAllFunctionLabels() {
-  for (int i=0; i<maxThrottles; i++) {
-    resetFunctionLabels(i);
-  }
+  resetFunctionLabels(i);
 }
 
 void resetAllFunctionFollow() {

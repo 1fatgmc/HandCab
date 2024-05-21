@@ -370,12 +370,6 @@ const int menuCharsRequired[12] = {  // 0=none effectively a direct command / 1=
 #ifndef EXTRA_MENU_TEXT_CHAR_HEARTBEAT_TOGGLE
    #define EXTRA_MENU_TEXT_CHAR_HEARTBEAT_TOGGLE       "Heartbt Tgl"
 #endif
-#ifndef EXTRA_MENU_TEXT_CHAR_INCREASE_MAX_THROTTLES
-   #define EXTRA_MENU_TEXT_CHAR_INCREASE_MAX_THROTTLES "#Throttles +"
-#endif
-#ifndef EXTRA_MENU_TEXT_CHAR_DECREASE_MAX_THROTTLES
-   #define EXTRA_MENU_TEXT_CHAR_DECREASE_MAX_THROTTLES "#Throttles -"
-#endif
 #ifndef EXTRA_MENU_TEXT_CHAR_DISCONNECT
    #define EXTRA_MENU_TEXT_CHAR_DISCONNECT             "Disconnect"
 #endif
@@ -388,8 +382,8 @@ const String extraSubMenuText[8] = {
    EXTRA_MENU_TEXT_CHAR_EDIT_CONSIST,             //1
    EXTRA_MENU_TEXT_CHAR_TBA,                      //2
    EXTRA_MENU_TEXT_CHAR_HEARTBEAT_TOGGLE,         //3  
-   EXTRA_MENU_TEXT_CHAR_INCREASE_MAX_THROTTLES,   //4
-   EXTRA_MENU_TEXT_CHAR_DECREASE_MAX_THROTTLES,   //5
+   EXTRA_MENU_TEXT_CHAR_TBA,                      //4
+   EXTRA_MENU_TEXT_CHAR_TBA,                      //5
    EXTRA_MENU_TEXT_CHAR_DISCONNECT,               //6
    EXTRA_MENU_TEXT_CHAR_OFF_SLEEP };              //7
 
@@ -397,8 +391,8 @@ const String extraSubMenuText[8] = {
 #define EXTRA_MENU_CHAR_EDIT_CONSIST           '1'
 #define EXTRA_MENU_CHAR_TBA                    '2'
 #define EXTRA_MENU_CHAR_HEARTBEAT_TOGGLE       '3'
-#define EXTRA_MENU_CHAR_INCREASE_MAX_THROTTLES '4'
-#define EXTRA_MENU_CHAR_DECREASE_MAX_THROTTLES '5'
+#define EXTRA_MENU_CHAR_TBA                    '4'
+#define EXTRA_MENU_CHAR_TBA                    '5'
 #define EXTRA_MENU_CHAR_DISCONNECT             '6'
 #define EXTRA_MENU_CHAR_OFF_SLEEP              '7'
 #define EXTRA_MENU_CHAR_OFF_SLEEP_HIDDEN       '9'  // doesn't appear in the menu
@@ -465,7 +459,7 @@ const char ssidPasswordBlankChar = 164;
 #define FONT_TRACK_POWER u8g2_font_open_iconic_all_1x_t
 #define FONT_HEARTBEAT u8g2_font_open_iconic_all_1x_t
 #define FONT_SPEED_STEP u8g2_font_open_iconic_all_1x_t
-#define FONT_NEXT_THROTTLE u8g2_font_6x12_m_symbols
+// #define FONT_NEXT_THROTTLE u8g2_font_6x12_m_symbols
 
 // *******************************************************************************************************************
 
@@ -564,10 +558,6 @@ const char ssidPasswordBlankChar = 164;
     #define HASH_SHOWS_FUNCTIONS_INSTEAD_OF_KEY_DEFS false  // default if not defined in config_buttons.h
 #endif
 
-#ifndef MAX_THROTTLES
-    #define MAX_THROTTLES 2  // default if not defined in config_buttons.h
-#endif
-
 #ifndef ENCODER_BUTTON_ACTION
     #define ENCODER_BUTTON_ACTION SPEED_STOP_THEN_TOGGLE_DIRECTION  // default if not defined in config_buttons.h
 #endif
@@ -638,7 +628,7 @@ const char ssidPasswordBlankChar = 164;
    #define CHOSEN_KEYPAD_4_FUNCTION     FUNCTION_4
 #endif
 #ifndef CHOSEN_KEYPAD_5_FUNCTION
-   #define CHOSEN_KEYPAD_5_FUNCTION     NEXT_THROTTLE
+   #define CHOSEN_KEYPAD_5_FUNCTION     FUNCTION_5
 #endif
 #ifndef CHOSEN_KEYPAD_6_FUNCTION
    #define CHOSEN_KEYPAD_6_FUNCTION     SPEED_MULTIPLIER

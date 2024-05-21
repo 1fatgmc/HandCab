@@ -58,7 +58,7 @@
 #define POWER_ON 502
 #define POWER_OFF 503
 
-#define NEXT_THROTTLE 510
+// #define NEXT_THROTTLE 510
 
 #define CUSTOM_1 521
 #define CUSTOM_2 522
