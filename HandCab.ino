@@ -148,16 +148,16 @@ String routeListUserName[maxRouteList];
 int routeListState[maxRouteList];
 
 // function states
-boolean functionStates[6][MAX_FUNCTIONS];   // set to maximum possible (6 throttles)
+boolean functionStates;   // set to maximum possible
 
 // function labels
-String functionLabels[6][MAX_FUNCTIONS];   // set to maximum possible (6 throttles)
+String functionLabels[MAX_FUNCTIONS];   // set to maximum possible
 
 // consist function follow
-int functionFollow[6][MAX_FUNCTIONS];   // set to maximum possible (6 throttles)
+int functionFollow[MAX_FUNCTIONS];   // set to maximum possible
 
 // speedstep
-int currentSpeedStep[6];   // set to maximum possible (6 throttles)
+int currentSpeedStep;   // set to maximum possible 
 
 // throttle
 int currentThrottleIndex = 0;
@@ -318,14 +318,14 @@ class MyDelegate : public WiThrottleProtocolDelegate {
       debug_print("Received Speed: ("); debug_print(millis()); debug_print(") throttle: "); debug_print(multiThrottle);  debug_print(" speed: "); debug_println(speed); 
       int multiThrottleIndex = getMultiThrottleIndex(multiThrottle);
 
-      if (currentSpeed[multiThrottleIndex] != speed) {
+      if (currentSpeed != speed) {
         
         // check for bounce. (intermediate speed sent back from the server, but is not up to date with the throttle)
         if ( (lastSpeedThrottleIndex!=multiThrottleIndex)
              || ((millis()-lastSpeedSentTime)>500)
         ) {
-          currentSpeed[multiThrottleIndex] = speed;
-          displayUpdateFromWit(multiThrottleIndex);
+          currentSpeed = speed;
+          displayUpdateFromWit();
         } else {
           debug_print("Received Speed: skipping response: ("); debug_print(millis()); debug_print(") speed: "); debug_println(speed);
         }
@@ -335,18 +335,18 @@ class MyDelegate : public WiThrottleProtocolDelegate {
       debug_print("Received Direction: "); debug_println(dir); 
       int multiThrottleIndex = getMultiThrottleIndex(multiThrottle);
 
-      if (currentDirection[multiThrottleIndex] != dir) {
-        currentDirection[multiThrottleIndex] = dir;
-        displayUpdateFromWit(multiThrottleIndex);
+      if (currentDirection != dir) {
+        currentDirection = dir;
+        displayUpdateFromWit();
       }
     }
     void receivedFunctionStateMultiThrottle(char multiThrottle, uint8_t func, bool state) { 
       debug_print("Received Fn: "); debug_print(func); debug_print(" State: "); debug_println( (state) ? "True" : "False" );
       int multiThrottleIndex = getMultiThrottleIndex(multiThrottle);
 
-      if (functionStates[multiThrottleIndex][func] != state) {
-        functionStates[multiThrottleIndex][func] = state;
-        displayUpdateFromWit(multiThrottleIndex);
+      if (functionStates[func] != state) {
+        functionStates[func] = state;
+        displayUpdateFromWit();
       }
     }
     void receivedRosterFunctionListMultiThrottle(char multiThrottle, String functions[MAX_FUNCTIONS]) { 
@@ -354,7 +354,7 @@ class MyDelegate : public WiThrottleProtocolDelegate {
       int multiThrottleIndex = getMultiThrottleIndex(multiThrottle);
 
       for(int i = 0; i < MAX_FUNCTIONS; i++) {
-        functionLabels[multiThrottleIndex][i] = functions[i];
+        functionLabels[i] = functions[i];
         debug_print(" Function: "); debug_print(i); debug_print(" - "); debug_println( functions[i] );
       }
     }
@@ -362,7 +362,7 @@ class MyDelegate : public WiThrottleProtocolDelegate {
       debug_print("Received TrackPower: "); debug_println(state);
       if (trackPower != state) {
         trackPower = state;
-        displayUpdateFromWit(-1); // dummry multithrottle
+        displayUpdateFromWit(); // dummy multithrottle
         refreshOled();
       }
     }
@@ -768,10 +768,6 @@ void browseWitService() {
       foundWitServersNames[i] = MDNS.hostname(i);
       foundWitServersIPs[i] = MDNS.IP(i);
       foundWitServersPorts[i] = MDNS.port(i);
-      // debug_print("txt 0: key: "); debug_print(MDNS.txtKey(i,0)); debug_print(" value: '"); debug_print(MDNS.txt(i,0)); debug_println("'");
-      // debug_print("txt 1: key: "); debug_print(MDNS.txtKey(i,1)); debug_print(" value: '"); debug_print(MDNS.txt(i,1)); debug_println("'");
-      // debug_print("txt 2: key: "); debug_print(MDNS.txtKey(i,2)); debug_print(" value: '"); debug_print(MDNS.txt(i,2)); debug_println("'");
-      // debug_print("txt 3: key: "); debug_print(MDNS.txtKey(i,3)); debug_print(" value: '"); debug_println(MDNS.txt(i,3)); debug_println("'");
       if (MDNS.hasTxt(i,"jmri")) {
         String node = MDNS.txt(i,"node");
         node.toLowerCase();
@@ -912,7 +908,7 @@ void enterWitServer() {
 void disconnectWitServer() {
   debug_println("disconnectWitServer()");
   for (int i=0; i<maxThrottles; i++) {
-    releaseAllLocos(i);
+    releaseAllLocos();
   }
   wiThrottleProtocol.disconnect();
   debug_println("Disconnected from wiThrottle server\n");
@@ -1061,15 +1057,15 @@ void rotary_loop() {
       if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar)>0) {
         if (encoderValue > lastEncoderValue) {
           if (abs(encoderValue-lastEncoderValue)<50) {
-            encoderSpeedChange(true, currentSpeedStep[currentThrottleIndex]);
+            encoderSpeedChange(true, currentSpeedStep);
           } else {
-            encoderSpeedChange(true, currentSpeedStep[currentThrottleIndex]*speedStepMultiplier);
+            encoderSpeedChange(true, currentSpeedStep*speedStepMultiplier);
           }
         } else {
           if (abs(encoderValue-lastEncoderValue)<50) {
-            encoderSpeedChange(false, currentSpeedStep[currentThrottleIndex]);
+            encoderSpeedChange(false, currentSpeedStep);
           } else {
-            encoderSpeedChange(false, currentSpeedStep[currentThrottleIndex]*speedStepMultiplier);
+            encoderSpeedChange(false, currentSpeedStep*speedStepMultiplier);
           }
         } 
       }
@@ -1104,18 +1100,18 @@ void rotary_loop() {
   }
 }
 
-void encoderSpeedChange(boolean rotationIsClockwise, int speedChange) {
+void encoderSpeedChange(bool rotationIsClockwise, int speedChange) {
   if (encoderRotationClockwiseIsIncreaseSpeed) {
     if (rotationIsClockwise) {
-      speedUp(currentThrottleIndex, speedChange);
+      speedUp(speedChange);
     } else {
-      speedDown(currentThrottleIndex, speedChange);
+      speedDown(speedChange);
     }
   } else {
     if (rotationIsClockwise) {
-      speedDown(currentThrottleIndex, speedChange);
+      speedDown(speedChange);
     } else {
-      speedUp(currentThrottleIndex, speedChange);
+      speedUp(speedChange);
     }
   }
 }
@@ -1145,7 +1141,7 @@ void throttlePot_loop() {
         }                
       } 
       if (throttlePotNotch!=currentThrottlePotNotch) {
-            speedSet(currentThrottleIndex, throttlePotTargetSpeed);
+            speedSet(throttlePotTargetSpeed);
       }
 
     } else { // use a linear speed
@@ -1156,7 +1152,7 @@ void throttlePot_loop() {
       else if (newSpeed>127) { newSpeed = 127; }
       int iSpeed = newSpeed;
       debug_print("newSpeed: "); debug_print(newSpeed); debug_print(" iSpeed: "); debug_println(iSpeed);
-      speedSet(currentThrottleIndex, iSpeed);
+      speedSet(iSpeed);
     }  
   }
 }
@@ -1287,11 +1283,9 @@ void setup() {
   resetAllFunctionLabels();
   resetAllFunctionFollow();
 
-  for (int i=0; i< 6; i++) {
-    currentSpeed[i] = 0;
-    currentDirection[i] = Forward;
-    currentSpeedStep[i] = speedStep;
-  }
+  currentSpeed = 0;
+  currentDirection = Forward;
+  currentSpeedStep = speedStep;
 }
 
 void loop() {
@@ -1329,7 +1323,7 @@ void loop() {
 //  Key press and Menu
 // *********************************************************************************
 
-void doKeyPress(char key, boolean pressed) {
+void doKeyPress(char key, bool pressed) {
   debug_print("doKeyPress(): "); 
 
   if (pressed)  { //pressed
@@ -1642,7 +1636,7 @@ void doKeyPress(char key, boolean pressed) {
   // debug_println("doKeyPress(): end"); 
 }
 
-void doDirectCommand (char key, boolean pressed) {
+void doDirectCommand (char key, bool pressed) {
   debug_print("doDirectCommand(): "); debug_println(key);
   int buttonAction = 0 ;
   if (key<=57) {
@@ -1653,7 +1647,7 @@ void doDirectCommand (char key, boolean pressed) {
   debug_print("doDirectCommand(): Action: "); debug_println(buttonAction);
   if (buttonAction!=FUNCTION_NULL) {
     if ( (buttonAction>=FUNCTION_0) && (buttonAction<=FUNCTION_31) ) {
-      doDirectFunction(currentThrottleIndex, buttonAction, pressed);
+      doDirectFunction(buttonAction, pressed);
   } else {
       if (pressed) { // only process these on the key press, not the release
         doDirectAction(buttonAction);
@@ -1663,12 +1657,12 @@ void doDirectCommand (char key, boolean pressed) {
   // debug_println("doDirectCommand(): end"); 
 }
 
-void doDirectAdditionalButtonCommand (int buttonIndex, boolean pressed) {
+void doDirectAdditionalButtonCommand (int buttonIndex, bool pressed) {
   debug_print("doDirectAdditionalButtonCommand(): "); debug_println(buttonIndex);
   int buttonAction = additionalButtonActions[buttonIndex];
   if (buttonAction!=FUNCTION_NULL) {
     if ( (buttonAction>=FUNCTION_0) && (buttonAction<=FUNCTION_31) ) {
-      doDirectFunction(currentThrottleIndex, buttonAction, pressed);
+      doDirectFunction(buttonAction, pressed);
   } else {
       if (pressed) { // only process these on the key press, not the release
         doDirectAction(buttonAction);
@@ -1682,35 +1676,35 @@ void doDirectAction(int buttonAction) {
   debug_println("doDirectAction(): ");
   switch (buttonAction) {
       case DIRECTION_FORWARD: {
-        changeDirection(currentThrottleIndex, Forward);
+        changeDirection(Forward);
         break; 
       }
       case DIRECTION_REVERSE: {
-        changeDirection(currentThrottleIndex, Reverse);
+        changeDirection(Reverse);
         break; 
       }
       case DIRECTION_TOGGLE: {
-        toggleDirection(currentThrottleIndex);
+        toggleDirection();
         break; 
       }
       case SPEED_STOP: {
-        speedSet(currentThrottleIndex, 0);
+        speedSet(0);
         break; 
       }
       case SPEED_UP: {
-        speedUp(currentThrottleIndex, currentSpeedStep[currentThrottleIndex]);
+        speedUp(currentSpeedStep);
         break; 
       }
       case SPEED_DOWN: {
-        speedDown(currentThrottleIndex, currentSpeedStep[currentThrottleIndex]);
+        speedDown(currentSpeedStep);
         break; 
       }
       case SPEED_UP_FAST: {
-        speedUp(currentThrottleIndex, currentSpeedStep[currentThrottleIndex]*speedStepMultiplier);
+        speedUp(currentSpeedStep*speedStepMultiplier);
         break; 
       }
       case SPEED_DOWN_FAST: {
-        speedUp(currentThrottleIndex, currentSpeedStep[currentThrottleIndex]*speedStepMultiplier);
+        speedUp(currentSpeedStep*speedStepMultiplier);
         break; 
       }
       case SPEED_MULTIPLIER: {
@@ -1798,10 +1792,10 @@ void doMenu() {
           loco = menuCommand.substring(1, menuCommand.length());
           loco = getLocoWithLength(loco);
           debug_print("add Loco: "); debug_println(loco);
-          wiThrottleProtocol.addLocomotive(currentThrottleIndexChar, loco);
-          wiThrottleProtocol.getDirection(currentThrottleIndexChar, loco);
-          wiThrottleProtocol.getSpeed(currentThrottleIndexChar);
-          resetFunctionStates(currentThrottleIndex);
+          wiThrottleProtocol.addLocomotive(loco);
+          wiThrottleProtocol.getDirection(loco);
+          wiThrottleProtocol.getSpeed();
+          resetFunctionStates();
           writeOledSpeed();
         } else {
           page = 0;
@@ -1813,15 +1807,15 @@ void doMenu() {
         loco = menuCommand.substring(1, menuCommand.length());
         if (loco!="") { // a loco is specified
           loco = getLocoWithLength(loco);
-          releaseOneLoco(currentThrottleIndex, loco);
+          releaseOneLoco(loco);
         } else { //not loco specified so release all
-          releaseAllLocos(currentThrottleIndex);
+          releaseAllLocos();
         }
         writeOledSpeed();
         break;
       }
     case MENU_ITEM_TOGGLE_DIRECTION: { // change direction
-        toggleDirection(currentThrottleIndex);
+        toggleDirection();
         break;
       }
      case MENU_ITEM_SPEED_STEP_MULTIPLIER: { // toggle speed step additional Multiplier
@@ -1925,7 +1919,7 @@ void doMenu() {
           function = menuCommand.substring(1, menuCommand.length());
           int functionNumber = function.toInt();
           if (function != "") { // a function is specified
-            doFunction(currentThrottleIndex, functionNumber, true);  // always act like latching i.e. pressed
+            doFunction(functionNumber, true);  // always act like latching i.e. pressed
           }
           writeOledSpeed();
         } else {
@@ -1953,16 +1947,16 @@ void resetMenu() {
   }
 }
 
-void resetFunctionStates(int multiThrottleIndex) {
+void resetFunctionStates() {
   for (int i=0; i<MAX_FUNCTIONS; i++) {
-    functionStates[multiThrottleIndex][i] = false;
+    functionStates[i] = false;
   }
 }
 
-void resetFunctionLabels(int multiThrottleIndex) {
-  debug_print("resetFunctionLabels(): "); debug_println(multiThrottleIndex);
+void resetFunctionLabels() {
+  debug_println("resetFunctionLabels(): ");
   for (int i=0; i<MAX_FUNCTIONS; i++) {
-    functionLabels[multiThrottleIndex][i] = "";
+    functionLabels[i] = "";
   }
   functionPage = 0;
 }
@@ -1974,13 +1968,11 @@ void resetAllFunctionLabels() {
 }
 
 void resetAllFunctionFollow() {
-  for (int i=0; i<6; i++) {
-    functionFollow[i][0] = CONSIST_FUNCTION_FOLLOW_F0;
-    functionFollow[i][1] = CONSIST_FUNCTION_FOLLOW_F1;
-    functionFollow[i][2] = CONSIST_FUNCTION_FOLLOW_F2;
-    for (int j=3; j<MAX_FUNCTIONS; j++) {
-      functionFollow[i][j] = CONSIST_FUNCTION_FOLLOW_OTHER_FUNCTIONS;
-    }
+  functionFollow[0] = CONSIST_FUNCTION_FOLLOW_F0;
+  functionFollow[1] = CONSIST_FUNCTION_FOLLOW_F1;
+  functionFollow[2] = CONSIST_FUNCTION_FOLLOW_F2;
+  for (int j=3; j<MAX_FUNCTIONS; j++) {
+    functionFollow[i][j] = CONSIST_FUNCTION_FOLLOW_OTHER_FUNCTIONS;
   }
 }
 
@@ -1998,61 +1990,59 @@ String getLocoWithLength(String loco) {
 }
 
 void speedEstop() {
-  for (int i=0; i<maxThrottles; i++) {
-    wiThrottleProtocol.emergencyStop(getMultiThrottleChar(i));
-    currentSpeed[i] = 0;
-  }
+  wiThrottleProtocol.emergencyStop());
+  currentSpeed[i] = 0;
   debug_println("Speed EStop"); 
   writeOledSpeed();
 }
 
 void speedEstopCurrentLoco() {
-  wiThrottleProtocol.emergencyStop(currentThrottleIndexChar);
-  currentSpeed[currentThrottleIndex] = 0;
+  wiThrottleProtocol.emergencyStop();
+  currentSpeed = 0;
   debug_println("Speed EStop Curent Loco"); 
   writeOledSpeed();
 }
 
-void speedDown(int multiThrottleIndex, int amt) {
-  if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(multiThrottleIndex)) > 0) {
+void speedDown(int amt) {
+  if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(0)) > 0) {
     int newSpeed = currentSpeed[multiThrottleIndex] - amt;
     debug_print("Speed Down: "); debug_println(amt);
     speedSet(multiThrottleIndex, newSpeed);
   }
 }
 
-void speedUp(int multiThrottleIndex, int amt) {
-  if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(multiThrottleIndex)) > 0) {
-    int newSpeed = currentSpeed[multiThrottleIndex] + amt;
+void speedUp(int amt) {
+  if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(0)) > 0) {
+    int newSpeed = currentSpeed + amt;
     debug_print("Speed Up: "); debug_println(amt);
-    speedSet(multiThrottleIndex, newSpeed);
+    speedSet(newSpeed);
   }
 }
 
-void speedSet(int multiThrottleIndex, int amt) {
+void speedSet(int amt) {
   debug_println("setSpeed()");
-  char multiThrottleIndexChar = getMultiThrottleChar(multiThrottleIndex);
+  char multiThrottleIndexChar = getMultiThrottleChar(0);
   if (wiThrottleProtocol.getNumberOfLocomotives(multiThrottleIndexChar) > 0) {
     int newSpeed = amt;
     if (newSpeed >126) { newSpeed = 126; }
     if (newSpeed <0) { newSpeed = 0; }
-    wiThrottleProtocol.setSpeed(multiThrottleIndexChar, newSpeed);
-    currentSpeed[multiThrottleIndex] = newSpeed;
+    wiThrottleProtocol.setSpeed('0', newSpeed);
+    currentSpeed = newSpeed;
     debug_print("Speed Set: "); debug_println(newSpeed);
 
     // used to avoid bounce
     lastSpeedSentTime = millis();
     lastSpeedSent = newSpeed;
     // lastDirectionSent = -1;
-    lastSpeedThrottleIndex = multiThrottleIndex;
+    lastSpeedThrottleIndex = 0;
 
     writeOledSpeed();
   }
 }
 
-int getDisplaySpeed(int multiThrottleIndex) {
+int getDisplaySpeed() {
   if (speedDisplayAsPercent) {
-    float speed = currentSpeed[multiThrottleIndex];
+    float speed = currentSpeed;
     speed = speed / 126 *100;
     int iSpeed = speed;
     if (iSpeed-speed >= 0.5) {
@@ -2061,7 +2051,7 @@ int getDisplaySpeed(int multiThrottleIndex) {
     return iSpeed;
   } else {
     if (speedDisplayAs0to28) {
-      float speed = currentSpeed[multiThrottleIndex];
+      float speed = currentSpeed;
       speed = speed / 126 *28;
       int iSpeed = speed;
       if (iSpeed-speed >= 0.5) {
@@ -2069,13 +2059,13 @@ int getDisplaySpeed(int multiThrottleIndex) {
       }
       return iSpeed;
     } else {
-      return currentSpeed[multiThrottleIndex];
+      return currentSpeed;
     }
   }
 }
 
-void toggleLocoFacing(int multiThrottleIndex, String loco) {
-  char multiThrottleIndexChar = getMultiThrottleChar(multiThrottleIndex);
+void toggleLocoFacing(String loco) {
+  char multiThrottleIndexChar = getMultiThrottleChar(0);
   debug_print("toggleLocoFacing(): "); debug_println(loco); 
   for(int i=0;i<wiThrottleProtocol.getNumberOfLocomotives(multiThrottleIndexChar);i++) {
     if (wiThrottleProtocol.getLocomotiveAtPosition(multiThrottleIndexChar, i).equals(loco)) {
@@ -2089,8 +2079,8 @@ void toggleLocoFacing(int multiThrottleIndex, String loco) {
   } 
 }
 
-int getLocoFacing(int multiThrottleIndex, String loco) {
-  char multiThrottleIndexChar = getMultiThrottleChar(multiThrottleIndex);
+int getLocoFacing(String loco) {
+  char multiThrottleIndexChar = getMultiThrottleChar(0);
   int result = Forward;
   for(int i=0;i<wiThrottleProtocol.getNumberOfLocomotives(multiThrottleIndexChar);i++) {
     if (wiThrottleProtocol.getLocomotiveAtPosition(multiThrottleIndexChar, i).equals(loco)) {
@@ -2101,8 +2091,8 @@ int getLocoFacing(int multiThrottleIndex, String loco) {
   return result;
 }
 
-String getDisplayLocoString(int multiThrottleIndex, int index) {
-  char multiThrottleIndexChar = getMultiThrottleChar(multiThrottleIndex);
+String getDisplayLocoString(int index) {
+  char multiThrottleIndexChar = getMultiThrottleChar(0);
   String loco = wiThrottleProtocol.getLocomotiveAtPosition(multiThrottleIndexChar, index);
   String locoNumber = loco.substring(1);
   if (!wiThrottleProtocol.getLocomotiveAtPosition(multiThrottleIndexChar, 0).equals(loco)) { // not the lead loco
@@ -2123,8 +2113,8 @@ String getDisplayLocoString(int multiThrottleIndex, int index) {
   return locoNumber;
 }
 
-void releaseAllLocos(int multiThrottleIndex) {
-  char multiThrottleIndexChar = getMultiThrottleChar(multiThrottleIndex);
+void releaseAllLocos() {
+  char multiThrottleIndexChar = getMultiThrottleChar(0);
   String loco;
   if (wiThrottleProtocol.getNumberOfLocomotives(multiThrottleIndexChar)>0) {
     for(int index=wiThrottleProtocol.getNumberOfLocomotives(multiThrottleIndexChar)-1;index>=0;index--) {
@@ -2132,24 +2122,19 @@ void releaseAllLocos(int multiThrottleIndex) {
       wiThrottleProtocol.releaseLocomotive(multiThrottleIndexChar, loco);
       writeOledSpeed();  // note the released locos may not be visible
     } 
-    resetFunctionLabels(multiThrottleIndex);
+    resetFunctionLabels();
   }
 }
 
-void releaseOneLoco(int multiThrottleIndex, String loco) {
-  debug_print("releaseOneLoco(): "); debug_print(multiThrottleIndex); debug_print(": "); debug_println(loco);
-  char multiThrottleIndexChar = getMultiThrottleChar(multiThrottleIndex);
+void releaseOneLoco(String loco) {
+  debug_print("releaseOneLoco(): "); debug_print(": "); debug_println(loco);
+  char multiThrottleIndexChar = getMultiThrottleChar(0);
   wiThrottleProtocol.releaseLocomotive(multiThrottleIndexChar, loco);
-  resetFunctionLabels(multiThrottleIndex);
+  resetFunctionLabels();
   debug_println("releaseOneLoco(): end"); 
 }
 
 void toggleAdditionalMultiplier() {
-  // if (speedStep != currentSpeedStep) {
-  //   currentSpeedStep = speedStep;
-  // } else {
-  //   currentSpeedStep = speedStep * speedStepAdditionalMultiplier;
-  // }
   switch (speedStepCurrentMultiplier) {
     case 1: 
       speedStepCurrentMultiplier = speedStepAdditionalMultiplier;
@@ -2162,9 +2147,7 @@ void toggleAdditionalMultiplier() {
       break;
   }
 
-  for (int i=0; i<maxThrottles; i++) {
-    currentSpeedStep[i] = speedStep * speedStepCurrentMultiplier;
-  }
+  currentSpeedStep = speedStep * speedStepCurrentMultiplier;
   writeOledSpeed();
 }
 
@@ -2179,17 +2162,17 @@ void toggleHeartbeatCheck() {
   writeHeartbeatCheck();
 }
 
-void toggleDirection(int multiThrottleIndex) {
-  if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(multiThrottleIndex)) > 0) {
-    changeDirection(multiThrottleIndex, (currentDirection[multiThrottleIndex] == Forward) ? Reverse : Forward );
+void toggleDirection() {
+  if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(0)) > 0) {
+    changeDirection((currentDirection == Forward) ? Reverse : Forward );
     writeOledSpeed();
   }
 }
 
-void changeDirection(int multiThrottleIndex, Direction direction) {
+void changeDirection(Direction direction) {
   String loco; String leadLoco; 
   Direction leadLocoCurrentDirection;
-  char multiThrottleChar = getMultiThrottleChar(multiThrottleIndex);
+  char multiThrottleChar = getMultiThrottleChar(0);
   int locoCount = wiThrottleProtocol.getNumberOfLocomotives(multiThrottleChar);
 
   if (locoCount > 0) {
@@ -2224,33 +2207,31 @@ void changeDirection(int multiThrottleIndex, Direction direction) {
   // debug_println("Change direction(): end "); 
 }
 
-void doDirectFunction(int multiThrottleIndex, int functionNumber, boolean pressed) {
-  char multiThrottleIndexChar = getMultiThrottleChar(multiThrottleIndex);
+void doDirectFunction(int functionNumber, bool pressed) {
+  char multiThrottleIndexChar = getMultiThrottleChar(0);
   debug_println("doDirectFunction(): "); 
   if (wiThrottleProtocol.getNumberOfLocomotives(multiThrottleIndexChar) > 0) {
     debug_print("direct fn: "); debug_print(functionNumber); debug_println( pressed ? " Pressed" : " Released");
     // wiThrottleProtocol.setFunction(multiThrottleIndexChar, functionNumber, pressed);
-    doFunctionWhichLocosInConsist(multiThrottleIndex, functionNumber, pressed);
+    doFunctionWhichLocosInConsist(functionNumber, pressed);
     writeOledSpeed(); 
   }
   // debug_print("doDirectFunction(): end"); 
 }
 
-void doFunction(int multiThrottleIndex, int functionNumber, boolean pressed) {   // currently ignoring the pressed value
-  char multiThrottleIndexChar = getMultiThrottleChar(multiThrottleIndex);
+void doFunction(int functionNumber, bool pressed) {   // currently ignoring the pressed value
+  char multiThrottleIndexChar = getMultiThrottleChar(0);
   debug_print("doFunction(): multiThrottleIndex "); debug_println(multiThrottleIndex);
   if (wiThrottleProtocol.getNumberOfLocomotives(multiThrottleIndexChar)>0) {
     // wiThrottleProtocol.setFunction(multiThrottleIndexChar, functionNumber, true);
-    doFunctionWhichLocosInConsist(multiThrottleIndex, functionNumber, true);
-    if (!functionStates[multiThrottleIndex][functionNumber]) {
+    doFunctionWhichLocosInConsist(functionNumber, true);
+    if (!functionStates[functionNumber]) {
       debug_print("fn: "); debug_print(functionNumber); debug_println(" Pressed");
-      // functionStates[functionNumber] = true;
     } else {
       delay(20);
       // wiThrottleProtocol.setFunction(multiThrottleIndexChar,functionNumber, false);
-      doFunctionWhichLocosInConsist(multiThrottleIndex, functionNumber, false);
+      doFunctionWhichLocosInConsist(functionNumber, false);
       debug_print("fn: "); debug_print(functionNumber); debug_println(" Released");
-      // functionStates[functionNumber] = false;
     }
     writeOledSpeed(); 
   }
@@ -2259,9 +2240,9 @@ void doFunction(int multiThrottleIndex, int functionNumber, boolean pressed) {  
 
 // Work out which locos in a consist should get the function
 //
-void doFunctionWhichLocosInConsist(int multiThrottleIndex, int functionNumber, boolean pressed) {
-  char multiThrottleIndexChar = getMultiThrottleChar(multiThrottleIndex);
-  if (functionFollow[multiThrottleIndex][functionNumber]==CONSIST_LEAD_LOCO) {
+void doFunctionWhichLocosInConsist(int functionNumber, boolean pressed) {
+  char multiThrottleIndexChar = getMultiThrottleChar(0);
+  if (functionFollow[functionNumber]==CONSIST_LEAD_LOCO) {
     wiThrottleProtocol.setFunction(multiThrottleIndexChar,functionNumber, pressed);
   } else {  // at the momemnt the only other option in CONSIST_ALL_LOCOS
     wiThrottleProtocol.setFunction(multiThrottleIndexChar, "*", functionNumber, pressed);
@@ -2285,47 +2266,16 @@ void powerToggle() {
   }
 }
 
-void nextThrottle() {
-  debug_print("nextThrottle(): "); 
-  int wasThrottle = currentThrottleIndex;
-  currentThrottleIndex++;
-  if (currentThrottleIndex >= maxThrottles) {
-    currentThrottleIndex = 0;
-  }
-  currentThrottleIndexChar = getMultiThrottleChar(currentThrottleIndex);
-
-  if (currentThrottleIndex!=wasThrottle) {
-    writeOledSpeed();
-  }
-}
-
-void changeNumberOfThrottles(bool increase) {
-  if (increase) {
-    maxThrottles++;
-    if (maxThrottles>6) maxThrottles = 6;   /// can't have more than 6
-  } else {
-    maxThrottles--;
-    if (maxThrottles<1) {   /// can't have less than 1
-      maxThrottles = 1;
-    } else {
-      releaseAllLocos(maxThrottles+1);
-      if (currentThrottleIndex>=maxThrottles) {
-        nextThrottle();
-      }
-    }
-  }
-  writeOledSpeed();
-}
 
 void stopThenToggleDirection() {
-  if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar)>0) {
-    if (currentSpeed[currentThrottleIndex] != 0) {
+  if (wiThrottleProtocol.getNumberOfLocomotives('0')>0) {
+    if (currentSpeed != 0) {
       // wiThrottleProtocol.setSpeed(currentThrottleIndexChar, 0);
-      speedSet(currentThrottleIndex,0);
+      speedSet(0);
     } else {
-      if (toggleDirectionOnEncoderButtonPressWhenStationary) toggleDirection(currentThrottleIndex);
+      if (toggleDirectionOnEncoderButtonPressWhenStationary) toggleDirection();
     }
-    currentSpeed[currentThrottleIndex] = 0;
+    currentSpeed] = 0;
   }
 }
 
@@ -2338,7 +2288,7 @@ void reconnect() {
   disconnectWitServer();
 }
 
-void setLastServerResponseTime(boolean force) {
+void setLastServerResponseTime(bool force) {
   // debug_print("setLastServerResponseTime "); debug_println((force) ? "True": "False");
   lastServerResponseTime = wiThrottleProtocol.getLastServerResponseTime();
   if ( (lastServerResponseTime==0) || (force) ) lastServerResponseTime = millis() /1000;
@@ -2362,10 +2312,10 @@ void selectRoster(int selection) {
   if ((selection>=0) && (selection < rosterSize)) {
     String loco = String(rosterLength[selection]) + rosterAddress[selection];
     debug_print("add Loco: "); debug_println(loco);
-    wiThrottleProtocol.addLocomotive(currentThrottleIndexChar, loco);
-    wiThrottleProtocol.getDirection(currentThrottleIndexChar, loco);
-    wiThrottleProtocol.getSpeed(currentThrottleIndexChar);
-    resetFunctionStates(currentThrottleIndex);
+    wiThrottleProtocol.addLocomotive(loco);
+    wiThrottleProtocol.getDirection(loco);
+    wiThrottleProtocol.getSpeed();
+    resetFunctionStates();
     writeOledSpeed();
     keypadUseType = KEYPAD_USE_OPERATION;
   }
@@ -2399,9 +2349,9 @@ void selectFunctionList(int selection) {
   debug_print("selectFunctionList() "); debug_println(selection);
 
   if ((selection>=0) && (selection < MAX_FUNCTIONS)) {
-    String function = functionLabels[currentThrottleIndex][selection];
+    String function = functionLabels[selection];
     debug_print("Function Selected: "); debug_println(function);
-    doFunction(currentThrottleIndex, selection, true);
+    doFunction(selection, true);
     writeOledSpeed();
     keypadUseType = KEYPAD_USE_OPERATION;
   }
@@ -2410,9 +2360,9 @@ void selectFunctionList(int selection) {
 void selectEditConsistList(int selection) {
   debug_print("selectEditConsistList() "); debug_println(selection);
 
-  if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar) > 1 ) {
-    String loco = wiThrottleProtocol.getLocomotiveAtPosition(currentThrottleIndexChar, selection);
-    toggleLocoFacing(currentThrottleIndex, loco);
+  if (wiThrottleProtocol.getNumberOfLocomotives('0') > 1 ) {
+    String loco = wiThrottleProtocol.getLocomotiveAtPosition('0', selection);
+    toggleLocoFacing(loco);
 
     writeOledSpeed();
     keypadUseType = KEYPAD_USE_OPERATION;
@@ -2576,10 +2526,10 @@ void writeOledFunctionList(String soFar) {
           j = (i<5) ? i : i+1;
           // if (functionLabels[currentThrottleIndex][k].length()>0) {
             oledText[j] = String(i) + ": " 
-            + ((k<10) ? functionLabels[currentThrottleIndex][k].substring(0,10) : String(k) 
-            + "-" + functionLabels[currentThrottleIndex][k].substring(0,7)) ;
+            + ((k<10) ? functionLabels[k].substring(0,10) : String(k) 
+            + "-" + functionLabels[k].substring(0,7)) ;
             
-            if (functionStates[currentThrottleIndex][k]) {
+            if (functionStates[k]) {
               oledTextInvert[j] = true;
             }
           // }
@@ -2646,15 +2596,15 @@ void writeOledMenu(String soFar) {
 
     switch (soFar.charAt(0)) {
       case MENU_ITEM_DROP_LOCO: {
-            if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar) > 0) {
+            if (wiThrottleProtocol.getNumberOfLocomotives('0') > 0) {
               writeOledAllLocos(false);
               drawTopLine = true;
             }
           } // fall through
       case MENU_ITEM_FUNCTION:
       case MENU_ITEM_TOGGLE_DIRECTION: {
-          if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar) <= 0 ) {
-            oledText[2] = MSG_THROTTLE_NUMBER + String(currentThrottleIndex+1);
+          if (wiThrottleProtocol.getNumberOfLocomotives('0') <= 0 ) {
+            oledText[2] = MSG_THROTTLE_NUMBER + String(1);
             oledText[3] = MSG_NO_LOCO_SELECTED;
             // oledText[5] = menu_cancel;
             setMenuTextForOled(menu_cancel);
@@ -2691,12 +2641,12 @@ void writeOledAllLocos(bool hideLeadLoco) {
   String loco;
   int j = 0; int i = 0;
   if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar) > 0) {
-    for (int index=0; ((index < wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar)) && (i < 8)); index++) {  //can only show first 8
+    for (int index=0; ((index < wiThrottleProtocol.getNumberOfLocomotives('0')) && (i < 8)); index++) {  //can only show first 8
       j = (i<4) ? i : i+2;
-      loco = wiThrottleProtocol.getLocomotiveAtPosition(currentThrottleIndexChar, index);
+      loco = wiThrottleProtocol.getLocomotiveAtPosition('0', index);
       if (i>=startAt) {
         oledText[j+1] = String(i) + ": " + loco;
-        if (wiThrottleProtocol.getDirection(currentThrottleIndexChar, loco) == Reverse) {
+        if (wiThrottleProtocol.getDirection('0', loco) == Reverse) {
           oledTextInvert[j+1] = true;
         }
       }
@@ -2741,61 +2691,17 @@ void writeOledSpeed() {
   String sSpeed = "";
   String sDirection = "";
 
-  bool foundNextThrottle = false;
-  String sNextThrottleNo = "";
-  String sNextThrottleSpeedAndDirection = "";
-
   clearOledArray();
   
   boolean drawTopLine = false;
 
-  if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar) > 0 ) {
-    // oledText[0] = label_locos; oledText[2] = label_speed;
+  if (wiThrottleProtocol.getNumberOfLocomotives('0') > 0 ) {
   
-    for (int i=0; i < wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar); i++) {
-      // sLocos = sLocos + " " + wiThrottleProtocol.getLocomotiveAtPosition(currentThrottleIndexChar, i);
+    for (int i=0; i < wiThrottleProtocol.getNumberOfLocomotives('0'); i++) {
       sLocos = sLocos + " " + getDisplayLocoString(currentThrottleIndex, i);
     }
-    // sSpeed = String(currentSpeed[currentThrottleIndex]);
-    sSpeed = String(getDisplaySpeed(currentThrottleIndex));
-    sDirection = (currentDirection[currentThrottleIndex]==Forward) ? DIRECTION_FORWARD_TEXT : DIRECTION_REVERSE_TEXT;
-
-    //find the next Throttle that has any locos selected - if there is one
-    if (maxThrottles > 1) {
-      int nextThrottleIndex = currentThrottleIndex + 1;
-
-      for (int i = nextThrottleIndex; i<maxThrottles; i++) {
-        if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(i)) > 0 ) {
-          foundNextThrottle = true;
-          nextThrottleIndex = i;
-          break;
-        }
-      }
-      if ( (!foundNextThrottle) && (currentThrottleIndex>0) ) {
-        for (int i = 0; i<currentThrottleIndex; i++) {
-          if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(i)) > 0 ) {
-            foundNextThrottle = true;
-            nextThrottleIndex = i;
-            break;
-          }
-        }
-      }
-      if (foundNextThrottle) {
-        sNextThrottleNo =  String(nextThrottleIndex+1);
-        int speed = getDisplaySpeed(nextThrottleIndex);
-        sNextThrottleSpeedAndDirection = String(speed);
-        // if (speed>0) {
-          if (currentDirection[nextThrottleIndex]==Forward) {
-            sNextThrottleSpeedAndDirection = sNextThrottleSpeedAndDirection + DIRECTION_FORWARD_TEXT_SHORT;
-          } else {
-            sNextThrottleSpeedAndDirection = DIRECTION_REVERSE_TEXT_SHORT + sNextThrottleSpeedAndDirection;
-          }
-        // }
-        // + " " + ((currentDirection[nextThrottleIndex]==Forward) ? DIRECTION_FORWARD_TEXT_SHORT : DIRECTION_REVERSE_TEXT_SHORT);
-        sNextThrottleSpeedAndDirection = "     " + sNextThrottleSpeedAndDirection ;
-        sNextThrottleSpeedAndDirection = sNextThrottleSpeedAndDirection.substring(sNextThrottleSpeedAndDirection.length()-5);
-      }
-    }
+    sSpeed = String(getDisplaySpeed());
+    sDirection = (currentDirection==Forward) ? DIRECTION_FORWARD_TEXT : DIRECTION_REVERSE_TEXT;
 
     oledText[0] = "   "  + sLocos; 
     //oledText[7] = "     " + sDirection;  // old function state format
@@ -2819,18 +2725,7 @@ void writeOledSpeed() {
 
   writeOledArray(false, false, false, drawTopLine);
 
-  if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar) > 0 ) {
-    writeOledFunctions();
-
-     // throttle number
-    u8g2.setDrawColor(0);
-    u8g2.drawBox(0,0,12,16);
-    u8g2.setDrawColor(1);
-    u8g2.setFont(FONT_THROTTLE_NUMBER); // medium
-    u8g2.drawStr(2,15, String(currentThrottleIndex+1).c_str());
-  }
-
-  if (speedStep != currentSpeedStep[currentThrottleIndex]) {
+   if (speedStep != currentSpeedStep) {
     // oledText[3] = "X " + String(speedStepCurrentMultiplier);
     u8g2.setDrawColor(1);
     u8g2.setFont(FONT_SPEED_STEP);
@@ -2871,13 +2766,6 @@ void writeOledSpeed() {
   int width = u8g2.getStrWidth(cSpeed);
   u8g2.drawStr(22+(55-width),45, cSpeed);
 
-  // speed and direction of next throttle
-  if ( (maxThrottles > 1) && (foundNextThrottle) ) {
-    u8g2.setFont(FONT_NEXT_THROTTLE);
-    u8g2.drawStr(85+34,38, sNextThrottleNo.c_str() );
-    u8g2.drawStr(85+12,48, sNextThrottleSpeedAndDirection.c_str() );
-  }
-
   u8g2.sendBuffer();
 
   // debug_println("writeOledSpeed(): end");
@@ -2890,7 +2778,7 @@ void writeOledFunctions() {
   //  int x = 99;
   // bool anyFunctionsActive = false;
    for (int i=0; i < MAX_FUNCTIONS; i++) {
-     if (functionStates[currentThrottleIndex][i]) {
+     if (functionStates[i]) {
       // old function state format
   //     //  debug_print("Fn On "); debug_println(i);
   //     if (i < 12) {
@@ -2928,15 +2816,15 @@ void writeOledFunctions() {
   debug_println("writeOledFunctions(): end");
 }
 
-void writeOledArray(boolean isThreeColums, boolean isPassword) {
+void writeOledArray(bool isThreeColums, bool isPassword) {
   writeOledArray(isThreeColums, isPassword, true, false);
 }
 
-void writeOledArray(boolean isThreeColums, boolean isPassword, boolean sendBuffer) {
+void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer) {
   writeOledArray(isThreeColums, isPassword, sendBuffer, false);
 }
 
-void writeOledArray(boolean isThreeColums, boolean isPassword, boolean sendBuffer, boolean drawTopLine) {
+void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool drawTopLine) {
   // debug_println("Start writeOledArray()");
   u8g2.clearBuffer();					// clear the internal memory
 

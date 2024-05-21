@@ -8,9 +8,9 @@
 extern int keypadUseType;
 extern int encoderUseType;
 
-extern boolean menuCommandStarted;
+extern bool menuCommandStarted;
 extern String menuCommand;
-extern boolean menuIsShowing;
+extern bool menuIsShowing;
 
 extern String oledText[];
 extern bool oledTextInvert[];
@@ -32,7 +32,7 @@ extern String selectedSsidPassword;
 extern int ssidConnectionState;
 
 extern String ssidPasswordEntered;
-extern boolean ssidPasswordChanged;
+extern bool ssidPasswordChanged;
 extern char ssidPasswordCurrentChar; 
 
 extern IPAddress selectedWitServerIP;
@@ -48,13 +48,13 @@ extern int foundWitServersCount;
 
 extern String foundSsids[];
 extern long foundSsidRssis[];
-extern boolean foundSsidsOpen[];
+extern bool foundSsidsOpen[];
 extern int foundSsidsCount;
 extern int ssidSelectionSource;
 
 extern String witServerIpAndPortConstructed;
 extern String witServerIpAndPortEntered;
-extern boolean witServerIpAndPortChanged;
+extern bool witServerIpAndPortChanged;
 
 extern int rosterSize;
 extern int rosterIndex[]; 
@@ -75,16 +75,16 @@ extern int routeListIndex[];
 extern String routeListSysName[]; 
 extern String routeListUserName[];
 extern int routeListState[];
-extern boolean functionStates[][MAX_FUNCTIONS];
-extern String functionLabels[][MAX_FUNCTIONS];
-extern int functionFollow[][MAX_FUNCTIONS];
-extern int currentSpeedStep[];
+extern bool functionStates[MAX_FUNCTIONS];
+extern String functionLabels[MAX_FUNCTIONS];
+extern int functionFollow[MAX_FUNCTIONS];
+extern int currentSpeedStep;
 extern int heartBeatPeriod;
 extern long lastServerResponseTime;
-extern boolean heartbeatCheckEnabled;
+extern bool heartbeatCheckEnabled;
 extern const char* deviceName;
-extern const boolean encoderRotationClockwiseIsIncreaseSpeed;
-extern const boolean toggleDirectionOnEncoderButtonPressWhenStationary;
+extern const bool encoderRotationClockwiseIsIncreaseSpeed;
+extern const bool toggleDirectionOnEncoderButtonPressWhenStationary;
 extern int buttonActions[];
 extern const String directCommandText[][3];
 extern int additionalButtonActions[];
@@ -100,7 +100,7 @@ extern int currentThrottleIndex;
 
 // function prototypes
 
-void displayUpdateFromWit(void);
+void displayUpdateFromWit(int);
 void ssidsLoop(void);
 void browseSsids(void);
 void selectSsidFromFound(int);
@@ -126,7 +126,7 @@ void buildWitEntry(void);
 void IRAM_ATTR readEncoderISR(void);
 void rotary_onButtonClick(void);
 void rotary_loop(void);
-void encoderSpeedChange(boolean, int);
+void encoderSpeedChange(bool, int);
 void keypadEvent(KeypadEvent);
 void initialiseAdditionalButtons(void);
 void additionalButtonLoop(void);
@@ -134,35 +134,34 @@ void additionalButtonLoop(void);
 void setup(void);
 void loop(void);
 
-void doKeyPress(char, boolean);
-void doDirectCommand (char, boolean);
-void doDirectAdditionalButtonCommand (int, boolean);
+void doKeyPress(char, bool);
+void doDirectCommand (char, bool);
+void doDirectAdditionalButtonCommand (int, bool);
 void doDirectAction(int);
 void doMenu(void);
 void resetMenu(void);
 
-void resetFunctionStates(int);
-void resetFunctionLabels(int); 
+void resetFunctionStates();
+void resetFunctionLabels(); 
 void resetAllFunctionLabels(void); 
 String getLocoWithLength(String);
 void speedEstop(void);
-void speedDown(int, int);
-void speedUp(int, int);
-void speedSet(int, int);
-void releaseAllLocos(int);
+void speedDown(int);
+void speedUp(int);
+void speedSet(int);
+void releaseAllLocos();
 void toggleAdditionalMultiplier(void);
 void toggleHeartbeatCheck(void);
-void toggleDirection(int);
-void changeDirection(int, Direction);
+void toggleDirection();
+void changeDirection(Direction);
 
-void doDirectFunction(int, boolean);
-void doFunction(int, int, boolean);
+void doDirectFunction(int, bool);
+void doFunction(int, bool);
 
 void powerOnOff(TrackPower);
 void powerToggle(void);
-void nextThrottle(void);
 void reconnect(void);
-void setLastServerResponseTime(boolean);
+void setLastServerResponseTime(bool);
 
 void selectRoster(int);
 void selectTurnoutList(int, TurnoutAction);
@@ -182,11 +181,11 @@ void writeHeartbeatCheck(void);
 void writeOledSpeed(void);
 void writeOledFunctions(void);
 void writeOledFunctionList(String);
-void writeOledAllLocos(void);
+void writeOledAllLocos(bool);
 void writeOledEditConsist();
-void writeOledArray(boolean, boolean);
-void writeOledArray(boolean, boolean, boolean);
-void writeOledArray(boolean, boolean, boolean, boolean);
+void writeOledArray(bool, bool);
+void writeOledArray(bool, bool, bool);
+void writeOledArray(bool, bool, bool, bool);
 void clearOledArray(void);
 void writeOledDirectCommands(void);
 
