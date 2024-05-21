@@ -22,7 +22,7 @@
 #include "static.h"              // change for non-english languages
 #include "actions.h"
 
-#include "WiTcontroller.h"
+#include "HandCab.h"
 
 #if WITCONTROLLER_DEBUG == 0
  #define debug_print(params...) Serial.print(params)
