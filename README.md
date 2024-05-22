@@ -30,7 +30,7 @@ Required Components
 * 3x4 Keypad  ([Example](https://www.digikey.com/en/products/detail/sparkfun-electronics/COM-14662/8702491))
 * Polymer Lithium Ion Battery LiPo 1150mAh 3.7V 502535 JST Connector (or larger capacity) ([1150mAh Example](https://www.amazon.com/gp/product/B0CLTVB74T/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1))
 * KY-040 Rotary Encoder Module ([Example](https://www.amazon.com/gp/product/B07F26CT6B/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1))
-* OLED Display 0.96" 128x64 Blue I2C IIC SSD1306 ([Example](https://www.ebay.com.au/itm/273746192621?ssPageName=STRK%3AMEBIDX%3AIT&_trksid=p2060353.m2749.l2649))
+* 1.3" IIC I2C Serial 128x64 SSH1106 SSD1306 OLED LCD Display ([Example](https://www.amazon.com/gp/product/B01MRR4LVE/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1))
 * Case - my one was 3d printed (see below)
 * Knob ([Example](https://www.jaycar.com.au/35mm-knob-matching-equipment-style/p/HK7766?pos=7&queryId=cbd19e2486968bca41273cc2dbce54a4&sort=relevance))
 * Wire - If you plan to solder the connections,which is the recommended approach, then stranded, coloured wire is advisable.  ([Example](https://www.jaycar.com.au/rainbow-cable-16-core-sold-per-metre/p/WM4516))
