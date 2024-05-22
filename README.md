@@ -28,7 +28,7 @@ Required Components
 
 * WeMos Lite LOLIN32  (ESP32 Arduino with LiPo charger) ([Example](https://www.amazon.com/gp/product/B0BCJY8HDY/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1))
 * 3x4 Keypad  ([Example](https://www.digikey.com/en/products/detail/sparkfun-electronics/COM-14662/8702491))
-* Polymer Lithium Ion Battery LiPo 400mAh 3.7V 502535 JST Connector (or larger capacity) ([500mAh Example](https://www.ebay.com.au/itm/133708965793?hash=item1f21ace7a1:g:tlwAAOSwfORgYqYK))
+* Polymer Lithium Ion Battery LiPo 1150mAh 3.7V 502535 JST Connector (or larger capacity) ([1150mAh Example](https://www.amazon.com/gp/product/B0CLTVB74T/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1))
 * KY-040 Rotary Encoder Module ([Example](https://www.ebay.com.au/itm/394147297055?hash=item5bc502771f:g:gr0AAOSwcixiwo2~&frcectupt=true))
 * OLED Display 0.96" 128x64 Blue I2C IIC SSD1306 ([Example](https://www.ebay.com.au/itm/273746192621?ssPageName=STRK%3AMEBIDX%3AIT&_trksid=p2060353.m2749.l2649))
 * Case - my one was 3d printed (see below)
