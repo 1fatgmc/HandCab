@@ -26,7 +26,7 @@ A HanCab is a simple DIY, handheld controller that talks to a WiThrottle Server 
 
 Required Components
 
-* WeMos Lite LOLIN32  (ESP32 Arduino with LiPo charger) ([Example](https://www.ebay.com.au/itm/284800618644?hash=item424f709094:g:-soAAOSwHslfC9ce&frcectupt=true))
+* WeMos Lite LOLIN32  (ESP32 Arduino with LiPo charger) ([Example](https://www.amazon.com/gp/product/B0BCJY8HDY/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1))
 * 3x4 Keypad  ([Example](https://www.digikey.com/en/products/detail/sparkfun-electronics/COM-14662/8702491))
 * Polymer Lithium Ion Battery LiPo 400mAh 3.7V 502535 JST Connector (or larger capacity) ([500mAh Example](https://www.ebay.com.au/itm/133708965793?hash=item1f21ace7a1:g:tlwAAOSwfORgYqYK))
 * KY-040 Rotary Encoder Module ([Example](https://www.ebay.com.au/itm/394147297055?hash=item5bc502771f:g:gr0AAOSwcixiwo2~&frcectupt=true))
