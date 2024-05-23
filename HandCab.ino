@@ -261,13 +261,11 @@ boolean additionalButtonLastRead[MAX_ADDITIONAL_BUTTONS];
 
 // *********************************************************************************
 
-void displayUpdateFromWit(int multiThrottleIndex) {
+void displayUpdateFromWit() {
   debug_print("displayUpdateFromWit(): keyapdeUseType "); debug_print(keypadUseType); 
   debug_print(" menuIsShowing "); debug_print(menuIsShowing);
-  debug_print(" multiThrottleIndex "); debug_print(multiThrottleIndex);
   debug_println("");
-  if ( (keypadUseType==KEYPAD_USE_OPERATION) && (!menuIsShowing) 
-  && (multiThrottleIndex==currentThrottleIndex) ) {
+  if ( (keypadUseType==KEYPAD_USE_OPERATION) && (!menuIsShowing) ) {
     writeOledSpeed();
   }
 }
@@ -324,7 +322,7 @@ class MyDelegate : public WiThrottleProtocolDelegate {
              || ((millis()-lastSpeedSentTime)>500)
         ) {
           currentSpeed = speed;
-          displayUpdateFromWit(0);
+          displayUpdateFromWit();
         } else {
           debug_print("Received Speed: skipping response: ("); debug_print(millis()); debug_print(") speed: "); debug_println(speed);
         }
@@ -336,7 +334,7 @@ class MyDelegate : public WiThrottleProtocolDelegate {
 
       if (currentDirection != dir) {
         currentDirection = dir;
-        displayUpdateFromWit(0);
+        displayUpdateFromWit();
       }
     }
     void receivedFunctionStateMultiThrottle(char multiThrottle, uint8_t func, bool state) { 
@@ -345,7 +343,7 @@ class MyDelegate : public WiThrottleProtocolDelegate {
 
       if (functionStates[func] != state) {
         functionStates[func] = state;
-        displayUpdateFromWit(0);
+        displayUpdateFromWit();
       }
     }
     void receivedRosterFunctionListMultiThrottle(char multiThrottle, String functions[MAX_FUNCTIONS]) { 
@@ -361,7 +359,7 @@ class MyDelegate : public WiThrottleProtocolDelegate {
       debug_print("Received TrackPower: "); debug_println(state);
       if (trackPower != state) {
         trackPower = state;
-        displayUpdateFromWit(0); // dummy multithrottle
+        displayUpdateFromWit(); // dummy multithrottle
         refreshOled();
       }
     }
@@ -2680,6 +2678,10 @@ void writeOledSpeed() {
 
   writeOledArray(false, false, false, drawTopLine);
 
+  if (wiThrottleProtocol.getNumberOfLocomotives('0') > 0 ) {
+    writeOledFunctions();
+  }
+
    if (speedStep != currentSpeedStep) {
     // oledText[3] = "X " + String(speedStepCurrentMultiplier);
     u8g2.setDrawColor(1);
@@ -2730,43 +2732,15 @@ void writeOledFunctions() {
   lastOledScreen = last_oled_screen_speed;
 
   debug_println("writeOledFunctions():");
-  //  int x = 99;
-  // bool anyFunctionsActive = false;
    for (int i=0; i < MAX_FUNCTIONS; i++) {
-     if (functionStates[i]) {
-      // old function state format
-  //     //  debug_print("Fn On "); debug_println(i);
-  //     if (i < 12) {
-  //     int y = (i+2)*10-8;
-  //     if ((i>=4) && (i<8)) { 
-  //       x = 109; 
-  //       y = (i-2)*10-8;
-  //     } else if (i>=8) { 
-  //       x = 119; 
-  //       y = (i-6)*10-8;
-  //     }
-      
-  //     u8g2.drawBox(x,y,8,8);
-  //     u8g2.setDrawColor(0);
-  //     u8g2.setFont(u8g2_font_profont10_tf);
-  //     u8g2.drawStr( x+2, y+7, String( (i<10) ? i : i-10 ).c_str());
-  //     u8g2.setDrawColor(1);
-  //   //  } else {
-  //   //    debug_print("Fn Off "); debug_println(i);
-
+    if (functionStates[i]) {
       // new function state format
-      // anyFunctionsActive = true;
-      // u8g2.drawBox(i*4+12,12,5,7);
       u8g2.drawRBox(i*4+12,12+1,5,7,2);
       u8g2.setDrawColor(0);
       u8g2.setFont(FONT_FUNCTION_INDICATORS);   
       u8g2.drawStr( i*4+1+12, 18+1, String( (i<10) ? i : ((i<20) ? i-10 : i-20)).c_str());
       u8g2.setDrawColor(1);
      }
-    //  if (anyFunctionsActive) {
-    //     u8g2.drawStr( 0, 18, (function_states).c_str());
-    // //     u8g2.drawHLine(0,19,128);
-    //  }
    }
   debug_println("writeOledFunctions(): end");
 }

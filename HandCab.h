@@ -100,7 +100,7 @@ extern int currentThrottleIndex;
 
 // function prototypes
 
-void displayUpdateFromWit(int);
+void displayUpdateFromWit();
 void ssidsLoop(void);
 void browseSsids(void);
 void selectSsidFromFound(int);
