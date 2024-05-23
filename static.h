@@ -1,8 +1,8 @@
-const String appName = "WiTcontroller";
-const String appVersion = "     Version 1.46";
+const String appName = "HandCab";
+const String appVersion = "     Version 0.01";
 
 #ifndef DEVICE_NAME
-   #define DEVICE_NAME "WiTcontroller"
+   #define DEVICE_NAME "HandCab"
 #endif
 
 #ifndef MENU_TEXT_MENU
