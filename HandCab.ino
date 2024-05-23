@@ -2494,7 +2494,7 @@ void writeOledFunctionList(String soFar) {
       // setMenuTextForOled("(" + String(functionPage) +  ") " + menu_function_list);
     } else {
       oledText[0] = MSG_NO_FUNCTIONS;
-      oledText[2] = MSG_THROTTLE_NUMBER + String(currentThrottleIndex+1);
+      // oledText[2] = MSG_THROTTLE_NUMBER + String(currentThrottleIndex+1);
       oledText[3] = MSG_NO_LOCO_SELECTED;
       // oledText[5] = menu_cancel;
       setMenuTextForOled(menu_cancel);
@@ -2559,7 +2559,7 @@ void writeOledMenu(String soFar) {
       case MENU_ITEM_FUNCTION:
       case MENU_ITEM_TOGGLE_DIRECTION: {
           if (wiThrottleProtocol.getNumberOfLocomotives('0') <= 0 ) {
-            oledText[2] = MSG_THROTTLE_NUMBER + String(1);
+            // oledText[2] = MSG_THROTTLE_NUMBER + String(1);
             oledText[3] = MSG_NO_LOCO_SELECTED;
             // oledText[5] = menu_cancel;
             setMenuTextForOled(menu_cancel);
@@ -2658,14 +2658,14 @@ void writeOledSpeed() {
     sSpeed = String(getDisplaySpeed());
     sDirection = (currentDirection==Forward) ? DIRECTION_FORWARD_TEXT : DIRECTION_REVERSE_TEXT;
 
-    oledText[0] = "   "  + sLocos; 
+    oledText[0] = sLocos; 
     //oledText[7] = "     " + sDirection;  // old function state format
 
     drawTopLine = true;
 
   } else {
     setAppnameForOled();
-    oledText[2] = MSG_THROTTLE_NUMBER + String(currentThrottleIndex+1);
+    // oledText[2] = MSG_THROTTLE_NUMBER + String(currentThrottleIndex+1);
     oledText[3] = MSG_NO_LOCO_SELECTED;
     drawTopLine = true;
   }
