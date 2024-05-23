@@ -391,8 +391,8 @@ const String extraSubMenuText[8] = {
 #define EXTRA_MENU_CHAR_EDIT_CONSIST           '1'
 #define EXTRA_MENU_CHAR_TBA                    '2'
 #define EXTRA_MENU_CHAR_HEARTBEAT_TOGGLE       '3'
-#define EXTRA_MENU_CHAR_TBA                    '4'
-#define EXTRA_MENU_CHAR_TBA                    '5'
+#define EXTRA_MENU_CHAR_INCREASE_MAX_THROTTLES '4'
+#define EXTRA_MENU_CHAR_DECREASE_MAX_THROTTLES '5'
 #define EXTRA_MENU_CHAR_DISCONNECT             '6'
 #define EXTRA_MENU_CHAR_OFF_SLEEP              '7'
 #define EXTRA_MENU_CHAR_OFF_SLEEP_HIDDEN       '9'  // doesn't appear in the menu

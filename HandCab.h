@@ -15,8 +15,8 @@ extern bool menuIsShowing;
 extern String oledText[];
 extern bool oledTextInvert[];
 
-extern int currentSpeed[];
-extern Direction currentDirection[];
+extern int currentSpeed;
+extern Direction currentDirection;
 extern int speedStepCurrentMultiplier;
 
 extern TrackPower trackPower;

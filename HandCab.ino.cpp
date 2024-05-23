@@ -1,25 +1,20 @@
-/**
- * This app turns the ESP32 into a Bluetooth LE keyboard that is intended to act as a dedicated
- * gamepad for the JMRI or any wiThrottle server.
-
-  Instructions:
-  - Update WiFi SSIDs and passwords as necessary in config_network.h.
-  - Flash the sketch 
- */
-
-#include <WiFi.h>                 // https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi     GPL 2.1
-#include <ESPmDNS.h>              // https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS (You should be able to download it from here https://github.com/espressif/arduino-esp32 Then unzip it and copy 'just' the ESPmDNS folder to your own libraries folder )
-#include <WiThrottleProtocol.h>   // https://github.com/flash62au/WiThrottleProtocol                           Creative Commons 4.0  Attribution-ShareAlike
-#include <AiEsp32RotaryEncoder.h> // https://github.com/igorantolic/ai-esp32-rotary-encoder                    GPL 2.0
-#include <Keypad.h>               // https://www.arduinolibraries.info/libraries/keypad                        GPL 3.0
-#include <U8g2lib.h>              // https://github.com/olikraus/u8g2  (Just get "U8g2" via the Arduino IDE Library Manager)   new-bsd
+# 1 "C:\\Users\\akers\\AppData\\Local\\Temp\\tmp35lftzmy"
+#include <Arduino.h>
+# 1 "C:/Users/akers/Documents/GitHub/HandCab/HandCab.ino"
+# 10 "C:/Users/akers/Documents/GitHub/HandCab/HandCab.ino"
+#include <WiFi.h>
+#include <ESPmDNS.h>
+#include <WiThrottleProtocol.h>
+#include <AiEsp32RotaryEncoder.h>
+#include <Keypad.h>
+#include <U8g2lib.h>
 #include <string>
 
-#include "config_network.h"      // LAN networks (SSIDs and passwords)
-#include "config_buttons.h"      // keypad buttons assignments
-#include "config_keypad_etc.h"   // hardware config - GPIOs - keypad, encoder; oled display type
+#include "config_network.h"
+#include "config_buttons.h"
+#include "config_keypad_etc.h"
 
-#include "static.h"              // change for non-english languages
+#include "static.h"
 #include "actions.h"
 
 #include "HandCab.h"
@@ -34,7 +29,7 @@
  #define debug_printf(...)
 #endif
 
-// *********************************************************************************
+
 
 int keypadUseType = KEYPAD_USE_OPERATION;
 int encoderUseType = ENCODER_USE_OPERATION;
@@ -45,7 +40,7 @@ String menuCommand = "";
 boolean menuIsShowing = false;
 
 String oledText[18] = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
-bool oledTextInvert[18] = {false, false, false, false, false, false, false, false, false, 
+bool oledTextInvert[18] = {false, false, false, false, false, false, false, false, false,
                            false, false, false, false, false, false, false, false, false};
 
 int currentSpeed;
@@ -56,31 +51,31 @@ TrackPower trackPower = PowerUnknown;
 String turnoutPrefix = "";
 String routePrefix = "";
 
-// encoder variables
+
 bool circleValues = true;
 int encoderValue = 0;
 int lastEncoderValue = 0;
 
-// pot values
+
 bool useRotaryEncoderForThrottle = USE_ROTARY_ENCODER_FOR_THROTTLE;
 int throttlePotPin = THROTTLE_POT_PIN;
 bool throttlePotUseNotches = THROTTLE_POT_USE_NOTCHES;
-int throttlePotNotchValues[] = THROTTLE_POT_NOTCH_VALUES; 
+int throttlePotNotchValues[] = THROTTLE_POT_NOTCH_VALUES;
 int throttlePotNotchSpeeds[] = THROTTLE_POT_NOTCH_SPEEDS;
 int throttlePotNotch = 0;
 int throttlePotTargetSpeed = 0;
 int lastThrottlePotValue = 0;
 
-// server variables
-// boolean ssidConnected = false;
+
+
 String selectedSsid = "";
 String selectedSsidPassword = "";
 int ssidConnectionState = CONNECTION_STATE_DISCONNECTED;
 
-// ssid password entry
+
 String ssidPasswordEntered = "";
 boolean ssidPasswordChanged = true;
-char ssidPasswordCurrentChar = ssidPasswordBlankChar; 
+char ssidPasswordCurrentChar = ssidPasswordBlankChar;
 
 IPAddress selectedWitServerIP;
 int selectedWitServerPort = 0;
@@ -89,7 +84,7 @@ int noOfWitServices = 0;
 int witConnectionState = CONNECTION_STATE_DISCONNECTED;
 String serverType = "";
 
-//found wiThrottle servers
+
 IPAddress foundWitServersIPs[maxFoundWitServers];
 int foundWitServersPorts[maxFoundWitServers];
 String foundWitServersNames[maxFoundWitServers];
@@ -99,7 +94,7 @@ bool autoConnectToFirstWiThrottleServer = AUTO_CONNECT_TO_FIRST_WITHROTTLE_SERVE
 int outboundCmdsMininumDelay = OUTBOUND_COMMANDS_MINIMUM_DELAY;
 bool commandsNeedLeadingCrLf = false;
 
-//found ssids
+
 String foundSsids[maxFoundSsids];
 long foundSsidRssis[maxFoundSsids];
 boolean foundSsidsOpen[maxFoundSsids];
@@ -107,88 +102,88 @@ int foundSsidsCount = 0;
 int ssidSelectionSource;
 double startWaitForSelection;
 
-// wit Server ip entry
+
 String witServerIpAndPortConstructed = "###.###.###.###:#####";
 String witServerIpAndPortEntered = DEFAULT_IP_AND_PORT;
 boolean witServerIpAndPortChanged = true;
 
-// roster variables
+
 int rosterSize = 0;
-int rosterIndex[maxRoster]; 
-String rosterName[maxRoster]; 
+int rosterIndex[maxRoster];
+String rosterName[maxRoster];
 int rosterAddress[maxRoster];
 char rosterLength[maxRoster];
 
 int page = 0;
 int functionPage = 0;
 
-// Broadcast msessage
+
 String broadcastMessageText = "";
 long broadcastMessageTime = 0;
 
-// remember oLED state
+
 int lastOledScreen = 0;
 String lastOledStringParameter = "";
 int lastOledIntParameter = 0;
 boolean lastOledBooleanParameter = false;
 TurnoutAction lastOledTurnoutParameter = TurnoutToggle;
 
-// turnout variables
+
 int turnoutListSize = 0;
-int turnoutListIndex[maxTurnoutList]; 
-String turnoutListSysName[maxTurnoutList]; 
+int turnoutListIndex[maxTurnoutList];
+String turnoutListSysName[maxTurnoutList];
 String turnoutListUserName[maxTurnoutList];
 int turnoutListState[maxTurnoutList];
 
-// route variables
+
 int routeListSize = 0;
-int routeListIndex[maxRouteList]; 
-String routeListSysName[maxRouteList]; 
+int routeListIndex[maxRouteList];
+String routeListSysName[maxRouteList];
 String routeListUserName[maxRouteList];
 int routeListState[maxRouteList];
 
-// function states
-boolean functionStates[MAX_FUNCTIONS];   // set to maximum possible
 
-// function labels
-String functionLabels[MAX_FUNCTIONS];   // set to maximum possible
+boolean functionStates[MAX_FUNCTIONS];
 
-// consist function follow
-int functionFollow[MAX_FUNCTIONS];   // set to maximum possible
 
-// speedstep
-int currentSpeedStep;   // set to maximum possible 
+String functionLabels[MAX_FUNCTIONS];
 
-// throttle
+
+int functionFollow[MAX_FUNCTIONS];
+
+
+int currentSpeedStep;
+
+
 int currentThrottleIndex = 0;
 char currentThrottleIndexChar = '0';
 
-int heartBeatPeriod = 10; // default to 10 seconds
-long lastServerResponseTime;  // seconds since start of Arduino
+int heartBeatPeriod = 10;
+long lastServerResponseTime;
 boolean heartbeatCheckEnabled = true;
 
-// used to stop speed bounces
+
 long lastSpeedSentTime = 0;
 int lastSpeedSent = 0;
-// int lastDirectionSent = -1;
+
 int lastSpeedThrottleIndex = 0;
 
-// don't alter the assignments here
-// alter them in config_buttons.h
+
+
 
 const char* deviceName = DEVICE_NAME;
 
 static unsigned long rotaryEncoderButtonLastTimePressed = 0;
-const int rotaryEncoderButtonEncoderDebounceTime = ROTARY_ENCODER_DEBOUNCE_TIME;   // in miliseconds
+const int rotaryEncoderButtonEncoderDebounceTime = ROTARY_ENCODER_DEBOUNCE_TIME;
 
 const boolean encoderRotationClockwiseIsIncreaseSpeed = ENCODER_ROTATION_CLOCKWISE_IS_INCREASE_SPEED;
-// false = Counterclockwise  true = clockwise
+
 
 const boolean toggleDirectionOnEncoderButtonPressWhenStationary = TOGGLE_DIRECTION_ON_ENCODER_BUTTON_PRESSED_WHEN_STATIONAY;
-// true = if the locos(s) are stationary, clicking the encoder button will toggle the direction
 
-//4x3 keypad only uses 0-9
-//4x4 uses all 14 
+
+
+
 int buttonActions[14] = { CHOSEN_KEYPAD_0_FUNCTION,
                           CHOSEN_KEYPAD_1_FUNCTION,
                           CHOSEN_KEYPAD_2_FUNCTION,
@@ -205,7 +200,7 @@ int buttonActions[14] = { CHOSEN_KEYPAD_0_FUNCTION,
                           CHOSEN_KEYPAD_D_FUNCTION
 };
 
-// text that will appear when you press #
+
 const String directCommandText[4][3] = {
     {CHOSEN_KEYPAD_1_DISPLAY_NAME, CHOSEN_KEYPAD_2_DISPLAY_NAME, CHOSEN_KEYPAD_3_DISPLAY_NAME},
     {CHOSEN_KEYPAD_4_DISPLAY_NAME, CHOSEN_KEYPAD_5_DISPLAY_NAME, CHOSEN_KEYPAD_6_DISPLAY_NAME},
@@ -220,8 +215,8 @@ bool oledDirectCommandsAreBeingDisplayed = false;
   boolean hashShowsFunctionsInsteadOfKeyDefs = false;
 #endif
 
-// in case the values are not defined in config_buttons.h
-// DO NOT alter the values here 
+
+
 #ifndef CHOSEN_ADDITIONAL_BUTTON_0_FUNCTION
   #define CHOSEN_ADDITIONAL_BUTTON_0_FUNCTION FUNCTION_NULL
 #endif
@@ -244,7 +239,7 @@ bool oledDirectCommandsAreBeingDisplayed = false;
   #define CHOSEN_ADDITIONAL_BUTTON_6_FUNCTION FUNCTION_NULL
 #endif
 
-//optional additional buttons
+
 int additionalButtonActions[MAX_ADDITIONAL_BUTTONS] = {
                           CHOSEN_ADDITIONAL_BUTTON_0_FUNCTION,
                           CHOSEN_ADDITIONAL_BUTTON_1_FUNCTION,
@@ -254,42 +249,135 @@ int additionalButtonActions[MAX_ADDITIONAL_BUTTONS] = {
                           CHOSEN_ADDITIONAL_BUTTON_5_FUNCTION,
                           CHOSEN_ADDITIONAL_BUTTON_6_FUNCTION
 };
-unsigned long lastAdditionalButtonDebounceTime[MAX_ADDITIONAL_BUTTONS] = {0,0,0,0,0,0,0};  // the last time the output pin was toggled
-unsigned long additionalButtonDebounceDelay = ADDITIONAL_BUTTON_DEBOUNCE_DELAY;    // the debounce time
+unsigned long lastAdditionalButtonDebounceTime[MAX_ADDITIONAL_BUTTONS] = {0,0,0,0,0,0,0};
+unsigned long additionalButtonDebounceDelay = ADDITIONAL_BUTTON_DEBOUNCE_DELAY;
 boolean additionalButtonRead[MAX_ADDITIONAL_BUTTONS];
 boolean additionalButtonLastRead[MAX_ADDITIONAL_BUTTONS];
-
-// *********************************************************************************
-
+void displayUpdateFromWit(int multiThrottleIndex);
+int getMultiThrottleIndex(char multiThrottle);
+char getMultiThrottleChar(int multiThrottleIndex);
+void ssidsLoop();
+void browseSsids();
+void selectSsidFromFound(int selection);
+void getSsidPasswordAndWitIpForFound();
+void enterSsidPassword();
+void showListOfSsids();
+void selectSsid(int selection);
+void connectSsid();
+void witServiceLoop();
+void browseWitService();
+void selectWitServer(int selection);
+void connectWitServer();
+void enterWitServer();
+void disconnectWitServer();
+void witEntryAddChar(char key);
+void witEntryDeleteChar(char key);
+void ssidPasswordAddChar(char key);
+void ssidPasswordDeleteChar(char key);
+void buildWitEntry();
+void IRAM_ATTR readEncoderISR();
+void rotary_onButtonClick();
+void rotary_loop();
+void encoderSpeedChange(bool rotationIsClockwise, int speedChange);
+void throttlePot_loop();
+void keypadEvent(KeypadEvent key);
+void initialiseAdditionalButtons();
+void additionalButtonLoop();
+void setup();
+void loop();
+void doKeyPress(char key, bool pressed);
+void doDirectCommand (char key, bool pressed);
+void doDirectAdditionalButtonCommand (int buttonIndex, bool pressed);
+void doDirectAction(int buttonAction);
+void doMenu();
+void resetMenu();
+void resetFunctionStates();
+void resetFunctionLabels();
+void resetAllFunctionLabels();
+void resetAllFunctionFollow();
+String getLocoWithLength(String loco);
+void speedEstop();
+void speedEstopCurrentLoco();
+void speedDown(int amt);
+void speedUp(int amt);
+void speedSet(int amt);
+int getDisplaySpeed();
+void toggleLocoFacing(String loco);
+int getLocoFacing(String loco);
+String getDisplayLocoString(int index);
+void releaseAllLocos();
+void releaseOneLoco(String loco);
+void toggleAdditionalMultiplier();
+void toggleHeartbeatCheck();
+void toggleDirection();
+void changeDirection(Direction direction);
+void doDirectFunction(int functionNumber, bool pressed);
+void doFunction(int functionNumber, bool pressed);
+void doFunctionWhichLocosInConsist(int functionNumber, boolean pressed);
+void powerOnOff(TrackPower powerState);
+void powerToggle();
+void stopThenToggleDirection();
+void reconnect();
+void setLastServerResponseTime(bool force);
+void checkForShutdownOnNoResponse();
+void selectRoster(int selection);
+void selectTurnoutList(int selection, TurnoutAction action);
+void selectRouteList(int selection);
+void selectFunctionList(int selection);
+void selectEditConsistList(int selection);
+void setAppnameForOled();
+void setMenuTextForOled(int menuTextIndex);
+void refreshOled();
+void writeOledFoundSSids(String soFar);
+void writeOledRoster(String soFar);
+void writeOledTurnoutList(String soFar, TurnoutAction action);
+void writeOledRouteList(String soFar);
+void writeOledFunctionList(String soFar);
+void writeOledEnterPassword();
+void writeOledMenu(String soFar);
+void writeOledExtraSubMenu();
+void writeOledAllLocos(bool hideLeadLoco);
+void writeOledEditConsist();
+void writeHeartbeatCheck();
+void writeOledSpeed();
+void writeOledFunctions();
+void writeOledArray(bool isThreeColums, bool isPassword);
+void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer);
+void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool drawTopLine);
+void clearOledArray();
+void writeOledDirectCommands();
+void deepSleepStart();
+void deepSleepStart(bool autoShutdown);
+#line 264 "C:/Users/akers/Documents/GitHub/HandCab/HandCab.ino"
 void displayUpdateFromWit(int multiThrottleIndex) {
-  debug_print("displayUpdateFromWit(): keyapdeUseType "); debug_print(keypadUseType); 
+  debug_print("displayUpdateFromWit(): keyapdeUseType "); debug_print(keypadUseType);
   debug_print(" menuIsShowing "); debug_print(menuIsShowing);
   debug_print(" multiThrottleIndex "); debug_print(multiThrottleIndex);
   debug_println("");
-  if ( (keypadUseType==KEYPAD_USE_OPERATION) && (!menuIsShowing) 
+  if ( (keypadUseType==KEYPAD_USE_OPERATION) && (!menuIsShowing)
   && (multiThrottleIndex==currentThrottleIndex) ) {
     writeOledSpeed();
   }
 }
 
-// WiThrottleProtocol Delegate class
+
 class MyDelegate : public WiThrottleProtocolDelegate {
-  
+
   public:
-    void heartbeatConfig(int seconds) { 
-      debug_print("Received heartbeat. From: "); debug_print(heartBeatPeriod); 
-      debug_print(" To: "); debug_println(seconds); 
+    void heartbeatConfig(int seconds) {
+      debug_print("Received heartbeat. From: "); debug_print(heartBeatPeriod);
+      debug_print(" To: "); debug_println(seconds);
       heartBeatPeriod = seconds;
     }
-    void receivedVersion(String version) {    
-      debug_printf("Received Version: %s\n",version.c_str()); 
+    void receivedVersion(String version) {
+      debug_printf("Received Version: %s\n",version.c_str());
     }
     void receivedServerDescription(String description) {
       debug_print("Received Description: "); debug_println(description);
       serverType = description.substring(0,description.indexOf(" "));
       debug_print("ServerType: "); debug_println(serverType);
       if (serverType.equals("DCC-EX")) {
-      // if (description.substring(0,6).equals("DCC-EX")) {
+
         debug_println("resetting prefixes");
         turnoutPrefix = DCC_EX_TURNOUT_PREFIX;
         routePrefix = DCC_EX_ROUTE_PREFIX;
@@ -313,13 +401,13 @@ class MyDelegate : public WiThrottleProtocolDelegate {
         refreshOled();
       }
     }
-    void receivedSpeedMultiThrottle(char multiThrottle, int speed) {             // Vnnn
-      debug_print("Received Speed: ("); debug_print(millis()); debug_print(") throttle: "); debug_print(multiThrottle);  debug_print(" speed: "); debug_println(speed); 
+    void receivedSpeedMultiThrottle(char multiThrottle, int speed) {
+      debug_print("Received Speed: ("); debug_print(millis()); debug_print(") throttle: "); debug_print(multiThrottle); debug_print(" speed: "); debug_println(speed);
       int multiThrottleIndex = getMultiThrottleIndex(multiThrottle);
 
       if (currentSpeed != speed) {
-        
-        // check for bounce. (intermediate speed sent back from the server, but is not up to date with the throttle)
+
+
         if ( (lastSpeedThrottleIndex!=multiThrottleIndex)
              || ((millis()-lastSpeedSentTime)>500)
         ) {
@@ -330,38 +418,38 @@ class MyDelegate : public WiThrottleProtocolDelegate {
         }
       }
     }
-    void receivedDirectionMultiThrottle(char multiThrottle, Direction dir) {     // R{0,1}
-      debug_print("Received Direction: "); debug_println(dir); 
-      // int multiThrottleIndex = getMultiThrottleIndex(multiThrottle);
+    void receivedDirectionMultiThrottle(char multiThrottle, Direction dir) {
+      debug_print("Received Direction: "); debug_println(dir);
+
 
       if (currentDirection != dir) {
         currentDirection = dir;
         displayUpdateFromWit(0);
       }
     }
-    void receivedFunctionStateMultiThrottle(char multiThrottle, uint8_t func, bool state) { 
+    void receivedFunctionStateMultiThrottle(char multiThrottle, uint8_t func, bool state) {
       debug_print("Received Fn: "); debug_print(func); debug_print(" State: "); debug_println( (state) ? "True" : "False" );
-      // int multiThrottleIndex = getMultiThrottleIndex(multiThrottle);
+
 
       if (functionStates[func] != state) {
         functionStates[func] = state;
         displayUpdateFromWit(0);
       }
     }
-    void receivedRosterFunctionListMultiThrottle(char multiThrottle, String functions[MAX_FUNCTIONS]) { 
-      debug_println("Received Fn List: "); 
-      // int multiThrottleIndex = getMultiThrottleIndex(multiThrottle);
+    void receivedRosterFunctionListMultiThrottle(char multiThrottle, String functions[MAX_FUNCTIONS]) {
+      debug_println("Received Fn List: ");
+
 
       for(int i = 0; i < MAX_FUNCTIONS; i++) {
         functionLabels[i] = functions[i];
         debug_print(" Function: "); debug_print(i); debug_print(" - "); debug_println( functions[i] );
       }
     }
-    void receivedTrackPower(TrackPower state) { 
+    void receivedTrackPower(TrackPower state) {
       debug_print("Received TrackPower: "); debug_println(state);
       if (trackPower != state) {
         trackPower = state;
-        displayUpdateFromWit(0); // dummy multithrottle
+        displayUpdateFromWit(0);
         refreshOled();
       }
     }
@@ -372,8 +460,8 @@ class MyDelegate : public WiThrottleProtocolDelegate {
     void receivedRosterEntry(int index, String name, int address, char length) {
       debug_print("Received Roster Entry, index: "); debug_print(index); debug_println(" - " + name);
       if (index < maxRoster) {
-        rosterIndex[index] = index; 
-        rosterName[index] = name; 
+        rosterIndex[index] = index;
+        rosterName[index] = name;
         rosterAddress[index] = address;
         rosterLength[index] = length;
       }
@@ -384,8 +472,8 @@ class MyDelegate : public WiThrottleProtocolDelegate {
     }
     void receivedTurnoutEntry(int index, String sysName, String userName, int state) {
       if (index < maxTurnoutList) {
-        turnoutListIndex[index] = index; 
-        turnoutListSysName[index] = sysName; 
+        turnoutListIndex[index] = index;
+        turnoutListSysName[index] = sysName;
         turnoutListUserName[index] = userName;
         turnoutListState[index] = state;
       }
@@ -396,8 +484,8 @@ class MyDelegate : public WiThrottleProtocolDelegate {
     }
     void receivedRouteEntry(int index, String sysName, String userName, int state) {
       if (index < maxRouteList) {
-        routeListIndex[index] = index; 
-        routeListSysName[index] = sysName; 
+        routeListIndex[index] = index;
+        routeListSysName[index] = sysName;
         routeListUserName[index] = userName;
         routeListState[index] = state;
       }
@@ -422,19 +510,19 @@ WiThrottleProtocol wiThrottleProtocol;
 MyDelegate myDelegate;
 int deviceId = random(1000,9999);
 
-// *********************************************************************************
-// wifi / SSID 
-// *********************************************************************************
+
+
+
 
 void ssidsLoop() {
   if (ssidConnectionState == CONNECTION_STATE_DISCONNECTED) {
     if (ssidSelectionSource == SSID_CONNECTION_SOURCE_LIST) {
-      showListOfSsids(); 
+      showListOfSsids();
     } else {
       browseSsids();
     }
   }
-  
+
   if (ssidConnectionState == CONNECTION_STATE_PASSWORD_ENTRY) {
     enterSsidPassword();
   }
@@ -444,24 +532,24 @@ void ssidsLoop() {
   }
 }
 
-void browseSsids() { // show the found SSIDs
+void browseSsids() {
   debug_println("browseSsids()");
 
   double startTime = millis();
   double nowTime = startTime;
 
   debug_println("Browsing for ssids");
-  clearOledArray(); 
+  clearOledArray();
   setAppnameForOled();
   oledText[2] = MSG_BROWSING_FOR_SSIDS;
   writeOledArray(false, false, true, true);
 
   WiFi.setScanMethod(WIFI_ALL_CHANNEL_SCAN);
   WiFi.setSortMethod(WIFI_CONNECT_AP_BY_SIGNAL);
-  
+
   int numSsids = WiFi.scanNetworks();
   while ( (numSsids == -1)
-    && ((nowTime-startTime) <= 10000) ) { // try for 10 seconds
+    && ((nowTime-startTime) <= 10000) ) {
     delay(250);
     debug_print(".");
     nowTime = millis();
@@ -475,7 +563,7 @@ void browseSsids() { // show the found SSIDs
 
   } else {
     for (int thisSsid = 0; thisSsid < numSsids; thisSsid++) {
-      /// remove duplicates (repeaters and mesh networks)
+
       boolean found = false;
       for (int i=0; i<foundSsidsCount && i<maxFoundSsids; i++) {
         if (WiFi.SSID(thisSsid) == foundSsids[i]) {
@@ -491,14 +579,14 @@ void browseSsids() { // show the found SSIDs
       }
     }
     for (int i=0; i<foundSsidsCount; i++) {
-      debug_println(foundSsids[i]);      
+      debug_println(foundSsids[i]);
     }
 
     clearOledArray(); oledText[10] = MSG_SSIDS_FOUND;
 
      writeOledFoundSSids("");
 
-    // oledText[5] = menu_select_ssids_from_found;
+
     setMenuTextForOled(menu_select_ssids_from_found);
     writeOledArray(false, false);
 
@@ -506,7 +594,7 @@ void browseSsids() { // show the found SSIDs
     ssidConnectionState = CONNECTION_STATE_SELECTION_REQUIRED;
 
     if ((foundSsidsCount>0) && (autoConnectToFirstDefinedServer)) {
-      for (int i=0; i<foundSsidsCount; i++) { 
+      for (int i=0; i<foundSsidsCount; i++) {
         if (foundSsids[i] == ssids[0]) {
           ssidConnectionState = CONNECTION_STATE_SELECTED;
           selectedSsid = foundSsids[i];
@@ -554,36 +642,36 @@ void getSsidPasswordAndWitIpForFound() {
 void enterSsidPassword() {
   keypadUseType = KEYPAD_USE_ENTER_SSID_PASSWORD;
   encoderUseType = ENCODER_USE_SSID_PASSWORD;
-  if (ssidPasswordChanged) { // don't refresh the screen if nothing nothing has changed
+  if (ssidPasswordChanged) {
     debug_println("enterSsidPassword()");
     writeOledEnterPassword();
     ssidPasswordChanged = false;
   }
 }
-void showListOfSsids() {  // show the list from the specified values in config_network.h
+void showListOfSsids() {
   debug_println("showListOfSsids()");
   startWaitForSelection = millis();
 
-  clearOledArray(); 
-  setAppnameForOled(); 
+  clearOledArray();
+  setAppnameForOled();
   writeOledArray(false, false);
 
   if (maxSsids == 0) {
     oledText[1] = MSG_NO_SSIDS_FOUND;
     writeOledArray(false, false, true, true);
     debug_println(oledText[1]);
-  
+
   } else {
-    debug_print(maxSsids);  debug_println(MSG_SSIDS_LISTED);
+    debug_print(maxSsids); debug_println(MSG_SSIDS_LISTED);
     clearOledArray(); oledText[10] = MSG_SSIDS_LISTED;
 
     for (int i = 0; i < maxSsids; ++i) {
       debug_print(i+1); debug_print(": "); debug_println(ssids[i]);
       int j = i;
-      if (i>=5) { 
+      if (i>=5) {
         j=i+1;
-      } 
-      if (i<=10) {  // only have room for 10
+      }
+      if (i<=10) {
         oledText[j] = String(i) + ": ";
         if (ssids[i].length()<9) {
           oledText[j] = oledText[j] + ssids[i];
@@ -594,7 +682,7 @@ void showListOfSsids() {  // show the list from the specified values in config_n
     }
 
     if (maxSsids > 0) {
-      // oledText[5] = menu_select_ssids;
+
       setMenuTextForOled(menu_select_ssids);
     }
     writeOledArray(false, false);
@@ -606,7 +694,7 @@ void showListOfSsids() {  // show the list from the specified values in config_n
 
       turnoutPrefix = turnoutPrefixes[0];
       routePrefix = routePrefixes[0];
-      
+
     } else {
       ssidConnectionState = CONNECTION_STATE_SELECTION_REQUIRED;
       keypadUseType = KEYPAD_USE_SELECT_SSID;
@@ -621,7 +709,7 @@ void selectSsid(int selection) {
     ssidConnectionState = CONNECTION_STATE_SELECTED;
     selectedSsid = ssids[selection];
     selectedSsidPassword = passwords[selection];
-    
+
     turnoutPrefix = turnoutPrefixes[selection];
     routePrefix = routePrefixes[selection];
   }
@@ -629,7 +717,7 @@ void selectSsid(int selection) {
 
 void connectSsid() {
   debug_println("Connecting to ssid...");
-  clearOledArray(); 
+  clearOledArray();
   setAppnameForOled();
   oledText[1] = selectedSsid; oledText[2] + "connecting...";
   writeOledArray(false, false, true, true);
@@ -642,31 +730,31 @@ void connectSsid() {
 
   if (selectedSsid.length()>0) {
     debug_print("Trying Network "); debug_println(cSsid);
-    clearOledArray(); 
-    setAppnameForOled(); 
-    for (int i = 0; i < 3; ++i) {  // Try three times
-      oledText[1] = selectedSsid; oledText[2] =  String(MSG_TRYING_TO_CONNECT) + " (" + String(i) + ")";
+    clearOledArray();
+    setAppnameForOled();
+    for (int i = 0; i < 3; ++i) {
+      oledText[1] = selectedSsid; oledText[2] = String(MSG_TRYING_TO_CONNECT) + " (" + String(i) + ")";
       writeOledArray(false, false, true, true);
 
-      nowTime = startTime;      
-      WiFi.begin(cSsid, cPassword); 
+      nowTime = startTime;
+      WiFi.begin(cSsid, cPassword);
 
       debug_print("Trying Network ... Checking status "); debug_print(cSsid); debug_print(" :"); debug_print(cPassword); debug_println(":");
-      while ( (WiFi.status() != WL_CONNECTED) 
-        && ((nowTime-startTime) <= SSID_CONNECTION_TIMEOUT) ) { // wait for X seconds to see if the connection worked
+      while ( (WiFi.status() != WL_CONNECTED)
+        && ((nowTime-startTime) <= SSID_CONNECTION_TIMEOUT) ) {
         delay(250);
         debug_print(".");
         nowTime = millis();
       }
 
       if (WiFi.status() == WL_CONNECTED) {
-        if (selectedSsid.indexOf(SSID_NAME_FOR_COMMANDS_NEED_LEADING_CR_LF)>=0) {  // default is "wftrx_"
+        if (selectedSsid.indexOf(SSID_NAME_FOR_COMMANDS_NEED_LEADING_CR_LF)>=0) {
           commandsNeedLeadingCrLf = true;
           debug_print(SSID_NAME_FOR_COMMANDS_NEED_LEADING_CR_LF); debug_println(" - Commands need to be sent twice");
         }
 
-        break; 
-      } else { // if not loop back and try again
+        break;
+      } else {
         debug_println("");
       }
     }
@@ -674,14 +762,14 @@ void connectSsid() {
     debug_println("");
     if (WiFi.status() == WL_CONNECTED) {
       debug_print("Connected. IP address: "); debug_println(WiFi.localIP());
-      oledText[2] = MSG_CONNECTED; 
+      oledText[2] = MSG_CONNECTED;
       oledText[3] = MSG_ADDRESS_LABEL + String(WiFi.localIP());
       writeOledArray(false, false, true, true);
-      // ssidConnected = true;
+
       ssidConnectionState = CONNECTION_STATE_CONNECTED;
       keypadUseType = KEYPAD_USE_SELECT_WITHROTTLE_SERVER;
 
-      // setup the bonjour listener
+
       if (!MDNS.begin("WiTcontroller")) {
         debug_println("Error setting up MDNS responder!");
         oledText[2] = MSG_BOUNJOUR_SETUP_FAILED;
@@ -697,28 +785,28 @@ void connectSsid() {
       oledText[2] = MSG_CONNECTION_FAILED;
       writeOledArray(false, false, true, true);
       delay(2000);
-      
-      WiFi.disconnect();      
+
+      WiFi.disconnect();
       ssidConnectionState = CONNECTION_STATE_DISCONNECTED;
       ssidSelectionSource = SSID_CONNECTION_SOURCE_LIST;
     }
   }
 }
 
-// *********************************************************************************
-// WiThrottle 
-// *********************************************************************************
+
+
+
 
 void witServiceLoop() {
   if (witConnectionState == CONNECTION_STATE_DISCONNECTED) {
-    browseWitService(); 
+    browseWitService();
   }
 
   if (witConnectionState == CONNECTION_STATE_ENTRY_REQUIRED) {
     enterWitServer();
   }
 
-  if ( (witConnectionState == CONNECTION_STATE_SELECTED) 
+  if ( (witConnectionState == CONNECTION_STATE_SELECTED)
   || (witConnectionState == CONNECTION_STATE_ENTERED) ) {
     connectWitServer();
   }
@@ -736,9 +824,9 @@ void browseWitService() {
   const char * proto= "tcp";
 
   debug_printf("Browsing for service _%s._%s.local. on %s ... ", service, proto, selectedSsid.c_str());
-  clearOledArray(); 
-  oledText[0] = appName; oledText[6] = appVersion; 
-  oledText[1] = selectedSsid;   oledText[2] = MSG_BROWSING_FOR_SERVICE;
+  clearOledArray();
+  oledText[0] = appName; oledText[6] = appVersion;
+  oledText[1] = selectedSsid; oledText[2] = MSG_BROWSING_FOR_SERVICE;
   writeOledArray(false, false, true, true);
 
   noOfWitServices = 0;
@@ -748,8 +836,8 @@ void browseWitService() {
     writeOledArray(false, false, true, true);
     delay(500);
   } else {
-    while ( (noOfWitServices == 0) 
-      && ((nowTime-startTime) <= 5000) ) { // try for 5 seconds
+    while ( (noOfWitServices == 0)
+      && ((nowTime-startTime) <= 5000) ) {
       noOfWitServices = MDNS.queryService(service, proto);
       if (noOfWitServices == 0 ) {
         delay(500);
@@ -759,7 +847,7 @@ void browseWitService() {
     }
     debug_println("");
   }
-  
+
 
   foundWitServersCount = noOfWitServices;
   if (noOfWitServices > 0) {
@@ -790,23 +878,23 @@ void browseWitService() {
     delay(1000);
     buildWitEntry();
     witConnectionState = CONNECTION_STATE_ENTRY_REQUIRED;
-  
+
   } else {
-    debug_print(noOfWitServices);  debug_println(MSG_SERVICES_FOUND);
+    debug_print(noOfWitServices); debug_println(MSG_SERVICES_FOUND);
     clearOledArray(); oledText[1] = MSG_SERVICES_FOUND;
 
     for (int i = 0; i < foundWitServersCount; ++i) {
-      // Print details for each service found
+
       debug_print("  "); debug_print(i); debug_print(": '"); debug_print(foundWitServersNames[i]);
       debug_print("' ("); debug_print(foundWitServersIPs[i]); debug_print(":"); debug_print(foundWitServersPorts[i]); debug_println(")");
-      if (i<5) {  // only have room for 5
+      if (i<5) {
         String truncatedIp = ".." + foundWitServersIPs[i].toString().substring(foundWitServersIPs[i].toString().lastIndexOf("."));
         oledText[i] = String(i) + ": " + truncatedIp + ":" + String(foundWitServersPorts[i]) + " " + foundWitServersNames[i];
       }
     }
 
     if (foundWitServersCount > 0) {
-      // oledText[5] = menu_select_wit_service;
+
       setMenuTextForOled(menu_select_wit_service);
     }
     writeOledArray(false, false);
@@ -837,16 +925,16 @@ void selectWitServer(int selection) {
 }
 
 void connectWitServer() {
-  // Pass the delegate instance to wiThrottleProtocol
+
   wiThrottleProtocol.setDelegate(&myDelegate);
 #if WITHROTTLE_PROTOCOL_DEBUG == 0
   wiThrottleProtocol.setLogStream(&Serial);
 #endif
 
   debug_println("Connecting to the server...");
-  clearOledArray(); 
-  setAppnameForOled(); 
-  oledText[1] = selectedWitServerIP.toString() + " : " + String(selectedWitServerPort); 
+  clearOledArray();
+  setAppnameForOled();
+  oledText[1] = selectedWitServerIP.toString() + " : " + String(selectedWitServerPort);
   oledText[2] = selectedWitServerName; oledText[3] + MSG_CONNECTING;
   writeOledArray(false, false, true, true);
 
@@ -855,21 +943,21 @@ void connectWitServer() {
     oledText[3] = MSG_CONNECTION_FAILED;
     writeOledArray(false, false, true, true);
     delay(5000);
-    
+
     witConnectionState = CONNECTION_STATE_DISCONNECTED;
     ssidConnectionState = CONNECTION_STATE_DISCONNECTED;
     ssidSelectionSource = SSID_CONNECTION_SOURCE_LIST;
     witServerIpAndPortChanged = true;
 
   } else {
-    debug_print("Connected to server: ");   debug_println(selectedWitServerIP); debug_println(selectedWitServerPort);
+    debug_print("Connected to server: "); debug_println(selectedWitServerIP); debug_println(selectedWitServerPort);
 
-    // Pass the communication to WiThrottle. + Set the mimimum period between sent commands
+
     wiThrottleProtocol.connect(&client, outboundCmdsMininumDelay);
     debug_println("WiThrottle connected");
 
-    wiThrottleProtocol.setDeviceName(deviceName);  
-    wiThrottleProtocol.setDeviceID(String(deviceId));  
+    wiThrottleProtocol.setDeviceName(deviceName);
+    wiThrottleProtocol.setDeviceID(String(deviceId));
     wiThrottleProtocol.setCommandsNeedLeadingCrLf(commandsNeedLeadingCrLf);
 
     witConnectionState = CONNECTION_STATE_CONNECTED;
@@ -877,10 +965,10 @@ void connectWitServer() {
 
     oledText[3] = MSG_CONNECTED;
     if (!hashShowsFunctionsInsteadOfKeyDefs) {
-      // oledText[5] = menu_menu;
+
       setMenuTextForOled(menu_menu);
     } else {
-      // oledText[5] = menu_menu_hash_is_functions;
+
       setMenuTextForOled(menu_menu_hash_is_functions);
     }
     writeOledArray(false, false, true, true);
@@ -891,13 +979,13 @@ void connectWitServer() {
 
 void enterWitServer() {
   keypadUseType = KEYPAD_USE_ENTER_WITHROTTLE_SERVER;
-  if (witServerIpAndPortChanged) { // don't refresh the screen if nothing nothing has changed
+  if (witServerIpAndPortChanged) {
     debug_println("enterWitServer()");
-    clearOledArray(); 
-    setAppnameForOled(); 
+    clearOledArray();
+    setAppnameForOled();
     oledText[1] = MSG_NO_SERVICES_FOUND_ENTRY_REQUIRED;
     oledText[3] = witServerIpAndPortConstructed;
-    // oledText[5] = menu_select_wit_entry;
+
       setMenuTextForOled(menu_select_wit_entry);
     writeOledArray(false, false, true, true);
     witServerIpAndPortChanged = false;
@@ -978,9 +1066,9 @@ void buildWitEntry() {
   }
 }
 
-// *********************************************************************************
-//   Rotary Encoder
-// *********************************************************************************
+
+
+
 
 AiEsp32RotaryEncoder rotaryEncoder = AiEsp32RotaryEncoder(ROTARY_ENCODER_A_PIN, ROTARY_ENCODER_B_PIN, ROTARY_ENCODER_BUTTON_PIN, ROTARY_ENCODER_VCC_PIN, ROTARY_ENCODER_STEPS);
 void IRAM_ATTR readEncoderISR() {
@@ -991,10 +1079,10 @@ void rotary_onButtonClick() {
    if (encoderUseType == ENCODER_USE_OPERATION) {
     if ( (keypadUseType!=KEYPAD_USE_SELECT_WITHROTTLE_SERVER)
         && (keypadUseType!=KEYPAD_USE_ENTER_WITHROTTLE_SERVER)
-        && (keypadUseType!=KEYPAD_USE_SELECT_SSID) 
+        && (keypadUseType!=KEYPAD_USE_SELECT_SSID)
         && (keypadUseType!=KEYPAD_USE_SELECT_SSID_FROM_FOUND) ) {
 
-      if ( (millis() - rotaryEncoderButtonLastTimePressed) < rotaryEncoderButtonEncoderDebounceTime) {   //ignore multiple press in that specified time
+      if ( (millis() - rotaryEncoderButtonLastTimePressed) < rotaryEncoderButtonEncoderDebounceTime) {
         debug_println("encoder button debounce");
         return;
       }
@@ -1004,7 +1092,7 @@ void rotary_onButtonClick() {
 
       debug_println("encoder button pressed");
       writeOledSpeed();
-    }  else {
+    } else {
       deepSleepStart();
     }
    } else {
@@ -1017,25 +1105,25 @@ void rotary_onButtonClick() {
 }
 
 void rotary_loop() {
-  if (rotaryEncoder.encoderChanged()) {   //don't print anything unless value changed
-    
-    encoderValue = rotaryEncoder.readEncoder();
-    debug_print("Encoder From: "); debug_print(lastEncoderValue);  debug_print(" to: "); debug_println(encoderValue);
+  if (rotaryEncoder.encoderChanged()) {
 
-    if ( (millis() - rotaryEncoderButtonLastTimePressed) < rotaryEncoderButtonEncoderDebounceTime) {   //ignore the encoder change if the button was pressed recently
+    encoderValue = rotaryEncoder.readEncoder();
+    debug_print("Encoder From: "); debug_print(lastEncoderValue); debug_print(" to: "); debug_println(encoderValue);
+
+    if ( (millis() - rotaryEncoderButtonLastTimePressed) < rotaryEncoderButtonEncoderDebounceTime) {
       debug_println("encoder button debounce - in Rotary_loop()");
       return;
     }
 
-    if (abs(encoderValue-lastEncoderValue) > 800) { // must have passed through zero
+    if (abs(encoderValue-lastEncoderValue) > 800) {
       if (encoderValue > 800) {
-        lastEncoderValue = 1001; 
+        lastEncoderValue = 1001;
       } else {
-        lastEncoderValue = 0; 
+        lastEncoderValue = 0;
       }
       debug_print("Corrected Encoder From: "); debug_print(lastEncoderValue); debug_print(" to: "); debug_println(encoderValue);
     }
- 
+
     if (encoderUseType == ENCODER_USE_OPERATION) {
       if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar)>0) {
         if (encoderValue > lastEncoderValue) {
@@ -1050,25 +1138,25 @@ void rotary_loop() {
           } else {
             encoderSpeedChange(false, currentSpeedStep*speedStepMultiplier);
           }
-        } 
+        }
       }
-    } else { // (encoderUseType == ENCODER_USE_SSID_PASSWORD) 
+    } else {
         if (encoderValue > lastEncoderValue) {
           if (ssidPasswordCurrentChar==ssidPasswordBlankChar) {
-            ssidPasswordCurrentChar = 66; // 'B'
+            ssidPasswordCurrentChar = 66;
           } else {
             ssidPasswordCurrentChar = ssidPasswordCurrentChar - 1;
             if ((ssidPasswordCurrentChar < 32) ||(ssidPasswordCurrentChar > 126) ) {
-              ssidPasswordCurrentChar = 126;  // '~'
+              ssidPasswordCurrentChar = 126;
             }
           }
         } else {
           if (ssidPasswordCurrentChar==ssidPasswordBlankChar) {
-            ssidPasswordCurrentChar = 64; // '@'
+            ssidPasswordCurrentChar = 64;
           } else {
             ssidPasswordCurrentChar = ssidPasswordCurrentChar + 1;
             if (ssidPasswordCurrentChar > 126) {
-              ssidPasswordCurrentChar = 32; // ' ' space
+              ssidPasswordCurrentChar = 32;
             }
           }
         }
@@ -1077,7 +1165,7 @@ void rotary_loop() {
     }
     lastEncoderValue = encoderValue;
   }
-  
+
   if (rotaryEncoder.isEncoderButtonClicked()) {
     rotary_onButtonClick();
   }
@@ -1100,34 +1188,34 @@ void encoderSpeedChange(bool rotationIsClockwise, int speedChange) {
 }
 
 
-// *********************************************************************************
-//   Throttle Pot
-// *********************************************************************************
+
+
+
 
 void throttlePot_loop() {
-  // Read the throttle pot to see what notch it is on.
+
   int currentThrottlePotNotch = throttlePotNotch;
 
-  int potValue = ( analogRead(throttlePotPin) );  //Reads the analog value on the throttle pin.
+  int potValue = ( analogRead(throttlePotPin) );
 
-  if (potValue!=lastThrottlePotValue) { 
+  if (potValue!=lastThrottlePotValue) {
     lastThrottlePotValue = potValue;
-    // debug_print("Pot Value: "); debug_println(potValue);
 
-    if (throttlePotUseNotches) { // use notches
+
+    if (throttlePotUseNotches) {
       throttlePotNotch = 0;
       for (int i=0; i<8; i++) {
-        if (potValue < throttlePotNotchValues[i]) {    /// Check to see if it is in notch i
+        if (potValue < throttlePotNotchValues[i]) {
           throttlePotTargetSpeed = throttlePotNotchSpeeds[i];
           throttlePotNotch = i;
           break;
-        }                
-      } 
+        }
+      }
       if (throttlePotNotch!=currentThrottlePotNotch) {
             speedSet(throttlePotTargetSpeed);
       }
 
-    } else { // use a linear speed
+    } else {
       double newSpeed = potValue-throttlePotNotchValues[0];
       newSpeed = newSpeed / (throttlePotNotchValues[7]-throttlePotNotchValues[0]);
       newSpeed = newSpeed * 127;
@@ -1136,13 +1224,13 @@ void throttlePot_loop() {
       int iSpeed = newSpeed;
       debug_print("newSpeed: "); debug_print(newSpeed); debug_print(" iSpeed: "); debug_println(iSpeed);
       speedSet(iSpeed);
-    }  
+    }
   }
 }
 
-// *********************************************************************************
-//   keypad
-// *********************************************************************************
+
+
+
 
 void keypadEvent(KeypadEvent key) {
   switch (keypad.getState()){
@@ -1166,13 +1254,13 @@ void keypadEvent(KeypadEvent key) {
 }
 
 
-// *********************************************************************************
-//   Optional Additional Buttons
-// *********************************************************************************
+
+
+
 
 void initialiseAdditionalButtons() {
-  for (int i = 0; i < MAX_ADDITIONAL_BUTTONS; i++) { 
-    if (additionalButtonActions[i] != FUNCTION_NULL) { 
+  for (int i = 0; i < MAX_ADDITIONAL_BUTTONS; i++) {
+    if (additionalButtonActions[i] != FUNCTION_NULL) {
       debug_print("Additional Button: "); debug_print(i); debug_print(" pin:"); debug_println(additionalButtonPin[i]);
       if (additionalButtonPin[i]>=0) {
         pinMode(additionalButtonPin[i], additionalButtonType[i]);
@@ -1189,31 +1277,31 @@ void initialiseAdditionalButtons() {
 
 void additionalButtonLoop() {
   int buttonRead;
-  for (int i = 0; i < MAX_ADDITIONAL_BUTTONS; i++) {   
+  for (int i = 0; i < MAX_ADDITIONAL_BUTTONS; i++) {
     if ( (additionalButtonActions[i] != FUNCTION_NULL) && (additionalButtonPin[i]>=0) ) {
         buttonRead = digitalRead(additionalButtonPin[i]);
 
-      if (additionalButtonLastRead[i] != buttonRead) { // on procces on a change
-        if ((millis() - lastAdditionalButtonDebounceTime[i]) > additionalButtonDebounceDelay) {   // only process if there is sufficent delay since the last read
+      if (additionalButtonLastRead[i] != buttonRead) {
+        if ((millis() - lastAdditionalButtonDebounceTime[i]) > additionalButtonDebounceDelay) {
           lastAdditionalButtonDebounceTime[i] = millis();
           additionalButtonRead[i] = buttonRead;
 
-          if ( ((additionalButtonType[i] == INPUT_PULLUP) && (additionalButtonRead[i] == LOW)) 
+          if ( ((additionalButtonType[i] == INPUT_PULLUP) && (additionalButtonRead[i] == LOW))
               || ((additionalButtonType[i] == INPUT) && (additionalButtonRead[i] == HIGH)) ) {
-            debug_print("Additional Button Pressed: "); debug_print(i); debug_print(" pin:"); debug_print(additionalButtonPin[i]); debug_print(" action:"); debug_println(additionalButtonActions[i]); 
-            if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar) > 0) { // only process if there are locos aquired
+            debug_print("Additional Button Pressed: "); debug_print(i); debug_print(" pin:"); debug_print(additionalButtonPin[i]); debug_print(" action:"); debug_println(additionalButtonActions[i]);
+            if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar) > 0) {
               doDirectAdditionalButtonCommand(i,true);
-            } else { // check for actions not releted to a loco
+            } else {
               int buttonAction = additionalButtonActions[i];
               if (buttonAction >= 500) {
                   doDirectAdditionalButtonCommand(i,true);
               }
             }
           } else {
-            debug_print("Additional Button Released: "); debug_print(i); debug_print(" pin:"); debug_print(additionalButtonPin[i]); debug_print(" action:"); debug_println(additionalButtonActions[i]); 
-            if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar) > 0) { // only process if there are locos aquired
+            debug_print("Additional Button Released: "); debug_print(i); debug_print(" pin:"); debug_print(additionalButtonPin[i]); debug_print(" action:"); debug_println(additionalButtonActions[i]);
+            if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar) > 0) {
               doDirectAdditionalButtonCommand(i,false);
-            } else { // check for actions not releted to a loco
+            } else {
               int buttonAction = additionalButtonActions[i];
               if (buttonAction >= 500) {
                   doDirectAdditionalButtonCommand(i,false);
@@ -1229,33 +1317,33 @@ void additionalButtonLoop() {
   }
 }
 
-// *********************************************************************************
-//  Setup and Loop
-// *********************************************************************************
+
+
+
 
 void setup() {
   Serial.begin(115200);
   u8g2.begin();
-  // i2cSetClock(0,400000);
+
 
   clearOledArray(); oledText[0] = appName; oledText[6] = appVersion; oledText[2] = MSG_START;
   writeOledArray(false, false, true, true);
 
   delay(1000);
-  debug_println("Start"); 
+  debug_println("Start");
 
-  rotaryEncoder.begin();  //initialize rotary encoder
+  rotaryEncoder.begin();
   rotaryEncoder.setup(readEncoderISR);
-  //set boundaries and if values should cycle or not 
-  rotaryEncoder.setBoundaries(0, 1000, circleValues); //minValue, maxValue, circleValues true|false (when max go to min and vice versa)
-  //rotaryEncoder.disableAcceleration(); //acceleration is now enabled by default - disable if you don't need it
-  rotaryEncoder.setAcceleration(100); //or set the value - larger number = more acceleration; 0 or 1 means disabled acceleration
 
-  keypad.addEventListener(keypadEvent); // Add an event listener for this keypad
+  rotaryEncoder.setBoundaries(0, 1000, circleValues);
+
+  rotaryEncoder.setAcceleration(100);
+
+  keypad.addEventListener(keypadEvent);
   keypad.setDebounceTime(KEYPAD_DEBOUNCE_TIME);
   keypad.setHoldTime(KEYPAD_HOLD_TIME);
 
-  esp_sleep_enable_ext0_wakeup(GPIO_NUM_13,0); //1 = High, 0 = Low
+  esp_sleep_enable_ext0_wakeup(GPIO_NUM_13,0);
 
   keypadUseType = KEYPAD_USE_SELECT_SSID;
   encoderUseType = ENCODER_USE_OPERATION;
@@ -1272,51 +1360,51 @@ void setup() {
 }
 
 void loop() {
-  
+
   if (ssidConnectionState != CONNECTION_STATE_CONNECTED) {
-    // connectNetwork();
+
     ssidsLoop();
     checkForShutdownOnNoResponse();
-  } else {  
+  } else {
     if (witConnectionState != CONNECTION_STATE_CONNECTED) {
       witServiceLoop();
     } else {
-      wiThrottleProtocol.check();    // parse incoming messages
+      wiThrottleProtocol.check();
 
       setLastServerResponseTime(false);
 
-      if ( (lastServerResponseTime+(heartBeatPeriod*4) < millis()/1000) 
+      if ( (lastServerResponseTime+(heartBeatPeriod*4) < millis()/1000)
       && (heartbeatCheckEnabled) ) {
-        debug_print("Disconnected - Last:");  debug_print(lastServerResponseTime); debug_print(" Current:");  debug_println(millis()/1000);
+        debug_print("Disconnected - Last:"); debug_print(lastServerResponseTime); debug_print(" Current:"); debug_println(millis()/1000);
         reconnect();
       }
     }
   }
-  // char key = keypad.getKey();
-  keypad.getKey(); 
+
+  keypad.getKey();
   if (useRotaryEncoderForThrottle) { rotary_loop(); }
   else { throttlePot_loop(); }
 
-  additionalButtonLoop(); 
+  additionalButtonLoop();
 
-	// debug_println("loop:" );
+
 }
 
-// *********************************************************************************
-//  Key press and Menu
-// *********************************************************************************
+
+
+
 
 void doKeyPress(char key, bool pressed) {
-  debug_print("doKeyPress(): "); 
+  debug_print("doKeyPress(): ");
 
-  if (pressed)  { //pressed
+  if (pressed) {
     switch (keypadUseType) {
       case KEYPAD_USE_OPERATION:
         debug_print("key operation... "); debug_println(key);
         switch (key) {
-          case '*':  // menu command
+          case '*':
             menuCommand = "";
-            if (menuCommandStarted) { // then cancel the menu
+            if (menuCommandStarted) {
               resetMenu();
               writeOledSpeed();
             } else {
@@ -1326,7 +1414,7 @@ void doKeyPress(char key, bool pressed) {
             }
             break;
 
-          case '#': // end of command
+          case '#':
             debug_print("end of command... "); debug_print(key); debug_print ("  :  "); debug_println(menuCommand);
             if ((menuCommandStarted) && (menuCommand.length()>=1)) {
               doMenu();
@@ -1339,26 +1427,26 @@ void doKeyPress(char key, bool pressed) {
                   writeOledSpeed();
                 }
               } else {
-                writeOledFunctionList(""); 
+                writeOledFunctionList("");
               }
             }
             break;
 
-          case '0': case '1': case '2': case '3': case '4': 
+          case '0': case '1': case '2': case '3': case '4':
           case '5': case '6': case '7': case '8': case '9':
             debug_print("number... "); debug_print(key); debug_print ("  cmd: '"); debug_print(menuCommand); debug_println("'");
 
-            if (menuCommandStarted) { // append to the string
+            if (menuCommandStarted) {
 
-              if ((menuCharsRequired[key-48] == 0) && (menuCommand.length() == 0)) { // menu type is effectively a direct commands from this point
+              if ((menuCharsRequired[key-48] == 0) && (menuCommand.length() == 0)) {
                 menuCommand += key;
                 doMenu();
               } else {
-                if ((menuCharsRequired[menuCommand.substring(0,1).toInt()] == 1) && (menuCommand.length() == 1)) {  // menu type needs only one char
+                if ((menuCharsRequired[menuCommand.substring(0,1).toInt()] == 1) && (menuCommand.length() == 1)) {
                   menuCommand += key;
                   doMenu();
 
-                } else {  //menu type allows/requires more than one char
+                } else {
                   menuCommand += key;
                   writeOledMenu(menuCommand);
                 }
@@ -1368,7 +1456,7 @@ void doKeyPress(char key, bool pressed) {
             }
             break;
 
-          default:  // A, B, C, D
+          default:
             doDirectCommand(key, true);
             break;
         }
@@ -1377,19 +1465,19 @@ void doKeyPress(char key, bool pressed) {
       case KEYPAD_USE_ENTER_WITHROTTLE_SERVER:
         debug_print("key: Enter wit... "); debug_println(key);
         switch (key){
-          case '0': case '1': case '2': case '3': case '4': 
+          case '0': case '1': case '2': case '3': case '4':
           case '5': case '6': case '7': case '8': case '9':
             witEntryAddChar(key);
             break;
-          case '*': // backspace
+          case '*':
             witEntryDeleteChar(key);
             break;
-          case '#': // end of command
+          case '#':
             if (witServerIpAndPortEntered.length() == 17) {
               witConnectionState = CONNECTION_STATE_ENTERED;
             }
             break;
-          default:  // do nothing 
+          default:
             break;
         }
 
@@ -1398,20 +1486,20 @@ void doKeyPress(char key, bool pressed) {
       case KEYPAD_USE_ENTER_SSID_PASSWORD:
         debug_print("key: Enter password... "); debug_println(key);
         switch (key){
-          case '0': case '1': case '2': case '3': case '4': 
+          case '0': case '1': case '2': case '3': case '4':
           case '5': case '6': case '7': case '8': case '9':
             ssidPasswordAddChar(key);
             break;
-          case '*': // backspace
+          case '*':
             ssidPasswordDeleteChar(key);
             break;
-          case '#': // end of command
+          case '#':
               selectedSsidPassword = ssidPasswordEntered;
               encoderUseType = ENCODER_USE_OPERATION;
               keypadUseType = KEYPAD_USE_OPERATION;
               ssidConnectionState = CONNECTION_STATE_SELECTED;
             break;
-          default:  // do nothing 
+          default:
             break;
         }
 
@@ -1423,12 +1511,12 @@ void doKeyPress(char key, bool pressed) {
           case '0': case '1': case '2': case '3': case '4':
             selectWitServer(key - '0');
             break;
-          case '#': // show ip address entry screen
+          case '#':
             witConnectionState = CONNECTION_STATE_ENTRY_REQUIRED;
             buildWitEntry();
             enterWitServer();
             break;
-          default:  // do nothing 
+          default:
             break;
         }
         break;
@@ -1436,17 +1524,17 @@ void doKeyPress(char key, bool pressed) {
       case KEYPAD_USE_SELECT_SSID:
         debug_print("key ssid... "); debug_println(key);
         switch (key){
-          case '0': case '1': case '2': case '3': case '4': 
+          case '0': case '1': case '2': case '3': case '4':
           case '5': case '6': case '7': case '8': case '9':
             selectSsid(key - '0');
             break;
-          case '#': // show found SSIds
+          case '#':
             ssidConnectionState = CONNECTION_STATE_DISCONNECTED;
             keypadUseType = KEYPAD_USE_SELECT_SSID_FROM_FOUND;
             ssidSelectionSource = SSID_CONNECTION_SOURCE_BROWSE;
-            // browseSsids();
+
             break;
-          default:  // do nothing 
+          default:
             break;
         }
         break;
@@ -1454,25 +1542,25 @@ void doKeyPress(char key, bool pressed) {
       case KEYPAD_USE_SELECT_SSID_FROM_FOUND:
         debug_print("key ssid from found... "); debug_println(key);
         switch (key){
-          case '0': case '1': case '2': case '3': case '4': 
+          case '0': case '1': case '2': case '3': case '4':
             selectSsidFromFound(key - '0'+(page*5));
             break;
-          case '#': // next page
+          case '#':
             if (foundSsidsCount>5) {
               if ( (page+1)*5 < foundSsidsCount ) {
                 page++;
               } else {
                 page = 0;
               }
-              writeOledFoundSSids(""); 
+              writeOledFoundSSids("");
             }
             break;
-          case '9': // show in code list of SSIDs
+          case '9':
             ssidConnectionState = CONNECTION_STATE_DISCONNECTED;
             keypadUseType = KEYPAD_USE_SELECT_SSID;
             ssidSelectionSource = SSID_CONNECTION_SOURCE_LIST;
             break;
-          default:  // do nothing 
+          default:
             break;
         }
         break;
@@ -1480,25 +1568,25 @@ void doKeyPress(char key, bool pressed) {
       case KEYPAD_USE_SELECT_ROSTER:
         debug_print("key Roster... "); debug_println(key);
         switch (key){
-          case '0': case '1': case '2': case '3': case '4': 
+          case '0': case '1': case '2': case '3': case '4':
           case '5': case '6': case '7': case '8': case '9':
             selectRoster((key - '0')+(page*5));
             break;
-          case '#':  // next page
+          case '#':
             if ( rosterSize > 5 ) {
               if ( (page+1)*5 < rosterSize ) {
                 page++;
               } else {
                 page = 0;
               }
-              writeOledRoster(""); 
+              writeOledRoster("");
             }
             break;
-          case '*':  // cancel
+          case '*':
             resetMenu();
             writeOledSpeed();
             break;
-          default:  // do nothing 
+          default:
             break;
         }
         break;
@@ -1507,25 +1595,25 @@ void doKeyPress(char key, bool pressed) {
       case KEYPAD_USE_SELECT_TURNOUTS_CLOSE:
         debug_print("key turnouts... "); debug_println(key);
         switch (key){
-          case '0': case '1': case '2': case '3': case '4': 
+          case '0': case '1': case '2': case '3': case '4':
           case '5': case '6': case '7': case '8': case '9':
             selectTurnoutList((key - '0')+(page*10), (keypadUseType == KEYPAD_USE_SELECT_TURNOUTS_THROW) ? TurnoutThrow : TurnoutClose);
             break;
-          case '#':  // next page
+          case '#':
             if ( turnoutListSize > 10 ) {
               if ( (page+1)*10 < turnoutListSize ) {
                 page++;
               } else {
                 page = 0;
               }
-              writeOledTurnoutList("", (keypadUseType == KEYPAD_USE_SELECT_TURNOUTS_THROW) ? TurnoutThrow : TurnoutClose); 
+              writeOledTurnoutList("", (keypadUseType == KEYPAD_USE_SELECT_TURNOUTS_THROW) ? TurnoutThrow : TurnoutClose);
             }
             break;
-          case '*':  // cancel
+          case '*':
             resetMenu();
             writeOledSpeed();
             break;
-          default:  // do nothing 
+          default:
             break;
         }
         break;
@@ -1533,25 +1621,25 @@ void doKeyPress(char key, bool pressed) {
       case KEYPAD_USE_SELECT_ROUTES:
         debug_print("key routes... "); debug_println(key);
         switch (key){
-          case '0': case '1': case '2': case '3': case '4': 
+          case '0': case '1': case '2': case '3': case '4':
           case '5': case '6': case '7': case '8': case '9':
             selectRouteList((key - '0')+(page*10));
             break;
-          case '#':  // next page
+          case '#':
             if ( routeListSize > 10 ) {
               if ( (page+1)*10 < routeListSize ) {
                 page++;
               } else {
                 page = 0;
               }
-              writeOledRouteList(""); 
+              writeOledRouteList("");
             }
             break;
-          case '*':  // cancel
+          case '*':
             resetMenu();
             writeOledSpeed();
             break;
-          default:  // do nothing 
+          default:
             break;
         }
         break;
@@ -1559,25 +1647,25 @@ void doKeyPress(char key, bool pressed) {
       case KEYPAD_USE_SELECT_FUNCTION:
         debug_print("key function... "); debug_println(key);
         switch (key){
-          case '0': case '1': case '2': case '3': case '4': 
+          case '0': case '1': case '2': case '3': case '4':
           case '5': case '6': case '7': case '8': case '9':
             selectFunctionList((key - '0')+(functionPage*10));
             break;
-          case '#':  // next page
+          case '#':
             if ( (functionPage+1)*10 < MAX_FUNCTIONS ) {
               functionPage++;
-              writeOledFunctionList(""); 
+              writeOledFunctionList("");
             } else {
               functionPage = 0;
               keypadUseType = KEYPAD_USE_OPERATION;
               writeOledDirectCommands();
             }
             break;
-          case '*':  // cancel
+          case '*':
             resetMenu();
             writeOledSpeed();
             break;
-          default:  // do nothing 
+          default:
             break;
         }
         break;
@@ -1585,29 +1673,29 @@ void doKeyPress(char key, bool pressed) {
       case KEYPAD_USE_EDIT_CONSIST:
         debug_print("key Edit Consist... "); debug_println(key);
         switch (key){
-          case '0': case '1': case '2': case '3': case '4': 
+          case '0': case '1': case '2': case '3': case '4':
           case '5': case '6': case '7': case '8': case '9':
             if ( (key-'0') <= wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar)) {
               selectEditConsistList(key - '0');
             }
             break;
-          case '*':  // cancel
+          case '*':
             resetMenu();
             writeOledSpeed();
             break;
-          default:  // do nothing 
+          default:
             break;
         }
         break;
 
 
-      default:  // do nothing 
+      default:
         break;
     }
 
-  } else {  // released
+  } else {
     if (keypadUseType == KEYPAD_USE_OPERATION) {
-      if ( (!menuCommandStarted) && (key>='0') && (key<='D')) { // only process releases for the numeric keys + A,B,C,D and only if a menu command has not be started
+      if ( (!menuCommandStarted) && (key>='0') && (key<='D')) {
         debug_println("Operation - Process key release");
         doDirectCommand(key, false);
       } else {
@@ -1616,7 +1704,7 @@ void doKeyPress(char key, bool pressed) {
     }
   }
 
-  // debug_println("doKeyPress(): end"); 
+
 }
 
 void doDirectCommand (char key, bool pressed) {
@@ -1625,19 +1713,19 @@ void doDirectCommand (char key, bool pressed) {
   if (key<=57) {
     buttonAction = buttonActions[(key - '0')];
   } else {
-    buttonAction = buttonActions[(key - 55)]; // A, B, C, D
+    buttonAction = buttonActions[(key - 55)];
   }
   debug_print("doDirectCommand(): Action: "); debug_println(buttonAction);
   if (buttonAction!=FUNCTION_NULL) {
     if ( (buttonAction>=FUNCTION_0) && (buttonAction<=FUNCTION_31) ) {
       doDirectFunction(buttonAction, pressed);
   } else {
-      if (pressed) { // only process these on the key press, not the release
+      if (pressed) {
         doDirectAction(buttonAction);
       }
     }
   }
-  // debug_println("doDirectCommand(): end"); 
+
 }
 
 void doDirectAdditionalButtonCommand (int buttonIndex, bool pressed) {
@@ -1647,12 +1735,12 @@ void doDirectAdditionalButtonCommand (int buttonIndex, bool pressed) {
     if ( (buttonAction>=FUNCTION_0) && (buttonAction<=FUNCTION_31) ) {
       doDirectFunction(buttonAction, pressed);
   } else {
-      if (pressed) { // only process these on the key press, not the release
+      if (pressed) {
         doDirectAction(buttonAction);
       }
     }
   }
-  // debug_println("doDirectAdditionalButtonCommand(): end ");
+
 }
 
 void doDirectAction(int buttonAction) {
@@ -1660,109 +1748,109 @@ void doDirectAction(int buttonAction) {
   switch (buttonAction) {
       case DIRECTION_FORWARD: {
         changeDirection(Forward);
-        break; 
+        break;
       }
       case DIRECTION_REVERSE: {
         changeDirection(Reverse);
-        break; 
+        break;
       }
       case DIRECTION_TOGGLE: {
         toggleDirection();
-        break; 
+        break;
       }
       case SPEED_STOP: {
         speedSet(0);
-        break; 
+        break;
       }
       case SPEED_UP: {
         speedUp(currentSpeedStep);
-        break; 
+        break;
       }
       case SPEED_DOWN: {
         speedDown(currentSpeedStep);
-        break; 
+        break;
       }
       case SPEED_UP_FAST: {
         speedUp(currentSpeedStep*speedStepMultiplier);
-        break; 
+        break;
       }
       case SPEED_DOWN_FAST: {
         speedUp(currentSpeedStep*speedStepMultiplier);
-        break; 
+        break;
       }
       case SPEED_MULTIPLIER: {
         toggleAdditionalMultiplier();
-        break; 
+        break;
       }
       case E_STOP: {
         speedEstop();
-        break; 
+        break;
       }
       case E_STOP_CURRENT_LOCO: {
         speedEstopCurrentLoco();
-        break; 
+        break;
       }
       case POWER_ON: {
         powerOnOff(PowerOn);
-        break; 
+        break;
       }
       case POWER_OFF: {
         powerOnOff(PowerOff);
-        break; 
+        break;
       }
       case POWER_TOGGLE: {
         powerToggle();
-        break; 
+        break;
       }
-      // case NEXT_THROTTLE: {
-      //   nextThrottle();
-      //   break; 
-      // }
+
+
+
+
       case SPEED_STOP_THEN_TOGGLE_DIRECTION: {
         stopThenToggleDirection();
-        break; 
+        break;
       }
       case CUSTOM_1: {
         wiThrottleProtocol.sendCommand(CUSTOM_COMMAND_1);
-        break; 
+        break;
       }
       case CUSTOM_2: {
         wiThrottleProtocol.sendCommand(CUSTOM_COMMAND_2);
-        break; 
+        break;
       }
       case CUSTOM_3: {
         wiThrottleProtocol.sendCommand(CUSTOM_COMMAND_3);
-        break; 
+        break;
       }
       case CUSTOM_4: {
         wiThrottleProtocol.sendCommand(CUSTOM_COMMAND_4);
-        break; 
+        break;
       }
       case CUSTOM_5: {
         wiThrottleProtocol.sendCommand(CUSTOM_COMMAND_5);
-        break; 
+        break;
       }
       case CUSTOM_6: {
         wiThrottleProtocol.sendCommand(CUSTOM_COMMAND_6);
-        break; 
+        break;
       }
       case CUSTOM_7: {
         wiThrottleProtocol.sendCommand(CUSTOM_COMMAND_7);
-        break; 
+        break;
       }
   }
-  // debug_println("doDirectAction(): end");
+
 }
 
 void doMenu() {
   String loco = "";
   String function = "";
   boolean result = false;
-  // int index;
+
   debug_print("Menu: "); debug_println(menuCommand);
-  
+
   switch (menuCommand[0]) {
-    case MENU_ITEM_ADD_LOCO: { // select loco
+    case MENU_ITEM_ADD_LOCO: {
         if (menuCommand.length()>1) {
           loco = menuCommand.substring(1, menuCommand.length());
           loco = getLocoWithLength(loco);
@@ -1778,32 +1866,32 @@ void doMenu() {
         }
         break;
       }
-    case MENU_ITEM_DROP_LOCO: { // de-select loco
+    case MENU_ITEM_DROP_LOCO: {
         loco = menuCommand.substring(1, menuCommand.length());
-        if (loco!="") { // a loco is specified
+        if (loco!="") {
           loco = getLocoWithLength(loco);
           releaseOneLoco(loco);
-        } else { //not loco specified so release all
+        } else {
           releaseAllLocos();
         }
         writeOledSpeed();
         break;
       }
-    case MENU_ITEM_TOGGLE_DIRECTION: { // change direction
+    case MENU_ITEM_TOGGLE_DIRECTION: {
         toggleDirection();
         break;
       }
-     case MENU_ITEM_SPEED_STEP_MULTIPLIER: { // toggle speed step additional Multiplier
+     case MENU_ITEM_SPEED_STEP_MULTIPLIER: {
         toggleAdditionalMultiplier();
         break;
       }
-   case MENU_ITEM_THROW_POINT: {  // throw point
+   case MENU_ITEM_THROW_POINT: {
         if (menuCommand.length()>1) {
           String turnout = turnoutPrefix + menuCommand.substring(1, menuCommand.length());
-          // if (!turnout.equals("")) { // a turnout is specified
+
             debug_print("throw point: "); debug_println(turnout);
             wiThrottleProtocol.setTurnout(turnout, TurnoutThrow);
-          // }
+
           writeOledSpeed();
         } else {
           page = 0;
@@ -1811,13 +1899,13 @@ void doMenu() {
         }
         break;
       }
-    case MENU_ITEM_CLOSE_POINT: {  // close point
+    case MENU_ITEM_CLOSE_POINT: {
         if (menuCommand.length()>1) {
           String turnout = turnoutPrefix + menuCommand.substring(1, menuCommand.length());
-          // if (!turnout.equals("")) { // a turnout is specified
+
             debug_print("close point: "); debug_println(turnout);
             wiThrottleProtocol.setTurnout(turnout, TurnoutClose);
-          // }
+
           writeOledSpeed();
         } else {
           page = 0;
@@ -1825,13 +1913,13 @@ void doMenu() {
         }
         break;
       }
-    case MENU_ITEM_ROUTE: {  // route
+    case MENU_ITEM_ROUTE: {
         if (menuCommand.length()>1) {
           String route = routePrefix + menuCommand.substring(1, menuCommand.length());
-          // if (!route.equals("")) { // a loco is specified
+
             debug_print("route: "); debug_println(route);
             wiThrottleProtocol.setRoute(route);
-          // }
+
           writeOledSpeed();
         } else {
           page = 0;
@@ -1843,25 +1931,25 @@ void doMenu() {
         powerToggle();
         break;
       }
-    case MENU_ITEM_EXTRAS: { // Extra menu - e.g. disconnect/reconnect/sleep
+    case MENU_ITEM_EXTRAS: {
         char subCommand = menuCommand.charAt(1);
         if (menuCommand.length() > 1) {
           switch (subCommand) {
-            case EXTRA_MENU_CHAR_FUNCTION_KEY_TOGGLE: { // toggle showing Def Keys vs Function labels
+            case EXTRA_MENU_CHAR_FUNCTION_KEY_TOGGLE: {
                 hashShowsFunctionsInsteadOfKeyDefs = !hashShowsFunctionsInsteadOfKeyDefs;
                 writeOledSpeed();
                 break;
-              } 
-            case EXTRA_MENU_CHAR_EDIT_CONSIST: { // edit consist - loco facings
+              }
+            case EXTRA_MENU_CHAR_EDIT_CONSIST: {
                 writeOledEditConsist();
                 break;
-              } 
-            case EXTRA_MENU_CHAR_HEARTBEAT_TOGGLE: { // disable/enable the heartbeat Check
+              }
+            case EXTRA_MENU_CHAR_HEARTBEAT_TOGGLE: {
                 toggleHeartbeatCheck();
                 writeOledSpeed();
                 break;
               }
-            case EXTRA_MENU_CHAR_DISCONNECT: { // disconnect   
+            case EXTRA_MENU_CHAR_DISCONNECT: {
                 if (witConnectionState == CONNECTION_STATE_CONNECTED) {
                   witConnectionState = CONNECTION_STATE_DISCONNECTED;
                   disconnectWitServer();
@@ -1871,7 +1959,7 @@ void doMenu() {
                 break;
               }
             case EXTRA_MENU_CHAR_OFF_SLEEP:
-            case EXTRA_MENU_CHAR_OFF_SLEEP_HIDDEN: { // sleep/off
+            case EXTRA_MENU_CHAR_OFF_SLEEP_HIDDEN: {
                 deepSleepStart();
                 break;
               }
@@ -1881,12 +1969,12 @@ void doMenu() {
         }
         break;
       }
-    case MENU_ITEM_FUNCTION: { // function button
+    case MENU_ITEM_FUNCTION: {
         if (menuCommand.length()>1) {
           function = menuCommand.substring(1, menuCommand.length());
           int functionNumber = function.toInt();
-          if (function != "") { // a function is specified
-            doFunction(functionNumber, true);  // always act like latching i.e. pressed
+          if (function != "") {
+            doFunction(functionNumber, true);
           }
           writeOledSpeed();
         } else {
@@ -1896,21 +1984,21 @@ void doMenu() {
         break;
       }
   }
-  menuCommandStarted = result; 
+  menuCommandStarted = result;
 }
 
-// *********************************************************************************
-//  Actions
-// *********************************************************************************
+
+
+
 
 void resetMenu() {
   debug_println("resetMenu()");
   page = 0;
   menuCommand = "";
   menuCommandStarted = false;
-  if ( (keypadUseType != KEYPAD_USE_SELECT_SSID) 
+  if ( (keypadUseType != KEYPAD_USE_SELECT_SSID)
     && (keypadUseType != KEYPAD_USE_SELECT_WITHROTTLE_SERVER) ) {
-    keypadUseType = KEYPAD_USE_OPERATION; 
+    keypadUseType = KEYPAD_USE_OPERATION;
   }
 }
 
@@ -1944,8 +2032,8 @@ void resetAllFunctionFollow() {
 String getLocoWithLength(String loco) {
   int locoNo = loco.toInt();
   String locoWithLength = "";
-  if ( (locoNo > SHORT_DCC_ADDRESS_LIMIT) 
-  || ( (locoNo <= SHORT_DCC_ADDRESS_LIMIT) && (loco.charAt(0)=='0') && (!serverType.equals("DCC-EX" ) ) ) 
+  if ( (locoNo > SHORT_DCC_ADDRESS_LIMIT)
+  || ( (locoNo <= SHORT_DCC_ADDRESS_LIMIT) && (loco.charAt(0)=='0') && (!serverType.equals("DCC-EX" ) ) )
   ) {
     locoWithLength = "L" + loco;
   } else {
@@ -1957,14 +2045,14 @@ String getLocoWithLength(String loco) {
 void speedEstop() {
   wiThrottleProtocol.emergencyStop();
   currentSpeed = 0;
-  debug_println("Speed EStop"); 
+  debug_println("Speed EStop");
   writeOledSpeed();
 }
 
 void speedEstopCurrentLoco() {
   wiThrottleProtocol.emergencyStop();
   currentSpeed = 0;
-  debug_println("Speed EStop Curent Loco"); 
+  debug_println("Speed EStop Curent Loco");
   writeOledSpeed();
 }
 
@@ -1994,10 +2082,10 @@ void speedSet(int amt) {
     currentSpeed = newSpeed;
     debug_print("Speed Set: "); debug_println(newSpeed);
 
-    // used to avoid bounce
+
     lastSpeedSentTime = millis();
     lastSpeedSent = newSpeed;
-    // lastDirectionSent = -1;
+
     lastSpeedThrottleIndex = 0;
 
     writeOledSpeed();
@@ -2029,7 +2117,7 @@ int getDisplaySpeed() {
 }
 
 void toggleLocoFacing(String loco) {
-  debug_print("toggleLocoFacing(): "); debug_println(loco); 
+  debug_print("toggleLocoFacing(): "); debug_println(loco);
   for(int i=0;i<wiThrottleProtocol.getNumberOfLocomotives('0');i++) {
     if (wiThrottleProtocol.getLocomotiveAtPosition('0', i).equals(loco)) {
       if (wiThrottleProtocol.getDirection('0', loco) == Forward) {
@@ -2039,7 +2127,7 @@ void toggleLocoFacing(String loco) {
       }
       break;
     }
-  } 
+  }
 }
 
 int getLocoFacing(String loco) {
@@ -2056,11 +2144,11 @@ int getLocoFacing(String loco) {
 String getDisplayLocoString(int index) {
   String loco = wiThrottleProtocol.getLocomotiveAtPosition('0', index);
   String locoNumber = loco.substring(1);
-  if (!wiThrottleProtocol.getLocomotiveAtPosition('0', 0).equals(loco)) { // not the lead loco
-    Direction leadLocoDirection 
-        = wiThrottleProtocol.getDirection('0', 
+  if (!wiThrottleProtocol.getLocomotiveAtPosition('0', 0).equals(loco)) {
+    Direction leadLocoDirection
+        = wiThrottleProtocol.getDirection('0',
                                           wiThrottleProtocol.getLocomotiveAtPosition('0', 0));
-    // Direction locoDirection = leadLocoDirection;
+
 
     for(int i=0;i<wiThrottleProtocol.getNumberOfLocomotives('0');i++) {
       if (wiThrottleProtocol.getLocomotiveAtPosition('0', i).equals(loco)) {
@@ -2080,8 +2168,8 @@ void releaseAllLocos() {
     for(int index=wiThrottleProtocol.getNumberOfLocomotives('0')-1;index>=0;index--) {
       loco = wiThrottleProtocol.getLocomotiveAtPosition('0', index);
       wiThrottleProtocol.releaseLocomotive('0', loco);
-      writeOledSpeed();  // note the released locos may not be visible
-    } 
+      writeOledSpeed();
+    }
     resetFunctionLabels();
   }
 }
@@ -2090,12 +2178,12 @@ void releaseOneLoco(String loco) {
   debug_print("releaseOneLoco(): "); debug_print(": "); debug_println(loco);
   wiThrottleProtocol.releaseLocomotive('0', loco);
   resetFunctionLabels();
-  debug_println("releaseOneLoco(): end"); 
+  debug_println("releaseOneLoco(): end");
 }
 
 void toggleAdditionalMultiplier() {
   switch (speedStepCurrentMultiplier) {
-    case 1: 
+    case 1:
       speedStepCurrentMultiplier = speedStepAdditionalMultiplier;
       break;
     case speedStepAdditionalMultiplier:
@@ -2112,7 +2200,7 @@ void toggleAdditionalMultiplier() {
 
 void toggleHeartbeatCheck() {
   heartbeatCheckEnabled = !heartbeatCheckEnabled;
-  debug_print("Heartbeat Check: "); 
+  debug_print("Heartbeat Check: ");
   if (heartbeatCheckEnabled) {
     debug_println("Enabled");
   } else {
@@ -2129,7 +2217,7 @@ void toggleDirection() {
 }
 
 void changeDirection(Direction direction) {
-  String loco; String leadLoco; 
+  String loco; String leadLoco;
   Direction leadLocoCurrentDirection;
   int locoCount = wiThrottleProtocol.getNumberOfLocomotives('0');
 
@@ -2138,11 +2226,11 @@ void changeDirection(Direction direction) {
     debug_print("Change direction(): "); debug_println( (direction==Forward) ? "Forward" : "Reverse");
 
     if (locoCount == 1) {
-      // debug_println("Change direction(): one loco");
-      wiThrottleProtocol.setDirection('0', direction);  // change all
+
+      wiThrottleProtocol.setDirection('0', direction);
 
     } else {
-      // debug_println("Change direction(): multiple locos");
+
       leadLoco = wiThrottleProtocol.getLeadLocomotive('0');
       leadLocoCurrentDirection = wiThrottleProtocol.getDirection('0', leadLoco);
 
@@ -2159,47 +2247,47 @@ void changeDirection(Direction direction) {
         }
       }
       wiThrottleProtocol.setDirection('0', leadLoco, direction);
-    } 
+    }
   }
   writeOledSpeed();
-  // debug_println("Change direction(): end "); 
+
 }
 
 void doDirectFunction(int functionNumber, bool pressed) {
-  debug_println("doDirectFunction(): "); 
+  debug_println("doDirectFunction(): ");
   if (wiThrottleProtocol.getNumberOfLocomotives('0') > 0) {
     debug_print("direct fn: "); debug_print(functionNumber); debug_println( pressed ? " Pressed" : " Released");
-    // wiThrottleProtocol.setFunction('0', functionNumber, pressed);
+
     doFunctionWhichLocosInConsist(functionNumber, pressed);
-    writeOledSpeed(); 
+    writeOledSpeed();
   }
-  // debug_print("doDirectFunction(): end"); 
+
 }
 
-void doFunction(int functionNumber, bool pressed) {   // currently ignoring the pressed value
+void doFunction(int functionNumber, bool pressed) {
   debug_print("doFunction(): multiThrottleIndex "); debug_println('0');
   if (wiThrottleProtocol.getNumberOfLocomotives('0')>0) {
-    // wiThrottleProtocol.setFunction(multiThrottleIndexChar, functionNumber, true);
+
     doFunctionWhichLocosInConsist(functionNumber, true);
     if (!functionStates[functionNumber]) {
       debug_print("fn: "); debug_print(functionNumber); debug_println(" Pressed");
     } else {
       delay(20);
-      // wiThrottleProtocol.setFunction(multiThrottleIndexChar,functionNumber, false);
+
       doFunctionWhichLocosInConsist(functionNumber, false);
       debug_print("fn: "); debug_print(functionNumber); debug_println(" Released");
     }
-    writeOledSpeed(); 
+    writeOledSpeed();
   }
-  // debug_println("doFunction(): ");
+
 }
 
-// Work out which locos in a consist should get the function
-//
+
+
 void doFunctionWhichLocosInConsist(int functionNumber, boolean pressed) {
   if (functionFollow[functionNumber]==CONSIST_LEAD_LOCO) {
     wiThrottleProtocol.setFunction('0',functionNumber, pressed);
-  } else {  // at the momemnt the only other option in CONSIST_ALL_LOCOS
+  } else {
     wiThrottleProtocol.setFunction('0', "*", functionNumber, pressed);
   }
   debug_print("doFunctionWhichLocosInConsist(): fn: "); debug_print(functionNumber); debug_println(" Released");
@@ -2225,7 +2313,7 @@ void powerToggle() {
 void stopThenToggleDirection() {
   if (wiThrottleProtocol.getNumberOfLocomotives('0')>0) {
     if (currentSpeed != 0) {
-      // wiThrottleProtocol.setSpeed(currentThrottleIndexChar, 0);
+
       speedSet(0);
     } else {
       if (toggleDirectionOnEncoderButtonPressWhenStationary) toggleDirection();
@@ -2235,8 +2323,8 @@ void stopThenToggleDirection() {
 }
 
 void reconnect() {
-  clearOledArray(); 
-  oledText[0] = appName; oledText[6] = appVersion; 
+  clearOledArray();
+  oledText[0] = appName; oledText[6] = appVersion;
   oledText[2] = MSG_DISCONNECTED;
   writeOledArray(false, false);
   delay(5000);
@@ -2244,22 +2332,22 @@ void reconnect() {
 }
 
 void setLastServerResponseTime(bool force) {
-  // debug_print("setLastServerResponseTime "); debug_println((force) ? "True": "False");
+
   lastServerResponseTime = wiThrottleProtocol.getLastServerResponseTime();
   if ( (lastServerResponseTime==0) || (force) ) lastServerResponseTime = millis() /1000;
-  // debug_print("setLastServerResponseTime "); debug_println(lastServerResponseTime);
+
 }
 
 void checkForShutdownOnNoResponse() {
-  if (millis()-startWaitForSelection > 240000) {  // 4 minutes
+  if (millis()-startWaitForSelection > 240000) {
       debug_println("Waited too long for a selection. Shutting down");
       deepSleepStart();
   }
 }
 
-// *********************************************************************************
-//  Select functions
-// *********************************************************************************
+
+
+
 
 void selectRoster(int selection) {
   debug_print("selectRoster() "); debug_println(selection);
@@ -2324,12 +2412,12 @@ void selectEditConsistList(int selection) {
   }
 }
 
-// *********************************************************************************
-//  oLED functions
-// *********************************************************************************
+
+
+
 
 void setAppnameForOled() {
-  oledText[0] = appName; oledText[6] = appVersion; 
+  oledText[0] = appName; oledText[6] = appVersion;
 }
 
 void setMenuTextForOled(int menuTextIndex) {
@@ -2381,17 +2469,17 @@ void refreshOled() {
 void writeOledFoundSSids(String soFar) {
   menuIsShowing = true;
   keypadUseType = KEYPAD_USE_SELECT_SSID_FROM_FOUND;
-  if (soFar == "") { // nothing entered yet
+  if (soFar == "") {
     clearOledArray();
     for (int i=0; i<5 && i<foundSsidsCount; i++) {
       if (foundSsids[(page*5)+i].length()>0) {
         oledText[i] = String(i) + ": " + foundSsids[(page*5)+i] + "   (" + foundSsidRssis[(page*5)+i] + ")" ;
       }
     }
-    oledText[5] = "(" + String(page+1) +  ") " + menu_text[menu_select_ssids_from_found];
+    oledText[5] = "(" + String(page+1) + ") " + menu_text[menu_select_ssids_from_found];
     writeOledArray(false, false);
-  // } else {
-  //   int cmd = menuCommand.substring(0, 1).toInt();
+
+
   }
 }
 
@@ -2401,17 +2489,17 @@ void writeOledRoster(String soFar) {
 
   menuIsShowing = true;
   keypadUseType = KEYPAD_USE_SELECT_ROSTER;
-  if (soFar == "") { // nothing entered yet
+  if (soFar == "") {
     clearOledArray();
     for (int i=0; i<5 && i<rosterSize; i++) {
       if (rosterAddress[(page*5)+i] != 0) {
         oledText[i] = String(rosterIndex[i]) + ": " + rosterName[(page*5)+i] + " (" + rosterAddress[(page*5)+i] + ")" ;
       }
     }
-    oledText[5] = "(" + String(page+1) +  ") " + menu_text[menu_roster];
+    oledText[5] = "(" + String(page+1) + ") " + menu_text[menu_roster];
     writeOledArray(false, false);
-  // } else {
-  //   int cmd = menuCommand.substring(0, 1).toInt();
+
+
   }
 }
 
@@ -2426,7 +2514,7 @@ void writeOledTurnoutList(String soFar, TurnoutAction action) {
   } else {
     keypadUseType = KEYPAD_USE_SELECT_TURNOUTS_CLOSE;
   }
-  if (soFar == "") { // nothing entered yet
+  if (soFar == "") {
     clearOledArray();
     int j = 0;
     for (int i=0; i<10 && i<turnoutListSize; i++) {
@@ -2435,10 +2523,10 @@ void writeOledTurnoutList(String soFar, TurnoutAction action) {
         oledText[j] = String(turnoutListIndex[i]) + ": " + turnoutListUserName[(page*10)+i].substring(0,10);
       }
     }
-    oledText[5] = "(" + String(page+1) +  ") " + menu_text[menu_turnout_list];
+    oledText[5] = "(" + String(page+1) + ") " + menu_text[menu_turnout_list];
     writeOledArray(false, false);
-  // } else {
-  //   int cmd = menuCommand.substring(0, 1).toInt();
+
+
   }
 }
 
@@ -2448,7 +2536,7 @@ void writeOledRouteList(String soFar) {
 
   menuIsShowing = true;
   keypadUseType = KEYPAD_USE_SELECT_ROUTES;
-  if (soFar == "") { // nothing entered yet
+  if (soFar == "") {
     clearOledArray();
     int j = 0;
     for (int i=0; i<10 && i<routeListSize; i++) {
@@ -2457,10 +2545,10 @@ void writeOledRouteList(String soFar) {
         oledText[j] = String(routeListIndex[i]) + ": " + routeListUserName[(page*10)+i].substring(0,10);
       }
     }
-    oledText[5] =  "(" + String(page+1) +  ") " + menu_text[menu_route_list];
+    oledText[5] = "(" + String(page+1) + ") " + menu_text[menu_route_list];
     writeOledArray(false, false);
-  // } else {
-  //   int cmd = menuCommand.substring(0, 1).toInt();
+
+
   }
 }
 
@@ -2470,8 +2558,8 @@ void writeOledFunctionList(String soFar) {
 
   menuIsShowing = true;
   keypadUseType = KEYPAD_USE_SELECT_FUNCTION;
-  
-  if (soFar == "") { // nothing entered yet
+
+  if (soFar == "") {
     clearOledArray();
     if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar) > 0 ) {
       int j = 0; int k = 0;
@@ -2479,36 +2567,36 @@ void writeOledFunctionList(String soFar) {
         k = (functionPage*10) + i;
         if (k < MAX_FUNCTIONS) {
           j = (i<5) ? i : i+1;
-          // if (functionLabels[currentThrottleIndex][k].length()>0) {
-            oledText[j] = String(i) + ": " 
-            + ((k<10) ? functionLabels[k].substring(0,10) : String(k) 
+
+            oledText[j] = String(i) + ": "
+            + ((k<10) ? functionLabels[k].substring(0,10) : String(k)
             + "-" + functionLabels[k].substring(0,7)) ;
-            
+
             if (functionStates[k]) {
               oledTextInvert[j] = true;
             }
-          // }
+
         }
       }
-      oledText[5] = "(" + String(functionPage) +  ") " + menu_text[menu_function_list];
-      // setMenuTextForOled("(" + String(functionPage) +  ") " + menu_function_list);
+      oledText[5] = "(" + String(functionPage) + ") " + menu_text[menu_function_list];
+
     } else {
       oledText[0] = MSG_NO_FUNCTIONS;
       oledText[2] = MSG_THROTTLE_NUMBER + String(currentThrottleIndex+1);
       oledText[3] = MSG_NO_LOCO_SELECTED;
-      // oledText[5] = menu_cancel;
+
       setMenuTextForOled(menu_cancel);
     }
     writeOledArray(false, false);
-  // } else {
-  //   int cmd = menuCommand.substring(0, 1).toInt();
+
+
   }
 }
 
 void writeOledEnterPassword() {
   keypadUseType = KEYPAD_USE_ENTER_SSID_PASSWORD;
   encoderUseType = KEYPAD_USE_ENTER_SSID_PASSWORD;
-  clearOledArray(); 
+  clearOledArray();
   String tempSsidPasswordEntered;
   tempSsidPasswordEntered = ssidPasswordEntered+ssidPasswordCurrentChar;
   if (tempSsidPasswordEntered.length()>12) {
@@ -2518,7 +2606,7 @@ void writeOledEnterPassword() {
   }
   oledText[0] = MSG_ENTER_PASSWORD;
   oledText[2] = tempSsidPasswordEntered;
-  // oledText[5] = menu_enter_ssid_password;
+
   setMenuTextForOled(menu_enter_ssid_password);
   writeOledArray(false, true);
 }
@@ -2530,7 +2618,7 @@ void writeOledMenu(String soFar) {
   debug_print("writeOledMenu() : "); debug_println(soFar);
   menuIsShowing = true;
   bool drawTopLine = false;
-  if (soFar == "") { // nothing entered yet
+  if (soFar == "") {
     clearOledArray();
     int j = 0;
     for (int i=1; i<10; i++) {
@@ -2538,7 +2626,7 @@ void writeOledMenu(String soFar) {
       oledText[j-1] = String(i) + ": " + menuText[i][0];
     }
     oledText[10] = "0: " + menuText[0][0];
-    // oledText[5] = menu_cancel;
+
     setMenuTextForOled(menu_cancel);
     writeOledArray(false, false);
   } else {
@@ -2546,7 +2634,7 @@ void writeOledMenu(String soFar) {
 
     clearOledArray();
 
-    oledText[0] = ">> " + menuText[cmd][0] +":"; oledText[6] =  menuCommand.substring(1, menuCommand.length());
+    oledText[0] = ">> " + menuText[cmd][0] +":"; oledText[6] = menuCommand.substring(1, menuCommand.length());
     oledText[5] = menuText[cmd][1];
 
     switch (soFar.charAt(0)) {
@@ -2555,18 +2643,18 @@ void writeOledMenu(String soFar) {
               writeOledAllLocos(false);
               drawTopLine = true;
             }
-          } // fall through
+          }
       case MENU_ITEM_FUNCTION:
       case MENU_ITEM_TOGGLE_DIRECTION: {
           if (wiThrottleProtocol.getNumberOfLocomotives('0') <= 0 ) {
             oledText[2] = MSG_THROTTLE_NUMBER + String(1);
             oledText[3] = MSG_NO_LOCO_SELECTED;
-            // oledText[5] = menu_cancel;
+
             setMenuTextForOled(menu_cancel);
-          } 
+          }
           break;
         }
-      case MENU_ITEM_EXTRAS: { // extra menu
+      case MENU_ITEM_EXTRAS: {
           writeOledExtraSubMenu();
           drawTopLine = true;
           break;
@@ -2591,12 +2679,12 @@ void writeOledAllLocos(bool hideLeadLoco) {
   lastOledScreen = last_oled_screen_all_locos;
   lastOledBooleanParameter = hideLeadLoco;
 
-  int startAt = (hideLeadLoco) ? 1 :0;  // for the loco heading menu, we don't want to show the loco 0 (lead) as an option.
+  int startAt = (hideLeadLoco) ? 1 :0;
   debug_println("writeOledAllLocos(): ");
   String loco;
   int j = 0; int i = 0;
   if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar) > 0) {
-    for (int index=0; ((index < wiThrottleProtocol.getNumberOfLocomotives('0')) && (i < 8)); index++) {  //can only show first 8
+    for (int index=0; ((index < wiThrottleProtocol.getNumberOfLocomotives('0')) && (i < 8)); index++) {
       j = (i<4) ? i : i+2;
       loco = wiThrottleProtocol.getLocomotiveAtPosition('0', index);
       if (i>=startAt) {
@@ -2605,8 +2693,8 @@ void writeOledAllLocos(bool hideLeadLoco) {
           oledTextInvert[j+1] = true;
         }
       }
-      i++;      
-    } 
+      i++;
+    }
   }
 }
 
@@ -2628,9 +2716,9 @@ void writeHeartbeatCheck() {
   clearOledArray();
   oledText[0] = menuText[10][0];
   if (heartbeatCheckEnabled) {
-    oledText[1] = MSG_HEARTBEAT_CHECK_ENABLED; 
+    oledText[1] = MSG_HEARTBEAT_CHECK_ENABLED;
   } else {
-    oledText[1] = MSG_HEARTBEAT_CHECK_DISABLED; 
+    oledText[1] = MSG_HEARTBEAT_CHECK_DISABLED;
   }
   oledText[5] = menuText[10][1];
   writeOledArray(false, false);
@@ -2639,27 +2727,27 @@ void writeHeartbeatCheck() {
 void writeOledSpeed() {
   lastOledScreen = last_oled_screen_speed;
 
-  // debug_println("writeOledSpeed() ");
-  
+
+
   menuIsShowing = false;
   String sLocos = "";
   String sSpeed = "";
   String sDirection = "";
 
   clearOledArray();
-  
+
   boolean drawTopLine = false;
 
   if (wiThrottleProtocol.getNumberOfLocomotives('0') > 0 ) {
-  
+
     for (int i=0; i < wiThrottleProtocol.getNumberOfLocomotives('0'); i++) {
       sLocos = sLocos + " " + getDisplayLocoString(i);
     }
     sSpeed = String(getDisplaySpeed());
     sDirection = (currentDirection==Forward) ? DIRECTION_FORWARD_TEXT : DIRECTION_REVERSE_TEXT;
 
-    oledText[0] = "   "  + sLocos; 
-    //oledText[7] = "     " + sDirection;  // old function state format
+    oledText[0] = "   " + sLocos;
+
 
     drawTopLine = true;
 
@@ -2671,32 +2759,32 @@ void writeOledSpeed() {
   }
 
   if (!hashShowsFunctionsInsteadOfKeyDefs) {
-      // oledText[5] = menu_menu;
+
       setMenuTextForOled(menu_menu);
     } else {
-    // oledText[5] = menu_menu_hash_is_functions;
+
     setMenuTextForOled(menu_menu_hash_is_functions);
   }
 
   writeOledArray(false, false, false, drawTopLine);
 
    if (speedStep != currentSpeedStep) {
-    // oledText[3] = "X " + String(speedStepCurrentMultiplier);
+
     u8g2.setDrawColor(1);
     u8g2.setFont(FONT_SPEED_STEP);
     u8g2.drawGlyph(1, 38, glyph_speed_step);
     u8g2.setFont(FONT_DEFAULT);
-    // u8g2.drawStr(0, 37, ("X " + String(speedStepCurrentMultiplier)).c_str());
+
     u8g2.drawStr(9, 37, String(speedStepCurrentMultiplier).c_str());
   }
 
   if (trackPower == PowerOn) {
-    // u8g2.drawBox(0,41,15,8);
+
     u8g2.drawRBox(0,40,9,9,1);
     u8g2.setDrawColor(0);
   }
   u8g2.setFont(FONT_TRACK_POWER);
-  // u8g2.drawStr(0, 48, label_track_power.c_str());
+
   u8g2.drawGlyph(1, 48, glyph_track_power);
   u8g2.setDrawColor(1);
 
@@ -2705,68 +2793,46 @@ void writeOledSpeed() {
     u8g2.drawGlyph(13, 49, glyph_heartbeat_off);
     u8g2.setDrawColor(2);
     u8g2.drawLine(13, 48, 20, 41);
-    // u8g2.drawLine(13, 48, 21, 40);
+
     u8g2.setDrawColor(1);
   }
 
-  // direction
-  // needed for new function state format
-  u8g2.setFont(FONT_DIRECTION); // medium
+
+
+  u8g2.setFont(FONT_DIRECTION);
   u8g2.drawStr(79,36, sDirection.c_str());
 
-  // speed
+
   const char *cSpeed = sSpeed.c_str();
-  // u8g2.setFont(u8g2_font_inb21_mn); // big
-  u8g2.setFont(FONT_SPEED); // big
+
+  u8g2.setFont(FONT_SPEED);
   int width = u8g2.getStrWidth(cSpeed);
   u8g2.drawStr(22+(55-width),45, cSpeed);
 
   u8g2.sendBuffer();
 
-  // debug_println("writeOledSpeed(): end");
+
 }
 
 void writeOledFunctions() {
   lastOledScreen = last_oled_screen_speed;
 
   debug_println("writeOledFunctions():");
-  //  int x = 99;
-  // bool anyFunctionsActive = false;
+
+
    for (int i=0; i < MAX_FUNCTIONS; i++) {
      if (functionStates[i]) {
-      // old function state format
-  //     //  debug_print("Fn On "); debug_println(i);
-  //     if (i < 12) {
-  //     int y = (i+2)*10-8;
-  //     if ((i>=4) && (i<8)) { 
-  //       x = 109; 
-  //       y = (i-2)*10-8;
-  //     } else if (i>=8) { 
-  //       x = 119; 
-  //       y = (i-6)*10-8;
-  //     }
-      
-  //     u8g2.drawBox(x,y,8,8);
-  //     u8g2.setDrawColor(0);
-  //     u8g2.setFont(u8g2_font_profont10_tf);
-  //     u8g2.drawStr( x+2, y+7, String( (i<10) ? i : i-10 ).c_str());
-  //     u8g2.setDrawColor(1);
-  //   //  } else {
-  //   //    debug_print("Fn Off "); debug_println(i);
-
-      // new function state format
-      // anyFunctionsActive = true;
-      // u8g2.drawBox(i*4+12,12,5,7);
+# 2760 "C:/Users/akers/Documents/GitHub/HandCab/HandCab.ino"
       u8g2.drawRBox(i*4+12,12+1,5,7,2);
       u8g2.setDrawColor(0);
-      u8g2.setFont(FONT_FUNCTION_INDICATORS);   
+      u8g2.setFont(FONT_FUNCTION_INDICATORS);
       u8g2.drawStr( i*4+1+12, 18+1, String( (i<10) ? i : ((i<20) ? i-10 : i-20)).c_str());
       u8g2.setDrawColor(1);
      }
-    //  if (anyFunctionsActive) {
-    //     u8g2.drawStr( 0, 18, (function_states).c_str());
-    // //     u8g2.drawHLine(0,19,128);
-    //  }
+
+
+
+
    }
   debug_println("writeOledFunctions(): end");
 }
@@ -2780,14 +2846,14 @@ void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer) {
 }
 
 void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool drawTopLine) {
-  // debug_println("Start writeOledArray()");
-  u8g2.clearBuffer();					// clear the internal memory
 
-  u8g2.setFont(FONT_DEFAULT); // small
-  
+  u8g2.clearBuffer();
+
+  u8g2.setFont(FONT_DEFAULT);
+
   int x=0;
   int y=10;
-  int xInc = 64; 
+  int xInc = 64;
   int max = 12;
   if (isThreeColums) {
     xInc = 42;
@@ -2796,7 +2862,7 @@ void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool d
 
   for (int i=0; i < max; i++) {
     const char *cLine1 = oledText[i].c_str();
-    if ((isPassword) && (i==2)) u8g2.setFont(FONT_PASSWORD); 
+    if ((isPassword) && (i==2)) u8g2.setFont(FONT_PASSWORD);
 
     if (oledTextInvert[i]) {
       u8g2.drawBox(x,y-8,62,10);
@@ -2805,7 +2871,7 @@ void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool d
     u8g2.drawStr(x,y, cLine1);
     u8g2.setDrawColor(1);
 
-    if ((isPassword) && (i==2)) u8g2.setFont(FONT_DEFAULT); 
+    if ((isPassword) && (i==2)) u8g2.setFont(FONT_DEFAULT);
     y = y + 10;
     if ((i==5) || (i==11)) {
       x = x + xInc;
@@ -2816,8 +2882,8 @@ void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool d
   if (drawTopLine) u8g2.drawHLine(0,11,128);
   u8g2.drawHLine(0,51,128);
 
-  if (sendBuffer) u8g2.sendBuffer();					// transfer internal memory to the display
-  // debug_println("writeOledArray(): end ");
+  if (sendBuffer) u8g2.sendBuffer();
+
 }
 
 void clearOledArray() {
@@ -2850,14 +2916,14 @@ void writeOledDirectCommands() {
   menuCommandStarted = false;
 }
 
-// *********************************************************************************
+
 
 void deepSleepStart() {
   deepSleepStart(false);
 }
 
 void deepSleepStart(bool autoShutdown) {
-  clearOledArray(); 
+  clearOledArray();
   setAppnameForOled();
   int delayPeriod = 2000;
   if (autoShutdown) {
