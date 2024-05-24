@@ -1,6 +1,8 @@
 # H
 
-A HanCab is a simple DIY, handheld controller that talks to a WiThrottle Server (JMRI, DCC-EX  EX-CommandStation and many others) using the WiThrottle protocol to control DCC model trains.  HandCab uses 3 poteniometers (50K) for the throttle, brake and reverser controls.
+A HandCab is a simple DIY, handheld controller that talks to a WiThrottle Server (JMRI, DCC-EX  EX-CommandStation and many others) using the WiThrottle protocol to control DCC model trains.  HandCab uses 3 poteniometers (50K) for the throttle, brake and reverser controls and is modeled after a GP7/9 "barrel control stand.
+
+
 
 
 ---
