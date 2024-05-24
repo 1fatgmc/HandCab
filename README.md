@@ -8,7 +8,7 @@ A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, 
 
 ## Prerequisites
 
-1. Requires some moderate soldering skills.
+1. Requires moderate soldering skills.
 
 2. Loading the code (sketch) requires downloading of one of the IDEs, this sketch, the libraries, etc. so some experience with Arduinos is helpful, but not critical.
 
