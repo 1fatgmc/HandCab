@@ -236,13 +236,10 @@ Note: you need to edit config_buttons.h to alter these assignments   (copy confi
 
 config_buttons.h can include the following optional defines:
 
-  * \#define USE_ROTARY_ENCODER_FOR_THROTTLE false
   * \#define THROTTLE_POT_PIN 39
   * \#define THROTTLE_POT_USE_NOTCHES true 
   * \#define THROTTLE_POT_NOTCH_VALUES {1,585,1170,1755,2340,2925,3510,4094}
   * \#define THROTTLE_POT_NOTCH_SPEEDS {0,18,36,54,72,90,108,127} 
-
-  If ``USE_ROTARY_ENCODER_FOR_THROTTLE`` is set to ``false`` the rotary encoder is ignored and a pot on the pin defined with ``THROTTLE_POT_PIN`` will be used instead.
 
   You must specify the PIN to be used.  Currently PINs 34, 35 and 39 are the only ones that cannot be used by the app for other purposes, so these are the safest to use.  this should be connected to the centre pin of the pot. The 3v and GND should be connected to the outer pins of the pot.
 

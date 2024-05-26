@@ -234,7 +234,6 @@
 //
 // Set the number of notches and the values of the pot at each notch.  must be 8 values
 
-// #define USE_ROTARY_ENCODER_FOR_THROTTLE false
 // #define THROTTLE_POT_PIN 39
 // #define THROTTLE_POT_USE_NOTCHES false  // if false, only THROTTLE_POT_NOTCH_VALUES 0 and 7 below (first and last) are use. 
 // #define THROTTLE_POT_NOTCH_VALUES {1,585,1170,1755,2340,2925,3510,4094}

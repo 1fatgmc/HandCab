@@ -62,7 +62,7 @@ int encoderValue = 0;
 int lastEncoderValue = 0;
 
 // throttle pot values
-bool useRotaryEncoderForThrottle = USE_ROTARY_ENCODER_FOR_THROTTLE;
+bool useRotaryEncoderForThrottle = false; // TODO: no longer needed - need to remove references to this
 int throttlePotPin = THROTTLE_POT_PIN;
 bool throttlePotUseNotches = THROTTLE_POT_USE_NOTCHES;
 int throttlePotNotchValues[] = THROTTLE_POT_NOTCH_VALUES; 

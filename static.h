@@ -655,9 +655,6 @@ const char ssidPasswordBlankChar = 164;
    #define CHOSEN_KEYPAD_D_FUNCTION     CUSTOM_4
 #endif
    
-#ifndef USE_ROTARY_ENCODER_FOR_THROTTLE
-   #define USE_ROTARY_ENCODER_FOR_THROTTLE true
-#endif
 #ifndef THROTTLE_POT_PIN
    #define THROTTLE_POT_PIN 39
 #endif
