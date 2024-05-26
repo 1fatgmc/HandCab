@@ -61,7 +61,7 @@ bool circleValues = true;
 int encoderValue = 0;
 int lastEncoderValue = 0;
 
-// pot values
+// throttle pot values
 bool useRotaryEncoderForThrottle = USE_ROTARY_ENCODER_FOR_THROTTLE;
 int throttlePotPin = THROTTLE_POT_PIN;
 bool throttlePotUseNotches = THROTTLE_POT_USE_NOTCHES;
@@ -70,6 +70,12 @@ int throttlePotNotchSpeeds[] = THROTTLE_POT_NOTCH_SPEEDS;
 int throttlePotNotch = 0;
 int throttlePotTargetSpeed = 0;
 int lastThrottlePotValue = 0;
+
+// reverser pot values
+int reverserPotPin = REVERSER_POT_PIN;
+int reverserPotValues[] = REVERSER_POT_VALUES; 
+int lastReverserPotValue = 0;
+int reverserCurrentPosition = REVERSER_POSITION_NEUTRAL;
 
 // server variables
 // boolean ssidConnected = false;
@@ -1097,7 +1103,6 @@ void encoderSpeedChange(bool rotationIsClockwise, int speedChange) {
   }
 }
 
-
 // *********************************************************************************
 //   Throttle Pot
 // *********************************************************************************
@@ -1110,7 +1115,7 @@ void throttlePot_loop() {
 
   if (potValue!=lastThrottlePotValue) { 
     lastThrottlePotValue = potValue;
-    // debug_print("Pot Value: "); debug_println(potValue);
+    // debug_print("Throttle Pot Value: "); debug_println(potValue);
 
     if (throttlePotUseNotches) { // use notches
       throttlePotNotch = 0;
@@ -1135,6 +1140,40 @@ void throttlePot_loop() {
       debug_print("newSpeed: "); debug_print(newSpeed); debug_print(" iSpeed: "); debug_println(iSpeed);
       speedSet(iSpeed);
     }  
+  }
+}
+
+// *********************************************************************************
+//   Reverser Pot
+// *********************************************************************************
+
+void reverserPot_loop() {
+  int potValue = ( analogRead(reverserPotPin) );  //Reads the analog value on the throttle pin.
+  int lastReverserPosition = reverserCurrentPosition;
+
+  if (potValue!=lastReverserPotValue) { 
+    // debug_print("Reverser Pot Value: "); debug_println(potValue);
+    lastReverserPotValue = potValue;
+
+    if (lastReverserPotValue < reverserPotValues[0]) {
+      reverserCurrentPosition = REVERSER_POSITION_FORWARD;
+    } else if (lastReverserPotValue < reverserPotValues[1]) {
+      reverserCurrentPosition = REVERSER_POSITION_NEUTRAL;
+    } else {
+      reverserCurrentPosition = REVERSER_POSITION_REVERSE;
+    }
+
+    if (lastReverserPosition != reverserCurrentPosition) {
+      if (reverserCurrentPosition==REVERSER_POSITION_FORWARD) { 
+        debug_println("Reverser - Forward");
+        changeDirection(Forward);
+      } else if (reverserCurrentPosition==REVERSER_POSITION_REVERSE) {
+        debug_println("Reverser - Reverse");
+        changeDirection(Reverse);
+      } else {
+        debug_println("Reverser - Neutral");
+      }
+    }
   }
 }
 
@@ -1292,8 +1331,11 @@ void loop() {
   }
   // char key = keypad.getKey();
   keypad.getKey(); 
-  if (useRotaryEncoderForThrottle) { rotary_loop(); }
-  else { throttlePot_loop(); }
+  rotary_loop();
+  if (witConnectionState == CONNECTION_STATE_CONNECTED) {
+    throttlePot_loop();
+    reverserPot_loop(); 
+  }
 
   additionalButtonLoop(); 
 

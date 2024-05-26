@@ -280,52 +280,8 @@ confg_buttons.h can include the following optional defines:
 
 ## Change Log
 
-### V1.46
-- support for optionally using a potentiometer (pot) instead of the encoder for the throttle
+### v0.02
+- basic support of the reverser pot
 
-### V1.45
-- support for 4x4 keypads
-
-### V1.44
-- support for optional custom commands
-
-### V1.43
-- bug fix
-
-### V1.43
- - text, button and display PIN configurations moved to defines that can be overridden in personal config_buttons_etc.h files
- - no functional changes
-
-### V1.42
- - minor bug fix
- 
-### V1.41
-  - support for broadcast messages. Requires WiThrottleProtocol version 1.1.12 or later.
-
-### V1.40
- - fix for the debounce of the rotary encoder button. Will now ignore rotations when the button is pressed for (default) 200ms.  The #define for the debounce has been moved from config_keypad_etc.h to config_buttons as: #define ROTARY_ENCODER_DEBOUNCE_TIME 200
-
-### V1.38 & V1.39 
-- fix problem with wifiTrax
-
-### V1.36 & V1.37
-- failed attempt to fix problem with wifiTrax
-
-### V1.35
-- add option to send commands twice
-
-### V1.34
-- minimum time separation/delay between commands sent
-
-### V1.33
-- changes to allow the use of VSC
-
-### V1.32
-- add support for 32 functions
-- bypass WiT server search if EX-CS is in AP mode
-
-### v1.31
-- option to auto-connect to first SSID
-
-### prior 
-- various
+### v0.01 
+- setup

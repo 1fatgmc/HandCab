@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "     Version 0.01";
+const String appVersion = "             v0.02";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -670,3 +670,14 @@ const char ssidPasswordBlankChar = 164;
 #ifndef THROTTLE_POT_NOTCH_SPEEDS
    #define THROTTLE_POT_NOTCH_SPEEDS {0,18,36,54,72,90,108,127}
 #endif
+
+#ifndef REVERSER_POT_PIN
+#define REVERSER_POT_PIN 36
+#endif
+#ifndef REVERSER_VALUES
+#define REVERSER_VALUES {981,2141}; 
+#endif
+
+#define REVERSER_POSITION_FORWARD 0
+#define REVERSER_POSITION_NEUTRAL 1
+#define REVERSER_POSITION_REVERSE 2
