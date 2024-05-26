@@ -254,7 +254,7 @@ config_buttons.h can include the following optional defines:
   
   a) You must define the values the pot will send at each of 8 points - ``THROTTLE_POT_NOTCH_VALUES``.  Note that you should avoid the value zero (0) for notch zero.  Use at least 1 instead.
 
-    The example values above are useble for a 10k ohm pot but any value pot can be used. Just adjust the numbers.
+    The example values above are usable for a 50k ohm pot but any value pot can be used. Just adjust the numbers.
 
   b) You must define what speed should be sent for each notch - ``THROTTLE_POT_NOTCH_SPEEDS``
 
