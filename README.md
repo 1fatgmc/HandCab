@@ -153,7 +153,7 @@ Notes:
 - Speed button repeat (i.e. hold the button down)
 - Deal with unexpected disconnects better
   - automatic attempt to reconnect
-- Keep a list of ip addresses and ports if mDNS doesn't provide any
+- Keep a list of IP addresses and ports if mDNS doesn't provide any
 - Remember (for the current session only) recently selected locos
 
 ### Command menu:
@@ -234,12 +234,12 @@ Note: you need to edit config_buttons.h to alter these assignments   (copy confi
 
 ### instructions for optional use of a potentiometer (pot) instead of the encoder for the throttle
 
-confg_buttons.h can include the following optional defines:
+config_buttons.h can include the following optional defines:
 
   * \#define USE_ROTARY_ENCODER_FOR_THROTTLE false
   * \#define THROTTLE_POT_PIN 39
   * \#define THROTTLE_POT_USE_NOTCHES true 
-  \#define THROTTLE_POT_NOTCH_VALUES {1,585,1170,1755,2340,2925,3510,4094}
+  * \#define THROTTLE_POT_NOTCH_VALUES {1,585,1170,1755,2340,2925,3510,4094}
   * \#define THROTTLE_POT_NOTCH_SPEEDS {0,18,36,54,72,90,108,127} 
 
   If ``USE_ROTARY_ENCODER_FOR_THROTTLE`` is set to ``false`` the rotary encoder is ignored and a pot on the pin defined with ``THROTTLE_POT_PIN`` will be used instead.
