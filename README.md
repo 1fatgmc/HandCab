@@ -1,6 +1,6 @@
 # H
 
-A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, DCC-EX  EX-CommandStation and many others) using the WiThrottle protocol to control DCC model trains.  HandCab uses 3 poteniometers (50K) for the throttle, brake and reverser controls and is modeled after a GP7/9 'barrel' control stand.
+A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, DCC-EX  EX-CommandStation and many others) using the WiThrottle protocol to control DCC model trains.  HandCab uses 3 potentiometers (50K) for the throttle, brake and reverser controls and is modelled after a GP7/9 'barrel' control stand.
 
 ![Alt text](https://1fatgmc.com/RailRoad/DCC/24-03-27%20HandCab%20Throttle-3.jpg)
 
@@ -12,7 +12,7 @@ A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, 
 
 2. Loading the code (sketch) requires downloading of one of the IDEs, this sketch, the libraries, etc. so some experience with Arduinos is helpful, but not critical.
 
-3. A WiThrottle Server to connect to. WiTcontroller will work with any WiThrottle Server. e.g.
+3. A WiThrottle Server to connect to. HandCab will work with any WiThrottle Server. e.g.
 
     * JMRI
     * DCC++EX
@@ -45,10 +45,6 @@ Required Components
 
 
 Notes:
-
-* My case was 3D Printed for me by peteGSX (See the [Thingiverse.](https://www.thingiverse.com/thing:5440351) )
-* The 3x4 keypad petGSX designed the case for came from Jaycar and is slightly narrower than the one you see in the 'deconstructed' view in the video above.
-* The case requires about a dozen M2x4mm screws
 
 * For a different take on what is possible by extending the design, have a look at: https://1fatgmc.com/RailRoad/DCC/page-5-B.html
 
@@ -97,16 +93,7 @@ Notes:
     * Click *Upload* 
 
 Notes: 
-   * WiTcontroller version 1.45 or later requires WiThrottleProtocol version 1.1.14 or later.
-   * WiTcontroller version 1.41 or later requires WiThrottleProtocol version 1.1.12 or later.
-   * WiTcontroller version 1.39 or later requires WiThrottleProtocol version 1.1.11 or later.
-   * WiTcontroller version 1.38 or later requires WiThrottleProtocol version 1.1.10 or later.
-   * WiTcontroller version 1.35 or later requires WiThrottleProtocol version 1.1.7 or later.
-   * WiTcontroller version 1.33 or later requires WiThrottleProtocol version 1.1.6 or later.
-   * WiTcontroller version 1.19 - 1.32 requires WiThrottleProtocol version 1.1.3 - 1.1.5.
-   * WiTcontroller version 1.06 or later requires WiThrottleProtocol version 1.1.2 or later.
-   * WiTcontroller version 1.01 or later requires WiThrottleProtocol version 1.1.0 or later.
-   * WiTcontroller version 0.10 or later requires WiThrottleProtocol version 1.0.3 or later.
+   * HandCab version 0.01 or later requires WiThrottleProtocol version 1.1.14 or later.
    * The *WiFi.h* and *ESPmDNS.h* libraries were automatically installed for me when I installed the esp32 boards, however you may need to install them manually.
    * Later versions of the esp board support are available and do appear to work, but if you have difficulties version 1.0.6 appears to be stable.
    * Later versions of the libraries generally should work, but if you have difficulties use the versions listed above.
@@ -124,7 +111,7 @@ Notes:
   - otherwise it will ask to enter the password (Use the rotary encoder to choose each character and the encoder button to select it.  * = backspace.  # = enter the password.) 
 - Optionally provides a list of SSIDs with the specified passwords (in the sketch) to choose from
 - Auto-connects to the first found WiThrottle Protocol Server if only one found, otherwise 
-  - Asks which to connect to
+  - Asks which to connect to.
   - If none found will ask to enter the IP Address and Port
   - Guesses the WiThrottle IP address and Port for DCC++EX WiFi Access Point mode Command Stations
   - optionally can add a #define (a preference) to disable this auto connect feature

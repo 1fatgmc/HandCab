@@ -77,6 +77,21 @@ int reverserPotValues[] = REVERSER_POT_VALUES;
 int lastReverserPotValue = 0;
 int reverserCurrentPosition = REVERSER_POSITION_NEUTRAL;
 
+// brake pot values
+int brakePotPin = BRAKE_POT_PIN;
+int brakePotValues[] = BRAKE_POT_VALUES; 
+int lastBrakePotValue = 0;
+int brakeCurrentPosition = 0;
+
+// Momentum - acceleration and brake
+int brakeDelayTimes[] = BRAKE_DELAY_TIMES;
+int currentBrakeDelayTime = 0;
+int accelllerationDelayTimes[] = ACCELLERATION_DELAY_TIMES;
+int currentAccellerationDelayTime = 0;
+int targetSpeed = 0;
+int targetDirection = Forward;
+double startMomentumTimerMillis = -1;
+
 // server variables
 // boolean ssidConnected = false;
 String selectedSsid = "";
@@ -1148,7 +1163,7 @@ void throttlePot_loop() {
 // *********************************************************************************
 
 void reverserPot_loop() {
-  int potValue = ( analogRead(reverserPotPin) );  //Reads the analog value on the throttle pin.
+  int potValue = ( analogRead(reverserPotPin) );  //Reads the analog value on the reverser pin.
   int lastReverserPosition = reverserCurrentPosition;
 
   if (potValue!=lastReverserPotValue) { 
@@ -1176,6 +1191,51 @@ void reverserPot_loop() {
     }
   }
 }
+
+// *********************************************************************************
+//   Brake Pot
+// *********************************************************************************
+
+void brakePot_loop() {
+  if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(0)) > 0) {
+    int potValue = ( analogRead(brakePotPin) );  //Reads the analog value on the brake pin.
+
+    if (potValue!=lastBrakePotValue) { 
+      // debug_print("Brake Pot Value: "); debug_println(potValue);
+      lastBrakePotValue = potValue;
+
+      currentBrakeDelayTime = 0;
+      for (int i=0; i<8; i++) {
+        if (potValue < brakePotValues[i]) {    /// Check to see if it is in range i
+          brakeCurrentPosition = i;
+          currentBrakeDelayTime = brakeDelayTimes[i];
+          break;
+        }                
+      } 
+    }
+  }
+}
+
+
+// *********************************************************************************
+//  Speed loop - adjust speeds (momentum)
+// *********************************************************************************
+
+void speedAdjust_loop() {
+  if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(0)) > 0) {
+    if (currentSpeed!=targetSpeed) {
+      if (currentSpeed>targetSpeed) {  // need to brake
+
+      }
+      else { // need to accelerate
+
+      }
+    }
+  } else { // at target speed
+    startMomentumTimerMillis = -1; // use -1 to indicate were are not currently using it
+  }
+}
+
 
 // *********************************************************************************
 //   keypad
@@ -1267,7 +1327,7 @@ void additionalButtonLoop() {
 }
 
 // *********************************************************************************
-//  Setup and Loop
+//  Setup
 // *********************************************************************************
 
 void setup() {
@@ -1308,6 +1368,10 @@ void setup() {
   currentSpeedStep = speedStep;
 }
 
+// *********************************************************************************
+//  Loop
+// *********************************************************************************
+
 void loop() {
   
   if (ssidConnectionState != CONNECTION_STATE_CONNECTED) {
@@ -1331,10 +1395,13 @@ void loop() {
   }
   // char key = keypad.getKey();
   keypad.getKey(); 
-  rotary_loop();
+  if (witConnectionState != CONNECTION_STATE_CONNECTED) {  // only look at the rotary encoder for the WiFi and WiT 
+    rotary_loop();
+  }
   if (witConnectionState == CONNECTION_STATE_CONNECTED) {
     throttlePot_loop();
     reverserPot_loop(); 
+    speedAdjust_loop();
   }
 
   additionalButtonLoop(); 
