@@ -70,17 +70,20 @@ int throttlePotNotchSpeeds[] = THROTTLE_POT_NOTCH_SPEEDS;
 int throttlePotNotch = 0;
 int throttlePotTargetSpeed = 0;
 int lastThrottlePotValue = 0;
+int lastThrottlePotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 // reverser pot values
 int reverserPotPin = REVERSER_POT_PIN;
 int reverserPotValues[] = REVERSER_POT_VALUES; 
 int lastReverserPotValue = 0;
+int lastReverserPotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 int reverserCurrentPosition = REVERSER_POSITION_NEUTRAL;
 
 // brake pot values
 int brakePotPin = BRAKE_POT_PIN;
 int brakePotValues[] = BRAKE_POT_VALUES; 
 int lastBrakePotValue = 0;
+int lastBrakePotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 int brakeCurrentPosition = 0;
 
 // Momentum - acceleration and brake
@@ -1128,14 +1131,22 @@ void throttlePot_loop() {
 
   int potValue = ( analogRead(throttlePotPin) );  //Reads the analog value on the throttle pin.
 
-  if (potValue!=lastThrottlePotValue) { 
-    lastThrottlePotValue = potValue;
+  int avgPotValue = 0;
+  for (int i=1; i<9; i++) {
+    lastThrottlePotValues[i-1] = lastThrottlePotValues[i];
+    avgPotValue = avgPotValue + lastThrottlePotValues[i-1];
+  }
+  lastThrottlePotValues[8] = potValue;
+  avgPotValue = (avgPotValue + potValue) / 9;
+
+  if (avgPotValue!=lastThrottlePotValue) { 
+    lastThrottlePotValue = avgPotValue;
     // debug_print("Throttle Pot Value: "); debug_println(potValue);
 
     if (throttlePotUseNotches) { // use notches
       throttlePotNotch = 0;
       for (int i=0; i<8; i++) {
-        if (potValue < throttlePotNotchValues[i]) {    /// Check to see if it is in notch i
+        if (avgPotValue < throttlePotNotchValues[i]) {    /// Check to see if it is in notch i
           throttlePotTargetSpeed = throttlePotNotchSpeeds[i];
           throttlePotNotch = i;
           break;
@@ -1143,6 +1154,7 @@ void throttlePot_loop() {
       } 
       if (throttlePotNotch!=currentThrottlePotNotch) {
             speedSet(throttlePotTargetSpeed);
+            startMomentumTimerMillis = millis();
       }
 
     } else { // use a linear speed
@@ -1155,6 +1167,10 @@ void throttlePot_loop() {
       debug_print("newSpeed: "); debug_print(newSpeed); debug_print(" iSpeed: "); debug_println(iSpeed);
       speedSet(iSpeed);
     }  
+
+    if(lastOledScreen == last_oled_screen_pot_values) {
+      refreshOled();
+    }
   }
 }
 
@@ -1166,9 +1182,17 @@ void reverserPot_loop() {
   int potValue = ( analogRead(reverserPotPin) );  //Reads the analog value on the reverser pin.
   int lastReverserPosition = reverserCurrentPosition;
 
-  if (potValue!=lastReverserPotValue) { 
+  int avgPotValue = 0;
+  for (int i=1; i<9; i++) {
+    lastReverserPotValues[i-1] = lastReverserPotValues[i];
+    avgPotValue = avgPotValue + lastReverserPotValues[i-1];
+  }
+  lastReverserPotValues[8] = potValue;
+  avgPotValue = (avgPotValue + potValue) / 9;
+
+  if (avgPotValue!=lastReverserPotValue) { 
     // debug_print("Reverser Pot Value: "); debug_println(potValue);
-    lastReverserPotValue = potValue;
+    lastReverserPotValue = avgPotValue;
 
     if (lastReverserPotValue < reverserPotValues[0]) {
       reverserCurrentPosition = REVERSER_POSITION_FORWARD;
@@ -1190,6 +1214,9 @@ void reverserPot_loop() {
       }
     }
   }
+    if(lastOledScreen == last_oled_screen_pot_values) {
+      refreshOled();
+    }
 }
 
 // *********************************************************************************
@@ -1197,21 +1224,31 @@ void reverserPot_loop() {
 // *********************************************************************************
 
 void brakePot_loop() {
-  if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(0)) > 0) {
-    int potValue = ( analogRead(brakePotPin) );  //Reads the analog value on the brake pin.
+  int potValue = ( analogRead(brakePotPin) );  //Reads the analog value on the brake pin.
 
-    if (potValue!=lastBrakePotValue) { 
-      // debug_print("Brake Pot Value: "); debug_println(potValue);
-      lastBrakePotValue = potValue;
+  int avgPotValue = 0;
+  for (int i=1; i<9; i++) {
+    lastBrakePotValues[i-1] = lastBrakePotValues[i];
+    avgPotValue = avgPotValue + lastBrakePotValues[i-1];
+  }
+  lastBrakePotValues[8] = potValue;
+  avgPotValue = (avgPotValue + potValue) / 9;
 
-      currentBrakeDelayTime = 0;
-      for (int i=0; i<8; i++) {
-        if (potValue < brakePotValues[i]) {    /// Check to see if it is in range i
-          brakeCurrentPosition = i;
-          currentBrakeDelayTime = brakeDelayTimes[i];
-          break;
-        }                
-      } 
+  if (avgPotValue!=lastBrakePotValue) { 
+    // debug_print("Brake Pot Value: "); debug_println(potValue);
+    lastBrakePotValue = avgPotValue;
+
+    currentBrakeDelayTime = 0;
+    for (int i=0; i<8; i++) {
+      if (potValue < brakePotValues[i]) {    /// Check to see if it is in range i
+        brakeCurrentPosition = i;
+        currentBrakeDelayTime = brakeDelayTimes[i];
+        break;
+      }                
+    } 
+
+    if(lastOledScreen == last_oled_screen_pot_values) {
+      refreshOled();
     }
   }
 }
@@ -1401,6 +1438,7 @@ void loop() {
   if (witConnectionState == CONNECTION_STATE_CONNECTED) {
     throttlePot_loop();
     reverserPot_loop(); 
+    brakePot_loop(); 
     speedAdjust_loop();
   }
 
@@ -1708,6 +1746,23 @@ void doKeyPress(char key, bool pressed) {
         break;
 
 
+      case KEYPAD_USE_POT_VALUES:
+        debug_print("Showing Pot values... "); debug_println(key);
+        switch (key){
+          case '0': case '1': case '2': case '3': case '4': 
+          case '5': case '6': case '7': case '8': case '9':
+            // do nothing
+            break;
+          case '*':  // cancel
+            resetMenu();
+            writeOledSpeed();
+            break;
+          default:  // do nothing 
+            break;
+        }
+        break;
+
+
       default:  // do nothing 
         break;
     }
@@ -1961,6 +2016,10 @@ void doMenu() {
               } 
             case EXTRA_MENU_CHAR_EDIT_CONSIST: { // edit consist - loco facings
                 writeOledEditConsist();
+                break;
+              } 
+            case EXTRA_MENU_CHAR_POT_VALUES: { // show the potentiometer values
+                writeOledPotValues();
                 break;
               } 
             case EXTRA_MENU_CHAR_HEARTBEAT_TOGGLE: { // disable/enable the heartbeat Check
@@ -2231,7 +2290,8 @@ void toggleHeartbeatCheck() {
 void toggleDirection() {
   if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(0)) > 0) {
     changeDirection((currentDirection == Forward) ? Reverse : Forward );
-    writeOledSpeed();
+    // writeOledSpeed();
+    refreshOled();
   }
 }
 
@@ -2268,7 +2328,9 @@ void changeDirection(Direction direction) {
       wiThrottleProtocol.setDirection('0', leadLoco, direction);
     } 
   }
-  writeOledSpeed();
+  // writeOledSpeed();
+  refreshOled();
+  
   // debug_println("Change direction(): end "); 
 }
 
@@ -2451,8 +2513,8 @@ void setMenuTextForOled(int menuTextIndex) {
 }
 
 void refreshOled() {
-     debug_print("refreshOled(): ");
-     debug_println(lastOledScreen);
+    //  debug_print("refreshOled(): ");
+    //  debug_println(lastOledScreen);
   switch (lastOledScreen) {
     case last_oled_screen_speed:
       writeOledSpeed();
@@ -2480,6 +2542,9 @@ void refreshOled() {
       break;
     case last_oled_screen_direct_commands:
       writeOledDirectCommands();
+      break;
+    case last_oled_screen_pot_values:
+      writeOledPotValues();
       break;
   }
 }
@@ -2854,6 +2919,27 @@ void writeOledFunctions() {
   debug_println("writeOledFunctions(): end");
 }
 
+
+void writeOledPotValues() {
+  lastOledScreen = last_oled_screen_pot_values;
+  keypadUseType = KEYPAD_USE_POT_VALUES;
+  menuIsShowing = true;
+
+  clearOledArray();
+  oledText[0] = MENU_ITEM_TEXT_TITLE_POT_VALUES;
+  oledText[1] = POT_VALUE_TITLE_THROTTLE;
+  oledText[2] = POT_VALUE_TITLE_REVERSER;
+  oledText[3] = POT_VALUE_TITLE_BRAKE;
+  oledText[7] = lastThrottlePotValue;
+  oledText[8] = lastReverserPotValue;
+  oledText[9] = lastBrakePotValue;
+  oledText[5] = menuText[12][1];
+
+  writeOledArray(false, false, true, true);
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * *
+
 void writeOledArray(bool isThreeColums, bool isPassword) {
   writeOledArray(isThreeColums, isPassword, true, false);
 }
@@ -2902,6 +2988,8 @@ void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool d
   if (sendBuffer) u8g2.sendBuffer();					// transfer internal memory to the display
   // debug_println("writeOledArray(): end ");
 }
+
+// * * * * * * * * * * * * * * * * * * * * * * * *
 
 void clearOledArray() {
   for (int i=0; i < 15; i++) {

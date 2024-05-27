@@ -47,8 +47,11 @@ const String appVersion = "             v0.02";
 #ifndef MENU_TEXT_ENTER_SSID_PASSWORD
    #define MENU_TEXT_ENTER_SSID_PASSWORD       "E Chrs  E.btn Slct  # Go  * Bck"
 #endif
+#ifndef MENU_TEXT_POT_VALUES
+   #define MENU_TEXT_POT_VALUES                "* Cancel"
+#endif
 
-const String menu_text[14] = {
+const String menu_text[15] = {
   MENU_TEXT_MENU,
   MENU_TEXT_MENU_HASH_IS_FUNCTIONS,
   MENU_TEXT_FINISH,
@@ -62,7 +65,8 @@ const String menu_text[14] = {
   MENU_TEXT_SELECT_WIT_ENTRY,
   MENU_TEXT_SELECT_SSIDS,
   MENU_TEXT_SELECT_SSIDS_FROM_FOUND,
-  MENU_TEXT_ENTER_SSID_PASSWORD
+  MENU_TEXT_ENTER_SSID_PASSWORD,
+  MENU_TEXT_POT_VALUES
 };
 
 const int menu_menu =                     0;
@@ -79,6 +83,7 @@ const int menu_select_wit_entry =        10;
 const int menu_select_ssids =            11;
 const int menu_select_ssids_from_found = 12;
 const int menu_enter_ssid_password =     13;
+const int menu_pot_values =              14;
 
 const int last_oled_screen_speed =            0;
 const int last_oled_screen_roster =           1;
@@ -90,6 +95,7 @@ const int last_oled_screen_extra_submenu =    6;
 const int last_oled_screen_all_locos =        7;
 const int last_oled_screen_edit_consist =     8;
 const int last_oled_screen_direct_commands =  9;
+const int last_oled_screen_pot_values     =  10;
 
 
 #ifndef DIRECT_COMMAND_LIST
@@ -218,6 +224,7 @@ const int glyph_speed_step = 0x00d6;
 #define KEYPAD_USE_SELECT_FUNCTION 9
 #define KEYPAD_USE_ENTER_SSID_PASSWORD 10
 #define KEYPAD_USE_EDIT_CONSIST 11
+#define KEYPAD_USE_POT_VALUES 12
 
 #define ENCODER_USE_OPERATION 0
 #define ENCODER_USE_SSID_PASSWORD 1
@@ -288,6 +295,9 @@ const int glyph_speed_step = 0x00d6;
 #ifndef MENU_ITEM_TEXT_TITLE_EDIT_CONSIST
    #define MENU_ITEM_TEXT_TITLE_EDIT_CONSIST           "Edit Consist Facing"
 #endif
+#ifndef MENU_ITEM_TEXT_TITLE_POT_VALUES
+   #define MENU_ITEM_TEXT_TITLE_POT_VALUES             "Potentiometer Values"
+#endif
 
 #ifndef MENU_ITEM_TEXT_MENU_FUNCTION
    #define MENU_ITEM_TEXT_MENU_FUNCTION               "no+# Select   * Cancel  # List"
@@ -325,21 +335,25 @@ const int glyph_speed_step = 0x00d6;
 #ifndef MENU_ITEM_TEXT_MENU_EDIT_CONSIST
    #define MENU_ITEM_TEXT_MENU_EDIT_CONSIST           "no Chng Facing   * Close"
 #endif
+#ifndef MENU_ITEM_TEXT_MENU_POT_VALUES
+   #define MENU_ITEM_TEXT_MENU_POT_VALUES           "* Close"
+#endif
 
-const String menuText[12][3] = {
+const String menuText[13][3] = {
   {MENU_ITEM_TEXT_TITLE_FUNCTION,              MENU_ITEM_TEXT_MENU_FUNCTION, ""},   //0
   {MENU_ITEM_TEXT_TITLE_ADD_LOCO,              MENU_ITEM_TEXT_MENU_ADD_LOCO, ""},   //1
   {MENU_ITEM_TEXT_TITLE_DROP_LOCO,             MENU_ITEM_TEXT_MENU_DROP_LOCO, ""},   //2
-  {MENU_ITEM_TEXT_TITLE_TOGGLE_DIRECTION,      MENU_ITEM_TEXT_MENU_TOGGLE_DIRECTION, ""},   //3
-  {MENU_ITEM_TEXT_TITLE_SPEED_STEP_MULTIPLIER, MENU_ITEM_TEXT_MENU_SPEED_STEP_MULTIPLIER, ""}, //4
+  {MENU_ITEM_TEXT_TITLE_TOGGLE_DIRECTION,      MENU_ITEM_TEXT_MENU_TOGGLE_DIRECTION, ""},   //3        //TODO: remove
+  {MENU_ITEM_TEXT_TITLE_SPEED_STEP_MULTIPLIER, MENU_ITEM_TEXT_MENU_SPEED_STEP_MULTIPLIER, ""}, //4     //TODO: remove
   {MENU_ITEM_TEXT_TITLE_THROW_POINT,           MENU_ITEM_TEXT_MENU_THROW_POINT, ""},   //5
   {MENU_ITEM_TEXT_TITLE_CLOSE_POINT,           MENU_ITEM_TEXT_MENU_CLOSE_POINT, ""},   //6
-  {MENU_ITEM_TEXT_TITLE_ROUTE,                 MENU_ITEM_TEXT_MENU_ROUTE, ""},   //7
-  {MENU_ITEM_TEXT_TITLE_TRACK_POWER,           MENU_ITEM_TEXT_MENU_TRACK_POWER, ""}, //8 
-  {MENU_ITEM_TEXT_TITLE_EXTRAS,                MENU_ITEM_TEXT_MENU_EXTRAS, ""},   //9
+  {MENU_ITEM_TEXT_TITLE_ROUTE,                 MENU_ITEM_TEXT_MENU_ROUTE,       ""},   //7
+  {MENU_ITEM_TEXT_TITLE_TRACK_POWER,           MENU_ITEM_TEXT_MENU_TRACK_POWER, ""},   //8 
+  {MENU_ITEM_TEXT_TITLE_EXTRAS,                MENU_ITEM_TEXT_MENU_EXTRAS,      ""},   //9
 
-  {MENU_ITEM_TEXT_TITLE_HEARTBEAT,             MENU_ITEM_TEXT_MENU_HEARTBEAT, ""},   //10
-  {MENU_ITEM_TEXT_TITLE_EDIT_CONSIST,          MENU_ITEM_TEXT_MENU_EDIT_CONSIST, ""}    //11
+  {MENU_ITEM_TEXT_TITLE_HEARTBEAT,             MENU_ITEM_TEXT_MENU_HEARTBEAT,    ""},   //10
+  {MENU_ITEM_TEXT_TITLE_EDIT_CONSIST,          MENU_ITEM_TEXT_MENU_EDIT_CONSIST, ""},   //11
+  {MENU_ITEM_TEXT_TITLE_POT_VALUES,            MENU_ITEM_TEXT_MENU_POT_VALUES,   ""}    //12
 };
 
 const int menuCharsRequired[12] = {  // 0=none effectively a direct command / 1=one used for sub menus / 2=one or more
@@ -364,6 +378,9 @@ const int menuCharsRequired[12] = {  // 0=none effectively a direct command / 1=
 #ifndef EXTRA_MENU_TEXT_CHAR_EDIT_CONSIST
    #define EXTRA_MENU_TEXT_CHAR_EDIT_CONSIST           "Edt Consist"
 #endif
+#ifndef EXTRA_MENU_TEXT_CHAR_POT_VALUES
+   #define EXTRA_MENU_TEXT_CHAR_POT_VALUES              "POT values"
+#endif
 #ifndef EXTRA_MENU_TEXT_CHAR_TBA
    #define EXTRA_MENU_TEXT_CHAR_TBA                    "" 
 #endif
@@ -380,7 +397,7 @@ const int menuCharsRequired[12] = {  // 0=none effectively a direct command / 1=
 const String extraSubMenuText[8] = { 
    EXTRA_MENU_TEXT_CHAR_FUNCTION_KEY_TOGGLE,      //0
    EXTRA_MENU_TEXT_CHAR_EDIT_CONSIST,             //1
-   EXTRA_MENU_TEXT_CHAR_TBA,                      //2
+   EXTRA_MENU_TEXT_CHAR_POT_VALUES,               //2
    EXTRA_MENU_TEXT_CHAR_HEARTBEAT_TOGGLE,         //3  
    EXTRA_MENU_TEXT_CHAR_TBA,                      //4
    EXTRA_MENU_TEXT_CHAR_TBA,                      //5
@@ -389,10 +406,10 @@ const String extraSubMenuText[8] = {
 
 #define EXTRA_MENU_CHAR_FUNCTION_KEY_TOGGLE    '0'
 #define EXTRA_MENU_CHAR_EDIT_CONSIST           '1'
-#define EXTRA_MENU_CHAR_TBA                    '2'
+#define EXTRA_MENU_CHAR_POT_VALUES             '2'
 #define EXTRA_MENU_CHAR_HEARTBEAT_TOGGLE       '3'
-#define EXTRA_MENU_CHAR_INCREASE_MAX_THROTTLES '4'
-#define EXTRA_MENU_CHAR_DECREASE_MAX_THROTTLES '5'
+#define EXTRA_MENU_CHAR_INCREASE_MAX_THROTTLES '4'  //TODO: remove
+#define EXTRA_MENU_CHAR_DECREASE_MAX_THROTTLES '5'  //TODO: remove
 #define EXTRA_MENU_CHAR_DISCONNECT             '6'
 #define EXTRA_MENU_CHAR_OFF_SLEEP              '7'
 #define EXTRA_MENU_CHAR_OFF_SLEEP_HIDDEN       '9'  // doesn't appear in the menu
@@ -678,6 +695,10 @@ const char ssidPasswordBlankChar = 164;
 #define REVERSER_POSITION_FORWARD 0
 #define REVERSER_POSITION_NEUTRAL 1
 #define REVERSER_POSITION_REVERSE 2
+
+#define POT_VALUE_TITLE_THROTTLE "Throttle:"
+#define POT_VALUE_TITLE_REVERSER "Reverser:"
+#define POT_VALUE_TITLE_BRAKE    "Brake:"
 
 #ifndef BRAKE_DELAY_TIMES
    #define BRAKE_DELAY_TIMES {500,250,150,100,25,1};

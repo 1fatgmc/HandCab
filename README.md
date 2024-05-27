@@ -202,35 +202,35 @@ Pressing the Encoder button while the ESP32 is in Deep Sleep will revive it.
 * 2 = FUNCTION_3 (DCC Horn/Whistle)
 * 3 = FUNCTION_3
 * 4 = FUNCTION_4
-* 5 = NEXT_THROTLE
-* 6 = SPEED_MULTIPLIER
-* 7 = DIRECTION_REVERSE
-* 8 = SPEED_STOP
-* 9 = DIRECTION_FORWARD
+* 5 = <strike>NEXT_THROTLE</strike>
+* 6 = <strike>SPEED_MULTIPLIER</strike>
+* 7 = <strike>DIRECTION_REVERSE</strike>
+* 8 = <strike>SPEED_STOP</strike>
+* 9 = <strike>DIRECTION_FORWARD</strike>
 
 ### Allowed assignments for the 0-9 keys:
 
 Note: you need to edit config_buttons.h to alter these assignments   (copy config_buttons_example.h)
 - FUNCTION_NULL   - don't do anything
 - FUNCTION_0 - FUNCTION_31
-- SPEED_STOP
-- SPEED_UP
-- SPEED_DOWN
-- SPEED_UP_FAST
-- SPEED_DOWN_FAST
-- SPEED_MULTIPLIER
+- <strike>SPEED_STOP</strike>
+- <strike>SPEED_UP</strike>
+- <strike>SPEED_DOWN</strike>
+- <strike>SPEED_UP_FAST</strike>
+- <strike>SPEED_DOWN_FAST</strike>
+- <strike>SPEED_MULTIPLIER</strike>
 - E_STOP   - E Stop all locos on all throttles
 - E_STOP_CURRENT_LOCO - E Stop locos on current throttle only
 - POWER_TOGGLE
 - POWER_ON
 - POWER_OFF
-- DIRECTION_TOGGLE
-- DIRECTION_FORWARD
-- DIRECTION_REVERSE
-- NEXT_THROTTLE
-- SPEED_STOP_THEN_TOGGLE_DIRECTION   - stops the loco if moving.  Toggles the direction if stationary.
-- MAX_THROTTLE_INCREASE    - change the number of available throttles on-the-fly
-- MAX_THROTTLE_DECREASE    - change the number of available throttles on-the-fly
+- <strike>DIRECTION_TOGGLE</strike>
+- <strike>DIRECTION_FORWARD</strike>
+- <strike>DIRECTION_REVERSE</strike>
+- <strike>NEXT_THROTTLE</strike>
+- <strike>SPEED_STOP_THEN_TOGGLE_DIRECTION   - stops the loco if moving.  Toggles the direction if stationary.
+- <strike>MAX_THROTTLE_INCREASE    - change the number of available throttles on-the-fly
+- <strike>MAX_THROTTLE_DECREASE    - change the number of available throttles on-the-fly
 
 ### instructions for optional use of a potentiometer (pot) instead of the encoder for the throttle
 
