@@ -1240,7 +1240,7 @@ void brakePot_loop() {
 
     currentBrakeDelayTime = 0;
     for (int i=0; i<8; i++) {
-      if (potValue < brakePotValues[i]) {    /// Check to see if it is in range i
+      if (avgPotValue < brakePotValues[i]) {    /// Check to see if it is in range i
         brakeCurrentPosition = i;
         currentBrakeDelayTime = brakeDelayTimes[i];
         break;
