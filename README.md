@@ -265,6 +265,9 @@ config_buttons.h can include the following optional defines:
 ## Change Log
 
 ### v0.02
+- added pot test. menu 9 -> 2 
+
+### v0.02
 - basic support of the reverser pot
 
 ### v0.01 
