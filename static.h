@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "             v0.03";
+const String appVersion = "             v0.04";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -705,4 +705,7 @@ const char ssidPasswordBlankChar = 164;
 #endif
 #ifndef ACCELLERATION_DELAY_TIMES
    #define ACCELLERATION_DELAY_TIMES {100,500,1000}; 
+#endif
+#ifndef DCC_SPEED_CHANGE_AMOUNT
+   #define DCC_SPEED_CHANGE_AMOUNT 1
 #endif

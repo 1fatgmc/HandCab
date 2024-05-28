@@ -89,8 +89,8 @@ int brakeCurrentPosition = 0;
 // Momentum - acceleration and brake
 int brakeDelayTimes[] = BRAKE_DELAY_TIMES;
 int currentBrakeDelayTime = 0;
-int accelllerationDelayTimes[] = ACCELLERATION_DELAY_TIMES;
-int currentAccellerationDelayTime = 0;
+int accellerationDelayTimes[] = ACCELLERATION_DELAY_TIMES;
+int currentAccellerationDelayTime = accellerationDelayTimes[0];
 int targetSpeed = 0;
 int targetDirection = Forward;
 double startMomentumTimerMillis = -1;
@@ -1143,7 +1143,7 @@ void throttlePot_loop() {
     lastThrottlePotValue = avgPotValue;
     // debug_print("Throttle Pot Value: "); debug_println(potValue);
 
-    if (throttlePotUseNotches) { // use notches
+    // if (throttlePotUseNotches) { // use notches
       throttlePotNotch = 0;
       for (int i=0; i<8; i++) {
         if (avgPotValue < throttlePotNotchValues[i]) {    /// Check to see if it is in notch i
@@ -1153,20 +1153,21 @@ void throttlePot_loop() {
         }                
       } 
       if (throttlePotNotch!=currentThrottlePotNotch) {
-            speedSet(throttlePotTargetSpeed);
+            // speedSet(throttlePotTargetSpeed);
+            targetSpeed = throttlePotTargetSpeed;
             startMomentumTimerMillis = millis();
       }
 
-    } else { // use a linear speed
-      double newSpeed = potValue-throttlePotNotchValues[0];
-      newSpeed = newSpeed / (throttlePotNotchValues[7]-throttlePotNotchValues[0]);
-      newSpeed = newSpeed * 127;
-      if (newSpeed<0) { newSpeed = 0; }
-      else if (newSpeed>127) { newSpeed = 127; }
-      int iSpeed = newSpeed;
-      debug_print("newSpeed: "); debug_print(newSpeed); debug_print(" iSpeed: "); debug_println(iSpeed);
-      speedSet(iSpeed);
-    }  
+    // } else { // use a linear speed
+    //   double newSpeed = potValue-throttlePotNotchValues[0];
+    //   newSpeed = newSpeed / (throttlePotNotchValues[7]-throttlePotNotchValues[0]);
+    //   newSpeed = newSpeed * 127;
+    //   if (newSpeed<0) { newSpeed = 0; }
+    //   else if (newSpeed>127) { newSpeed = 127; }
+    //   int iSpeed = newSpeed;
+    //   debug_print("newSpeed: "); debug_print(newSpeed); debug_print(" iSpeed: "); debug_println(iSpeed);
+    //   speedSet(iSpeed);
+    // }  
 
     if(lastOledScreen == last_oled_screen_pot_values) {
       refreshOled();
@@ -1260,12 +1261,26 @@ void brakePot_loop() {
 
 void speedAdjust_loop() {
   if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(0)) > 0) {
+    int changeAmount = 0;
     if (currentSpeed!=targetSpeed) {
+      debug_print("speedAdjust_loop() target: "); debug_print(targetSpeed);
+      debug_print(" current: "); debug_println(currentSpeed);
       if (currentSpeed>targetSpeed) {  // need to brake
-
+        if (millis() - startMomentumTimerMillis >= currentBrakeDelayTime) {   // Check to see if the delay period has elasped.
+          changeAmount = -1 * DCC_SPEED_CHANGE_AMOUNT;
+          if (currentSpeed-changeAmount < targetSpeed) changeAmount = targetSpeed-currentSpeed;  // only relevant if the spped change is greater that 1
+        }
       }
       else { // need to accelerate
-
+        if (millis() - startMomentumTimerMillis >= currentAccellerationDelayTime) {
+          startMomentumTimerMillis = millis();
+          changeAmount = 1 * DCC_SPEED_CHANGE_AMOUNT;
+          if (currentSpeed+changeAmount > targetSpeed) changeAmount = currentSpeed-targetSpeed;  // only relevant if the spped change is greater that 1
+        }
+      }
+      if (changeAmount!=0) {  
+        startMomentumTimerMillis = millis(); //restart timer
+        speedSet(currentSpeed + changeAmount);
       }
     }
   } else { // at target speed
@@ -2831,23 +2846,23 @@ void writeOledSpeed() {
     sDirection = (currentDirection==Forward) ? DIRECTION_FORWARD_TEXT : DIRECTION_REVERSE_TEXT;
 
     oledText[0] = sLocos; 
-    //oledText[7] = "     " + sDirection;  // old function state format
 
     drawTopLine = true;
 
   } else {
     setAppnameForOled();
-    // oledText[2] = MSG_THROTTLE_NUMBER + String(currentThrottleIndex+1);
     oledText[3] = MSG_NO_LOCO_SELECTED;
     drawTopLine = true;
   }
 
   if (!hashShowsFunctionsInsteadOfKeyDefs) {
-      // oledText[5] = menu_menu;
       setMenuTextForOled(menu_menu);
     } else {
-    // oledText[5] = menu_menu_hash_is_functions;
     setMenuTextForOled(menu_menu_hash_is_functions);
+  }
+
+  if (targetSpeed!=currentSpeed) {
+    oledText[10] = "          Tgt: " + String(targetSpeed);
   }
 
   writeOledArray(false, false, false, drawTopLine);
@@ -2857,22 +2872,18 @@ void writeOledSpeed() {
   }
 
    if (speedStep != currentSpeedStep) {
-    // oledText[3] = "X " + String(speedStepCurrentMultiplier);
     u8g2.setDrawColor(1);
     u8g2.setFont(FONT_SPEED_STEP);
     u8g2.drawGlyph(1, 38, glyph_speed_step);
     u8g2.setFont(FONT_DEFAULT);
-    // u8g2.drawStr(0, 37, ("X " + String(speedStepCurrentMultiplier)).c_str());
     u8g2.drawStr(9, 37, String(speedStepCurrentMultiplier).c_str());
   }
 
   if (trackPower == PowerOn) {
-    // u8g2.drawBox(0,41,15,8);
     u8g2.drawRBox(0,40,9,9,1);
     u8g2.setDrawColor(0);
   }
   u8g2.setFont(FONT_TRACK_POWER);
-  // u8g2.drawStr(0, 48, label_track_power.c_str());
   u8g2.drawGlyph(1, 48, glyph_track_power);
   u8g2.setDrawColor(1);
 
@@ -2905,7 +2916,7 @@ void writeOledSpeed() {
 void writeOledFunctions() {
   lastOledScreen = last_oled_screen_speed;
 
-  debug_println("writeOledFunctions():");
+  // debug_println("writeOledFunctions():");
    for (int i=0; i < MAX_FUNCTIONS; i++) {
     if (functionStates[i]) {
       // new function state format
@@ -2916,7 +2927,7 @@ void writeOledFunctions() {
       u8g2.setDrawColor(1);
      }
    }
-  debug_println("writeOledFunctions(): end");
+  // debug_println("writeOledFunctions(): end");
 }
 
 
