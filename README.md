@@ -165,7 +165,7 @@ Notes:
   - 2 = release loco:
      - Followed by the loco number, followed by \# to release an individual loco.  e.g. to deselect the loco 99 you would press '\*299\#'
      - Otherwise followed directly by \#  to release all e.g. '\*2\#'
-  - 3 = Toggle direction.
+  - 3 = <strike>Toggle direction.</strike>
   - 4 = Set / Unset a 2 times multiplier for the rotary encoder dial.
   - 5 = Throw turnout/point.  
      - Followed by the turnout/point number, followed by the \# to complete.  e.g. Throw turnout XX12 '\*512\#'  (where XX is a prefix defined in the sketch) 

@@ -12,8 +12,7 @@
 
 // true = if the locos(s) are stationary, clicking the encoder button will toggle the direction
 // this only takes effect if the ENCODER_BUTTON_ACTION (above) is set to SPEED_STOP_THEN_TOGGLE_DIRECTION
-
-#define TOGGLE_DIRECTION_ON_ENCODER_BUTTON_PRESSED_WHEN_STATIONAY         true
+// #define TOGGLE_DIRECTION_ON_ENCODER_BUTTON_PRESSED_WHEN_STATIONAY         true
 
 // rotary encode debounce time
 // increase if you find the encoder buttons bounce (activate twice) or you get speed changes when you press the encoder button

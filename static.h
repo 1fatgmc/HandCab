@@ -252,7 +252,7 @@ const int glyph_target_speed = 0x0107;
 #define MENU_ITEM_FUNCTION '0'
 #define MENU_ITEM_ADD_LOCO '1'
 #define MENU_ITEM_DROP_LOCO '2'
-#define MENU_ITEM_TOGGLE_DIRECTION '3'
+// #define MENU_ITEM_TOGGLE_DIRECTION '3'
 #define MENU_ITEM_SPEED_STEP_MULTIPLIER '4'
 #define MENU_ITEM_THROW_POINT '5'
 #define MENU_ITEM_CLOSE_POINT '6'
@@ -269,9 +269,6 @@ const int glyph_target_speed = 0x0107;
 #endif
 #ifndef MENU_ITEM_TEXT_TITLE_DROP_LOCO
    #define MENU_ITEM_TEXT_TITLE_DROP_LOCO              "Drop Loco"
-#endif
-#ifndef MENU_ITEM_TEXT_TITLE_TOGGLE_DIRECTION
-   #define MENU_ITEM_TEXT_TITLE_TOGGLE_DIRECTION       "Toggle Dir"
 #endif
 #ifndef MENU_ITEM_TEXT_TITLE_SPEED_STEP_MULTIPLIER
    #define MENU_ITEM_TEXT_TITLE_SPEED_STEP_MULTIPLIER  "X Speed Step"
@@ -310,9 +307,9 @@ const int glyph_target_speed = 0x0107;
 #ifndef MENU_ITEM_TEXT_MENU_DROP_LOCO
    #define MENU_ITEM_TEXT_MENU_DROP_LOCO              "addr+# One   * Cancel    # All"
 #endif
-#ifndef MENU_ITEM_TEXT_MENU_TOGGLE_DIRECTION
-   #define MENU_ITEM_TEXT_MENU_TOGGLE_DIRECTION       "# Toggle                      "
-#endif
+// #ifndef MENU_ITEM_TEXT_MENU_TOGGLE_DIRECTION
+//    #define MENU_ITEM_TEXT_MENU_TOGGLE_DIRECTION       "# Toggle                      "
+// #endif
 #ifndef MENU_ITEM_TEXT_MENU_SPEED_STEP_MULTIPLIER
    #define MENU_ITEM_TEXT_MENU_SPEED_STEP_MULTIPLIER  "* Cancel                # Toggle"
 #endif
@@ -345,7 +342,7 @@ const String menuText[13][3] = {
   {MENU_ITEM_TEXT_TITLE_FUNCTION,              MENU_ITEM_TEXT_MENU_FUNCTION, ""},   //0
   {MENU_ITEM_TEXT_TITLE_ADD_LOCO,              MENU_ITEM_TEXT_MENU_ADD_LOCO, ""},   //1
   {MENU_ITEM_TEXT_TITLE_DROP_LOCO,             MENU_ITEM_TEXT_MENU_DROP_LOCO, ""},   //2
-  {MENU_ITEM_TEXT_TITLE_TOGGLE_DIRECTION,      MENU_ITEM_TEXT_MENU_TOGGLE_DIRECTION, ""},   //3        //TODO: remove
+  {"",      "", ""},   //3        //TODO: remove
   {MENU_ITEM_TEXT_TITLE_SPEED_STEP_MULTIPLIER, MENU_ITEM_TEXT_MENU_SPEED_STEP_MULTIPLIER, ""}, //4     //TODO: remove
   {MENU_ITEM_TEXT_TITLE_THROW_POINT,           MENU_ITEM_TEXT_MENU_THROW_POINT, ""},   //5
   {MENU_ITEM_TEXT_TITLE_CLOSE_POINT,           MENU_ITEM_TEXT_MENU_CLOSE_POINT, ""},   //6

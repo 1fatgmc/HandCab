@@ -209,7 +209,7 @@ const int rotaryEncoderButtonEncoderDebounceTime = ROTARY_ENCODER_DEBOUNCE_TIME;
 const boolean encoderRotationClockwiseIsIncreaseSpeed = ENCODER_ROTATION_CLOCKWISE_IS_INCREASE_SPEED;
 // false = Counterclockwise  true = clockwise
 
-const boolean toggleDirectionOnEncoderButtonPressWhenStationary = TOGGLE_DIRECTION_ON_ENCODER_BUTTON_PRESSED_WHEN_STATIONAY;
+//const boolean toggleDirectionOnEncoderButtonPressWhenStationary = TOGGLE_DIRECTION_ON_ENCODER_BUTTON_PRESSED_WHEN_STATIONAY;
 // true = if the locos(s) are stationary, clicking the encoder button will toggle the direction
 
 //4x3 keypad only uses 0-9
@@ -1251,7 +1251,7 @@ void brakePot_loop() {
         break;
       }                
     } 
-    debug_print("brakeCurrentPosition: "); debug_println(brakeCurrentPosition);
+    // debug_print("brakeCurrentPosition: "); debug_println(brakeCurrentPosition);
 
     // if(lastOledScreen == last_oled_screen_pot_values) {
       refreshOled();
@@ -1971,10 +1971,10 @@ void doMenu() {
         writeOledSpeed();
         break;
       }
-    case MENU_ITEM_TOGGLE_DIRECTION: { // change direction
-        toggleDirection();
-        break;
-      }
+    // case MENU_ITEM_TOGGLE_DIRECTION: { // change direction
+    //     toggleDirection();
+    //     break;
+    //   }
      case MENU_ITEM_SPEED_STEP_MULTIPLIER: { // toggle speed step additional Multiplier
         // toggleAdditionalMultiplier();
         toggleAccelerationDelayTime();
@@ -2763,8 +2763,8 @@ void writeOledMenu(String soFar) {
               drawTopLine = true;
             }
           } // fall through
-      case MENU_ITEM_FUNCTION:
-      case MENU_ITEM_TOGGLE_DIRECTION: {
+      case MENU_ITEM_FUNCTION: {
+      // case MENU_ITEM_TOGGLE_DIRECTION: {
           if (wiThrottleProtocol.getNumberOfLocomotives('0') <= 0 ) {
             // oledText[2] = MSG_THROTTLE_NUMBER + String(1);
             oledText[3] = MSG_NO_LOCO_SELECTED;
