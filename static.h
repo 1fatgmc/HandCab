@@ -210,6 +210,7 @@ const int glyph_heartbeat_off = 0x00b7;
 const int glyph_track_power = 0x00eb;
 const int glyph_speed_step = 0x00d6;
 const int glyph_brake_position = 0x0100;
+const int glyph_target_speed = 0x0107;
 // const int glyph_direction_forward = 0x0070;
 // const int glyph_direction_reverse = 0x006d;
 

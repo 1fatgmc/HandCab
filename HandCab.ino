@@ -2881,12 +2881,6 @@ void writeOledSpeed() {
     setMenuTextForOled(menu_menu_hash_is_functions);
   }
 
-  if (targetSpeed!=currentSpeed) {
-    if (targetSpeed>currentSpeed) oledText[10] = "           -> ";
-    else oledText[10] = "           <- ";
-    oledText[10] = oledText[10] + String(targetSpeed);
-  }
-
   writeOledArray(false, false, false, drawTopLine);
 
   if (wiThrottleProtocol.getNumberOfLocomotives('0') > 0 ) {
@@ -2901,21 +2895,34 @@ void writeOledSpeed() {
   //   u8g2.drawStr(9, 37, String(speedStepCurrentMultiplier).c_str());
   // }
 
-// currentAccellerationDelayTimeIndex
+  // currentAccellerationDelayTimeIndex
   u8g2.setDrawColor(1);
   u8g2.setFont(FONT_GLYPHS);
   u8g2.drawGlyph(1, 38, glyph_speed_step);
   u8g2.setFont(FONT_DEFAULT);
   u8g2.drawStr(9, 37, String(currentAccellerationDelayTimeIndex).c_str());
 
-// brakeCurrentPosition
+  // brakeCurrentPosition
   u8g2.setDrawColor(1);
   u8g2.setFont(FONT_GLYPHS);
   u8g2.drawGlyph(0, 28, glyph_brake_position);
   u8g2.setFont(FONT_DEFAULT);
   u8g2.drawStr(9, 27, String(brakeCurrentPosition).c_str());
 
-// track power
+  // target speed / throttle position
+  if (targetSpeed!=currentSpeed) {
+    // if (targetSpeed>currentSpeed) oledText[10] = "           -> ";
+    // else oledText[10] = "           <- ";
+    // oledText[10] = oledText[10] + String(targetSpeed);
+
+    u8g2.setDrawColor(1);
+    u8g2.setFont(FONT_GLYPHS);
+    u8g2.drawGlyph(104, 48, glyph_target_speed);
+    u8g2.setFont(FONT_DEFAULT);
+    u8g2.drawStr(113, 48, String(targetSpeed).c_str());
+  }
+
+  // track power
   if (trackPower == PowerOn) {
     u8g2.drawRBox(0,40,9,9,1);
     u8g2.setDrawColor(0);
@@ -2924,6 +2931,7 @@ void writeOledSpeed() {
   u8g2.drawGlyph(1, 48, glyph_track_power);
   u8g2.setDrawColor(1);
 
+  // heartbeat
   if (!heartbeatCheckEnabled) {
     u8g2.setFont(FONT_GLYPHS);
     u8g2.drawGlyph(13, 49, glyph_heartbeat_off);
