@@ -2903,28 +2903,29 @@ void writeOledSpeed() {
 
 // currentAccellerationDelayTimeIndex
   u8g2.setDrawColor(1);
-  u8g2.setFont(FONT_SPEED_STEP);
+  u8g2.setFont(FONT_GLYPHS);
   u8g2.drawGlyph(1, 38, glyph_speed_step);
   u8g2.setFont(FONT_DEFAULT);
   u8g2.drawStr(9, 37, String(currentAccellerationDelayTimeIndex).c_str());
 
 // brakeCurrentPosition
   u8g2.setDrawColor(1);
-  u8g2.setFont(FONT_SPEED_STEP);
-  u8g2.drawGlyph(0, 29, glyph_brake_position);
+  u8g2.setFont(FONT_GLYPHS);
+  u8g2.drawGlyph(0, 28, glyph_brake_position);
   u8g2.setFont(FONT_DEFAULT);
-  u8g2.drawStr(9, 28, String(brakeCurrentPosition).c_str());
+  u8g2.drawStr(9, 27, String(brakeCurrentPosition).c_str());
 
+// track power
   if (trackPower == PowerOn) {
     u8g2.drawRBox(0,40,9,9,1);
     u8g2.setDrawColor(0);
   }
-  u8g2.setFont(FONT_TRACK_POWER);
+  u8g2.setFont(FONT_GLYPHS);
   u8g2.drawGlyph(1, 48, glyph_track_power);
   u8g2.setDrawColor(1);
 
   if (!heartbeatCheckEnabled) {
-    u8g2.setFont(FONT_HEARTBEAT);
+    u8g2.setFont(FONT_GLYPHS);
     u8g2.drawGlyph(13, 49, glyph_heartbeat_off);
     u8g2.setDrawColor(2);
     u8g2.drawLine(13, 48, 20, 41);
