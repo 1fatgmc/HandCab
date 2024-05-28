@@ -209,6 +209,7 @@ const String label_track_power = "TRK";
 const int glyph_heartbeat_off = 0x00b7;
 const int glyph_track_power = 0x00eb;
 const int glyph_speed_step = 0x00d6;
+const int glyph_brake_position = 0x00d7;
 // const int glyph_direction_forward = 0x0070;
 // const int glyph_direction_reverse = 0x006d;
 

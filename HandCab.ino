@@ -1227,31 +1227,35 @@ void reverserPot_loop() {
 
 void brakePot_loop() {
   int potValue = ( analogRead(brakePotPin) );  //Reads the analog value on the brake pin.
+  int noElements = sizeof(lastBrakePotValues) / sizeof(lastBrakePotValues[0]);
 
   int avgPotValue = 0;
-  for (int i=1; i<9; i++) {
+  for (int i=1; i<noElements; i++) {
     lastBrakePotValues[i-1] = lastBrakePotValues[i];
     avgPotValue = avgPotValue + lastBrakePotValues[i-1];
   }
-  lastBrakePotValues[8] = potValue;
-  avgPotValue = (avgPotValue + potValue) / 9;
+  lastBrakePotValues[noElements-1] = potValue;
+  avgPotValue = (avgPotValue + potValue) / noElements;
 
   if (avgPotValue!=lastBrakePotValue) { 
     // debug_print("Brake Pot Value: "); debug_println(potValue);
     lastBrakePotValue = avgPotValue;
 
+    noElements = sizeof(brakeDelayTimes) / sizeof(brakeDelayTimes[0]);
+
     currentBrakeDelayTime = 0;
-    for (int i=0; i<8; i++) {
+    for (int i=0; i<noElements; i++) {
       if (avgPotValue < brakePotValues[i]) {    /// Check to see if it is in range i
         brakeCurrentPosition = i;
         currentBrakeDelayTime = brakeDelayTimes[i];
         break;
       }                
     } 
+    debug_print("brakeCurrentPosition: "); debug_println(brakeCurrentPosition);
 
-    if(lastOledScreen == last_oled_screen_pot_values) {
+    // if(lastOledScreen == last_oled_screen_pot_values) {
       refreshOled();
-    }
+    // }
   }
 }
 
@@ -2897,13 +2901,19 @@ void writeOledSpeed() {
   //   u8g2.drawStr(9, 37, String(speedStepCurrentMultiplier).c_str());
   // }
 
-// currentAccellerationDelayTime
+// currentAccellerationDelayTimeIndex
   u8g2.setDrawColor(1);
   u8g2.setFont(FONT_SPEED_STEP);
   u8g2.drawGlyph(1, 38, glyph_speed_step);
   u8g2.setFont(FONT_DEFAULT);
   u8g2.drawStr(9, 37, String(currentAccellerationDelayTimeIndex).c_str());
 
+// brakeCurrentPosition
+  u8g2.setDrawColor(1);
+  u8g2.setFont(FONT_SPEED_STEP);
+  u8g2.drawGlyph(0, 29, glyph_brake_position);
+  u8g2.setFont(FONT_DEFAULT);
+  u8g2.drawStr(9, 28, String(brakeCurrentPosition).c_str());
 
   if (trackPower == PowerOn) {
     u8g2.drawRBox(0,40,9,9,1);
