@@ -17,7 +17,7 @@ extern bool oledTextInvert[];
 
 extern int currentSpeed;
 extern Direction currentDirection;
-extern int speedStepCurrentMultiplier;
+// extern int speedStepCurrentMultiplier;
 
 extern TrackPower trackPower;
 extern String turnoutPrefix;
@@ -150,7 +150,7 @@ void speedDown(int);
 void speedUp(int);
 void speedSet(int);
 void releaseAllLocos();
-void toggleAdditionalMultiplier(void);
+// void toggleAdditionalMultiplier(void);
 void toggleHeartbeatCheck(void);
 void toggleDirection();
 void changeDirection(Direction);

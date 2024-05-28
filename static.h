@@ -576,7 +576,7 @@ const char ssidPasswordBlankChar = 164;
 #endif
 
 #ifndef ENCODER_BUTTON_ACTION
-    #define ENCODER_BUTTON_ACTION SPEED_STOP_THEN_TOGGLE_DIRECTION  // default if not defined in config_buttons.h
+    #define ENCODER_BUTTON_ACTION E_STOP  // default if not defined in config_buttons.h
 #endif
 
 // *******************************************************************************************************************
@@ -651,13 +651,13 @@ const char ssidPasswordBlankChar = 164;
    #define CHOSEN_KEYPAD_6_FUNCTION     SPEED_MULTIPLIER
 #endif
 #ifndef CHOSEN_KEYPAD_7_FUNCTION
-   #define CHOSEN_KEYPAD_7_FUNCTION     DIRECTION_REVERSE
+   #define CHOSEN_KEYPAD_7_FUNCTION     FUNCTION_7
 #endif
 #ifndef CHOSEN_KEYPAD_8_FUNCTION
    #define CHOSEN_KEYPAD_8_FUNCTION     E_STOP
 #endif
 #ifndef CHOSEN_KEYPAD_9_FUNCTION
-   #define CHOSEN_KEYPAD_9_FUNCTION     DIRECTION_FORWARD
+   #define CHOSEN_KEYPAD_9_FUNCTION     FUNCTION_9
 #endif
 #ifndef CHOSEN_KEYPAD_A_FUNCTION
    #define CHOSEN_KEYPAD_A_FUNCTION     CUSTOM_1

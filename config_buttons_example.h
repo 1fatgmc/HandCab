@@ -31,9 +31,9 @@
 #define CHOSEN_KEYPAD_4_FUNCTION     FUNCTION_4
 #define CHOSEN_KEYPAD_5_FUNCTION     FUNCTION_5
 #define CHOSEN_KEYPAD_6_FUNCTION     SPEED_MULTIPLIER
-#define CHOSEN_KEYPAD_7_FUNCTION     DIRECTION_REVERSE
+#define CHOSEN_KEYPAD_7_FUNCTION     FUNCTION_7
 #define CHOSEN_KEYPAD_8_FUNCTION     E_STOP
-#define CHOSEN_KEYPAD_9_FUNCTION     DIRECTION_FORWARD
+#define CHOSEN_KEYPAD_9_FUNCTION     FUNCTION_9
 // #define CHOSEN_KEYPAD_A_FUNCTION     CUSTOM_1
 // #define CHOSEN_KEYPAD_B_FUNCTION     CUSTOM_2
 // #define CHOSEN_KEYPAD_C_FUNCTION     CUSTOM_3
@@ -49,9 +49,9 @@
 #define CHOSEN_KEYPAD_4_DISPLAY_NAME     "4 F4"
 #define CHOSEN_KEYPAD_5_DISPLAY_NAME     "5 F5"
 #define CHOSEN_KEYPAD_6_DISPLAY_NAME     "6 X Spd"
-#define CHOSEN_KEYPAD_7_DISPLAY_NAME     "7 Rev"
+#define CHOSEN_KEYPAD_7_DISPLAY_NAME     "7 F7"
 #define CHOSEN_KEYPAD_8_DISPLAY_NAME     "8 Estop"
-#define CHOSEN_KEYPAD_9_DISPLAY_NAME     "9 Fwd"
+#define CHOSEN_KEYPAD_9_DISPLAY_NAME     "9 F9"
 
 // by default, # will show the list above. 
 // if you change the following line to true, it will take you to the Loco Function Labels screen directly
@@ -237,7 +237,7 @@
 // #define THROTTLE_POT_PIN 39
 // #define THROTTLE_POT_USE_NOTCHES false  // if false, only THROTTLE_POT_NOTCH_VALUES 0 and 7 below (first and last) are use. 
 // #define THROTTLE_POT_NOTCH_VALUES {1,585,1170,1755,2340,2925,3510,4094}
-// #define THROTTLE_POT_NOTCH_SPEEDS {0,18,36,54,72,90,108,127}  // 0-127 These numbers will be the speed step for each of the 8 throttle notches.
+// #define THROTTLE_POT_NOTCH_SPEEDS {0,18,36,54,72,90,108,126}  // 0-126 These numbers will be the speed step for each of the 8 throttle notches.
 
 // note: The example values above for THROTTLE_POT_NOTCH_VALUES 
 // are useble for a 10k ohm pot but any value pot can be used. 

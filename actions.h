@@ -33,24 +33,24 @@
 #define FUNCTION_30 30
 #define FUNCTION_31 31
 
-#define SPEED_STOP 30
-#define SPEED_UP 31
-#define SPEED_DOWN 32
-#define SPEED_UP_FAST 33
-#define SPEED_DOWN_FAST 34
+// #define SPEED_STOP 30
+// #define SPEED_UP 31
+// #define SPEED_DOWN 32
+// #define SPEED_UP_FAST 33
+// #define SPEED_DOWN_FAST 34
 #define E_STOP 35
 #define SPEED_MULTIPLIER 36
 
-#define DIRECTION_TOGGLE 50
-#define DIRECTION_FORWARD 51
-#define DIRECTION_REVERSE 52
+// #define DIRECTION_TOGGLE 50
+// #define DIRECTION_FORWARD 51
+// #define DIRECTION_REVERSE 52
 
-#define SPEED_STOP_THEN_TOGGLE_DIRECTION 54   // stops the loco if moving.  Toggles the direction if stationary.
+// #define SPEED_STOP_THEN_TOGGLE_DIRECTION 54   // stops the loco if moving.  Toggles the direction if stationary.
 
 #define E_STOP_CURRENT_LOCO 55
 
-#define MAX_THROTTLE_INCREASE 56
-#define MAX_THROTTLE_DECREASE 57
+// #define MAX_THROTTLE_INCREASE 56
+// #define MAX_THROTTLE_DECREASE 57
 
 // actions that are not related to a loco need to be above 500
 

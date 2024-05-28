@@ -50,7 +50,7 @@ bool oledTextInvert[18] = {false, false, false, false, false, false, false, fals
 
 int currentSpeed;
 Direction currentDirection;
-int speedStepCurrentMultiplier = 1;
+// int speedStepCurrentMultiplier = 1;
 
 TrackPower trackPower = PowerUnknown;
 String turnoutPrefix = "";
@@ -91,6 +91,7 @@ int brakeDelayTimes[] = BRAKE_DELAY_TIMES;
 int currentBrakeDelayTime = 0;
 int accellerationDelayTimes[] = ACCELLERATION_DELAY_TIMES;
 int currentAccellerationDelayTime = accellerationDelayTimes[0];
+int currentAccellerationDelayTimeIndex = 0;
 int targetSpeed = 0;
 int targetDirection = Forward;
 double startMomentumTimerMillis = -1;
@@ -1835,40 +1836,40 @@ void doDirectAdditionalButtonCommand (int buttonIndex, bool pressed) {
 void doDirectAction(int buttonAction) {
   debug_println("doDirectAction(): ");
   switch (buttonAction) {
-      case DIRECTION_FORWARD: {
-        changeDirection(Forward);
-        break; 
-      }
-      case DIRECTION_REVERSE: {
-        changeDirection(Reverse);
-        break; 
-      }
-      case DIRECTION_TOGGLE: {
-        toggleDirection();
-        break; 
-      }
-      case SPEED_STOP: {
-        speedSet(0);
-        break; 
-      }
-      case SPEED_UP: {
-        speedUp(currentSpeedStep);
-        break; 
-      }
-      case SPEED_DOWN: {
-        speedDown(currentSpeedStep);
-        break; 
-      }
-      case SPEED_UP_FAST: {
-        speedUp(currentSpeedStep*speedStepMultiplier);
-        break; 
-      }
-      case SPEED_DOWN_FAST: {
-        speedUp(currentSpeedStep*speedStepMultiplier);
-        break; 
-      }
+      // case DIRECTION_FORWARD: {
+      //   changeDirection(Forward);
+      //   break; 
+      // }
+      // case DIRECTION_REVERSE: {
+      //   changeDirection(Reverse);
+      //   break; 
+      // }
+      // case DIRECTION_TOGGLE: {
+      //   toggleDirection();
+      //   break; 
+      // }
+      // case SPEED_STOP: {
+      //   speedSet(0);
+      //   break; 
+      // }
+      // case SPEED_UP: {
+      //   speedUp(currentSpeedStep);
+      //   break; 
+      // }
+      // case SPEED_DOWN: {
+      //   speedDown(currentSpeedStep);
+      //   break; 
+      // }
+      // case SPEED_UP_FAST: {
+      //   speedUp(currentSpeedStep*speedStepMultiplier);
+      //   break; 
+      // }
+      // case SPEED_DOWN_FAST: {
+      //   speedUp(currentSpeedStep*speedStepMultiplier);
+      //   break; 
+      // }
       case SPEED_MULTIPLIER: {
-        toggleAdditionalMultiplier();
+        toggleAccelerationDelayTime();
         break; 
       }
       case E_STOP: {
@@ -1895,10 +1896,10 @@ void doDirectAction(int buttonAction) {
       //   nextThrottle();
       //   break; 
       // }
-      case SPEED_STOP_THEN_TOGGLE_DIRECTION: {
-        stopThenToggleDirection();
-        break; 
-      }
+      // case SPEED_STOP_THEN_TOGGLE_DIRECTION: {
+      //   stopThenToggleDirection();
+      //   break; 
+      // }
       case CUSTOM_1: {
         wiThrottleProtocol.sendCommand(CUSTOM_COMMAND_1);
         break; 
@@ -1971,7 +1972,8 @@ void doMenu() {
         break;
       }
      case MENU_ITEM_SPEED_STEP_MULTIPLIER: { // toggle speed step additional Multiplier
-        toggleAdditionalMultiplier();
+        // toggleAdditionalMultiplier();
+        toggleAccelerationDelayTime();
         break;
       }
    case MENU_ITEM_THROW_POINT: {  // throw point
@@ -2274,21 +2276,35 @@ void releaseOneLoco(String loco) {
   debug_println("releaseOneLoco(): end"); 
 }
 
-void toggleAdditionalMultiplier() {
-  switch (speedStepCurrentMultiplier) {
-    case 1: 
-      speedStepCurrentMultiplier = speedStepAdditionalMultiplier;
-      break;
-    case speedStepAdditionalMultiplier:
-      speedStepCurrentMultiplier = speedStepAdditionalMultiplier*2;
-      break;
-    case speedStepAdditionalMultiplier*2:
-      speedStepCurrentMultiplier = 1;
-      break;
-  }
+// void toggleAdditionalMultiplier() {
+//   switch (speedStepCurrentMultiplier) {
+//     case 1: 
+//       speedStepCurrentMultiplier = speedStepAdditionalMultiplier;
+//       break;
+//     case speedStepAdditionalMultiplier:
+//       speedStepCurrentMultiplier = speedStepAdditionalMultiplier*2;
+//       break;
+//     case speedStepAdditionalMultiplier*2:
+//       speedStepCurrentMultiplier = 1;
+//       break;
+//   }
 
-  currentSpeedStep = speedStep * speedStepCurrentMultiplier;
-  writeOledSpeed();
+//   currentSpeedStep = speedStep * speedStepCurrentMultiplier;
+//   writeOledSpeed();
+// }
+
+void toggleAccelerationDelayTime() {
+  int newIndex = currentAccellerationDelayTimeIndex + 1;
+  int noElements = sizeof(accellerationDelayTimes) / sizeof(accellerationDelayTimes[0]);
+
+  if (newIndex<0) {
+    newIndex = 0;
+  } else if (newIndex>=noElements) {
+    newIndex = 0;
+  }
+  currentAccellerationDelayTimeIndex = newIndex;
+  currentAccellerationDelayTime = accellerationDelayTimes[newIndex];
+  refreshOled();
 }
 
 void toggleHeartbeatCheck() {
@@ -2862,7 +2878,9 @@ void writeOledSpeed() {
   }
 
   if (targetSpeed!=currentSpeed) {
-    oledText[10] = "          Tgt: " + String(targetSpeed);
+    if (targetSpeed>currentSpeed) oledText[10] = "           -> ";
+    else oledText[10] = "           <- ";
+    oledText[10] = oledText[10] + String(targetSpeed);
   }
 
   writeOledArray(false, false, false, drawTopLine);
@@ -2871,13 +2889,21 @@ void writeOledSpeed() {
     writeOledFunctions();
   }
 
-   if (speedStep != currentSpeedStep) {
-    u8g2.setDrawColor(1);
-    u8g2.setFont(FONT_SPEED_STEP);
-    u8g2.drawGlyph(1, 38, glyph_speed_step);
-    u8g2.setFont(FONT_DEFAULT);
-    u8g2.drawStr(9, 37, String(speedStepCurrentMultiplier).c_str());
-  }
+  // if (speedStep != currentSpeedStep) {
+  //   u8g2.setDrawColor(1);
+  //   u8g2.setFont(FONT_SPEED_STEP);
+  //   u8g2.drawGlyph(1, 38, glyph_speed_step);
+  //   u8g2.setFont(FONT_DEFAULT);
+  //   u8g2.drawStr(9, 37, String(speedStepCurrentMultiplier).c_str());
+  // }
+
+// currentAccellerationDelayTime
+  u8g2.setDrawColor(1);
+  u8g2.setFont(FONT_SPEED_STEP);
+  u8g2.drawGlyph(1, 38, glyph_speed_step);
+  u8g2.setFont(FONT_DEFAULT);
+  u8g2.drawStr(9, 37, String(currentAccellerationDelayTimeIndex).c_str());
+
 
   if (trackPower == PowerOn) {
     u8g2.drawRBox(0,40,9,9,1);

@@ -265,7 +265,8 @@ config_buttons.h can include the following optional defines:
 ## Change Log
 
 ### v0.03
-- rudimentary momentum added 
+- rudimentary momentum added
+- support the acceleration multiplier   default to keypad-6
 
 ### v0.02
 - added pot test. menu 9 -> 2 
