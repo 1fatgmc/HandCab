@@ -97,6 +97,11 @@ const int last_oled_screen_edit_consist =     8;
 const int last_oled_screen_direct_commands =  9;
 const int last_oled_screen_pot_values     =  10;
 
+typedef enum PotDirection {
+    REVERSE = 0,
+    FORWARD = 1,
+    NEUTRAL = 2
+} PotDirection;
 
 #ifndef DIRECT_COMMAND_LIST
   #define DIRECT_COMMAND_LIST            "Direct Commands"
@@ -211,8 +216,9 @@ const int glyph_track_power = 0x00eb;
 const int glyph_speed_step = 0x008f;
 const int glyph_brake_position = 0x008e;
 const int glyph_target_speed = 0x010d;
-// const int glyph_direction_forward = 0x0070;
-// const int glyph_direction_reverse = 0x006d;
+const int glyph_target_direction_forward = 0x00d8;
+const int glyph_target_direction_neutral = 0x00d2;
+const int glyph_target_direction_reverse = 0x00d7;
 
 #define KEYPAD_USE_OPERATION 0
 #define KEYPAD_USE_SELECT_SSID 1
