@@ -265,6 +265,10 @@ config_buttons.h can include the following optional defines:
 ## Change Log
 
 ### v0.03
+- added support for brake overriding the throttle setting
+- added support for neutral overriding the throttle setting
+
+### v0.03
 - rudimentary momentum added
 - support the acceleration multiplier   default to keypad-6
 

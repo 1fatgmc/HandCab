@@ -1126,7 +1126,7 @@ void encoderSpeedChange(bool rotationIsClockwise, int speedChange) {
 //   Throttle Pot
 // *********************************************************************************
 
-void throttlePot_loop() {
+void throttlePot_loop(bool forceRead) {
   // Read the throttle pot to see what notch it is on.
   int currentThrottlePotNotch = throttlePotNotch;
   int potValue = ( analogRead(throttlePotPin) );  //Reads the analog value on the throttle pin.
@@ -1142,7 +1142,9 @@ void throttlePot_loop() {
   avgPotValue = (avgPotValue + potValue) / noElements;
 
   // only do something if the pot value is different
-  if (avgPotValue!=lastThrottlePotValue) { 
+  // or deliberate read
+  if ( (avgPotValue!=lastThrottlePotValue) 
+  || (forceRead) )  { 
     lastThrottlePotValue = avgPotValue;
     noElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
 
@@ -1155,10 +1157,11 @@ void throttlePot_loop() {
           break;
         }                
       } 
-      if (throttlePotNotch!=currentThrottlePotNotch) {
-            // speedSet(throttlePotTargetSpeed);
+      if ( (throttlePotNotch!=currentThrottlePotNotch) 
+      || (forceRead) ) {
             targetSpeed = throttlePotTargetSpeed;
-            startMomentumTimerMillis = millis();
+            targetSpeedOverride();
+            if (!forceRead) startMomentumTimerMillis = millis(); // don't reset the timer on a forced read
       }
 
     // } else { // use a linear speed
@@ -1217,6 +1220,8 @@ void reverserPot_loop() {
       } else {
         debug_println("Reverser - Neutral");
       }
+      throttlePot_loop(true);  // recheck the throttle position
+      targetSpeedOverride();
     }
   }
   refreshOled();
@@ -1250,6 +1255,8 @@ void brakePot_loop() {
       if (avgPotValue < brakePotValues[i]) {    /// Check to see if it is in range i
         brakeCurrentPosition = i;
         currentBrakeDelayTime = brakeDelayTimes[i];
+        throttlePot_loop(true);  // recheck the throttle position
+        targetSpeedOverride();
         break;
       }                
     } 
@@ -1292,6 +1299,28 @@ void speedAdjust_loop() {
   }
 }
 
+// * * * * * * * * * * * * * * * * * * * * * * * *
+
+//Take the pot values and adjust/override the target speed.
+void targetSpeedOverride() {
+
+  // check the brake
+  if (brakeCurrentPosition>0) { // ignore throttle and th reverser
+    targetSpeed = 0;
+    return;
+  }
+
+  // check the reverser
+  if (reverserCurrentPosition==REVERSER_POSITION_FORWARD) {
+      
+  } else if (reverserCurrentPosition==REVERSER_POSITION_NEUTRAL) {
+    targetSpeed = 0;
+    return;
+    
+  } else { // REVERSER_POSITION_REVERSE
+
+  }
+}
 
 // *********************************************************************************
 //   keypad
@@ -1455,7 +1484,7 @@ void loop() {
     rotary_loop();
   }
   if (witConnectionState == CONNECTION_STATE_CONNECTED) {
-    throttlePot_loop();
+    throttlePot_loop(false);
     reverserPot_loop(); 
     brakePot_loop(); 
     speedAdjust_loop();
