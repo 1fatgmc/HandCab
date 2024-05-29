@@ -81,7 +81,7 @@ int reverserCurrentPosition = REVERSER_POSITION_NEUTRAL;
 
 // brake pot values
 int brakePotPin = BRAKE_POT_PIN;
-int brakePotValues[] = BRAKE_POT_VALUES; 
+int brakePotValues[] = BRAKE_POT_VALUES;
 int lastBrakePotValue = 0;
 int lastBrakePotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 int brakeCurrentPosition = 0;
@@ -1252,17 +1252,22 @@ void brakePot_loop() {
     // debug_print("Brake Pot Value: "); debug_println(potValue);
     lastBrakePotValue = avgPotValue;
 
-    noElements = sizeof(brakeDelayTimes) / sizeof(brakeDelayTimes[0]);
-    currentBrakeDelayTime = 0;
+    noElements = sizeof(brakePotValues) / sizeof(brakePotValues[0]);
+    currentBrakeDelayTime = -1;
+    brakeCurrentPosition = -1;
     for (int i=0; i<noElements; i++) {
-      if (avgPotValue < brakePotValues[i]) {    /// Check to see if it is in range i
+      if (avgPotValue < brakePotValues[i]) {    /// Check to see if it is < value in i
         brakeCurrentPosition = i;
-        currentBrakeDelayTime = brakeDelayTimes[i];
-        throttlePot_loop(true);  // recheck the throttle position
-        targetSpeedAndDirectionOverride();
         break;
-      }                
-    } 
+      }
+    }
+    if (brakeCurrentPosition == -1)  { // didn't find it the list 
+      brakeCurrentPosition = noElements;  // use the last value
+    }
+
+    currentBrakeDelayTime = brakeDelayTimes[brakeCurrentPosition];
+    throttlePot_loop(true);  // recheck the throttle position
+    targetSpeedAndDirectionOverride();
 
     refreshOled();
   }

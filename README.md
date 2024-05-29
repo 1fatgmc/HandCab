@@ -264,7 +264,10 @@ config_buttons.h can include the following optional defines:
 
 ## Change Log
 
-### v0.03
+### v0.05
+- change to need one less entry in BRAKE_POT_VALUES than BRAKE_DELAY_TIMES
+
+### v0.04
 - added support for brake overriding the throttle setting.
 - added support for neutral overriding the throttle setting.
 
