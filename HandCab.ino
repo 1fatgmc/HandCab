@@ -1129,24 +1129,26 @@ void encoderSpeedChange(bool rotationIsClockwise, int speedChange) {
 void throttlePot_loop() {
   // Read the throttle pot to see what notch it is on.
   int currentThrottlePotNotch = throttlePotNotch;
-
   int potValue = ( analogRead(throttlePotPin) );  //Reads the analog value on the throttle pin.
 
+  // average out the last x values from the pot
+  int noElements = sizeof(lastThrottlePotValues) / sizeof(lastThrottlePotValues[0]);
   int avgPotValue = 0;
-  for (int i=1; i<9; i++) {
+  for (int i=1; i<noElements; i++) {
     lastThrottlePotValues[i-1] = lastThrottlePotValues[i];
     avgPotValue = avgPotValue + lastThrottlePotValues[i-1];
   }
-  lastThrottlePotValues[8] = potValue;
-  avgPotValue = (avgPotValue + potValue) / 9;
+  lastThrottlePotValues[noElements-1] = potValue;
+  avgPotValue = (avgPotValue + potValue) / noElements;
 
+  // only do something if the pot value is different
   if (avgPotValue!=lastThrottlePotValue) { 
     lastThrottlePotValue = avgPotValue;
-    // debug_print("Throttle Pot Value: "); debug_println(potValue);
+    noElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
 
     // if (throttlePotUseNotches) { // use notches
       throttlePotNotch = 0;
-      for (int i=0; i<8; i++) {
+      for (int i=0; i<noElements; i++) {
         if (avgPotValue < throttlePotNotchValues[i]) {    /// Check to see if it is in notch i
           throttlePotTargetSpeed = throttlePotNotchSpeeds[i];
           throttlePotNotch = i;
@@ -1170,9 +1172,7 @@ void throttlePot_loop() {
     //   speedSet(iSpeed);
     // }  
 
-    if(lastOledScreen == last_oled_screen_pot_values) {
-      refreshOled();
-    }
+    refreshOled();
   }
 }
 
@@ -1181,17 +1181,20 @@ void throttlePot_loop() {
 // *********************************************************************************
 
 void reverserPot_loop() {
-  int potValue = ( analogRead(reverserPotPin) );  //Reads the analog value on the reverser pin.
   int lastReverserPosition = reverserCurrentPosition;
+  int potValue = ( analogRead(reverserPotPin) );  //Reads the analog value on the reverser pin.
 
+  // average out the last x values from the pot
+  int noElements = sizeof(lastReverserPotValues) / sizeof(lastReverserPotValues[0]);
   int avgPotValue = 0;
-  for (int i=1; i<9; i++) {
+  for (int i=1; i<noElements; i++) {
     lastReverserPotValues[i-1] = lastReverserPotValues[i];
     avgPotValue = avgPotValue + lastReverserPotValues[i-1];
   }
-  lastReverserPotValues[8] = potValue;
-  avgPotValue = (avgPotValue + potValue) / 9;
+  lastReverserPotValues[noElements-1] = potValue;
+  avgPotValue = (avgPotValue + potValue) / noElements;
 
+  // only do something if the pot value is different
   if (avgPotValue!=lastReverserPotValue) { 
     // debug_print("Reverser Pot Value: "); debug_println(potValue);
     lastReverserPotValue = avgPotValue;
@@ -1216,9 +1219,7 @@ void reverserPot_loop() {
       }
     }
   }
-    if(lastOledScreen == last_oled_screen_pot_values) {
-      refreshOled();
-    }
+  refreshOled();
 }
 
 // *********************************************************************************
@@ -1227,8 +1228,9 @@ void reverserPot_loop() {
 
 void brakePot_loop() {
   int potValue = ( analogRead(brakePotPin) );  //Reads the analog value on the brake pin.
-  int noElements = sizeof(lastBrakePotValues) / sizeof(lastBrakePotValues[0]);
 
+  // average out the last x values from the pot
+  int noElements = sizeof(lastBrakePotValues) / sizeof(lastBrakePotValues[0]);
   int avgPotValue = 0;
   for (int i=1; i<noElements; i++) {
     lastBrakePotValues[i-1] = lastBrakePotValues[i];
@@ -1237,12 +1239,12 @@ void brakePot_loop() {
   lastBrakePotValues[noElements-1] = potValue;
   avgPotValue = (avgPotValue + potValue) / noElements;
 
+  // only do something if the pot value is different
   if (avgPotValue!=lastBrakePotValue) { 
     // debug_print("Brake Pot Value: "); debug_println(potValue);
     lastBrakePotValue = avgPotValue;
 
     noElements = sizeof(brakeDelayTimes) / sizeof(brakeDelayTimes[0]);
-
     currentBrakeDelayTime = 0;
     for (int i=0; i<noElements; i++) {
       if (avgPotValue < brakePotValues[i]) {    /// Check to see if it is in range i
@@ -1251,11 +1253,8 @@ void brakePot_loop() {
         break;
       }                
     } 
-    // debug_print("brakeCurrentPosition: "); debug_println(brakeCurrentPosition);
 
-    // if(lastOledScreen == last_oled_screen_pot_values) {
-      refreshOled();
-    // }
+    refreshOled();
   }
 }
 
@@ -2187,7 +2186,8 @@ void speedSet(int amt) {
     // lastDirectionSent = -1;
     lastSpeedThrottleIndex = 0;
 
-    writeOledSpeed();
+    // writeOledSpeed();
+    refreshOled();
   }
 }
 
@@ -2887,18 +2887,10 @@ void writeOledSpeed() {
     writeOledFunctions();
   }
 
-  // if (speedStep != currentSpeedStep) {
-  //   u8g2.setDrawColor(1);
-  //   u8g2.setFont(FONT_SPEED_STEP);
-  //   u8g2.drawGlyph(1, 38, glyph_speed_step);
-  //   u8g2.setFont(FONT_DEFAULT);
-  //   u8g2.drawStr(9, 37, String(speedStepCurrentMultiplier).c_str());
-  // }
-
   // currentAccellerationDelayTimeIndex
   u8g2.setDrawColor(1);
   u8g2.setFont(FONT_GLYPHS);
-  u8g2.drawGlyph(1, 38, glyph_speed_step);
+  u8g2.drawGlyph(0, 38, glyph_speed_step);
   u8g2.setFont(FONT_DEFAULT);
   u8g2.drawStr(9, 37, String(currentAccellerationDelayTimeIndex).c_str());
 
