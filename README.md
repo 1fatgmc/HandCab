@@ -34,19 +34,8 @@ Required Components
 * Wire - If you plan to solder the connections,which is the recommended approach, then stranded, coloured wire is advisable.  ([Example](https://www.jaycar.com.au/rainbow-cable-16-core-sold-per-metre/p/WM4516))
 * Optional: Up to 7 additional buttons can be added, each with their own independent commands.
 
-*Standard Configuration Pinouts*
-![Assembly diagram](WiTcontroller%20pinouts%20v0.1.png)
-
-*Pinouts for Optional Additional Buttons*
-![Assembly diagram - Optional Additional Buttons](WiTcontroller%20-%20Optional%20Buttons%20-%20pinouts%20v0.1.png)
-
-//*Pinouts for Optional 4x4 keypad and Additional Buttons*
-//![Assembly diagram - 4x4 keypad and Optional Additional Buttons](WiTcontroller%20-%204x4%20keypad,%20Optional%20Buttons%20-%20pinouts%20v0.1.png)
-
-
-Notes:
-
-* For a different take on what is possible by extending the design, have a look at: https://1fatgmc.com/RailRoad/DCC/page-5-B.html
+*Pinouts with Additional 7 Buttons*
+![Alt text](https://1fatgmc.com/RailRoad/DCC/24-05-07%20Build%20Pt%206-1.jpg)
 
 ## Loading the code
 
