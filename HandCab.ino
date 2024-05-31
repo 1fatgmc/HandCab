@@ -1149,14 +1149,23 @@ void throttlePot_loop(bool forceRead) {
     noElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
 
     // if (throttlePotUseNotches) { // use notches
-      throttlePotNotch = 0;
+
+      throttlePotNotch = -1;
       for (int i=0; i<noElements; i++) {
         if (avgPotValue < throttlePotNotchValues[i]) {    /// Check to see if it is in notch i
-          throttlePotTargetSpeed = throttlePotNotchSpeeds[i];
+          if (i==0) { //notch 1 is always speed zero
+            throttlePotTargetSpeed = 0;
+          } else {// use the speed values element 1 less than the notch number
+            throttlePotTargetSpeed = throttlePotNotchSpeeds[i-1];
+          } 
           throttlePotNotch = i;
           break;
         }                
       } 
+      if (throttlePotNotch == -1) { //didn't find it, so it must be above the last element in the pot values
+        throttlePotNotch = noElements-1;
+        throttlePotTargetSpeed = throttlePotNotchSpeeds[noElements-1];
+      }
       if ( (throttlePotNotch!=currentThrottlePotNotch) 
       || (forceRead) ) {
             targetSpeed = throttlePotTargetSpeed;

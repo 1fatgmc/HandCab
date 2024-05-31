@@ -235,9 +235,11 @@
 
 // #define THROTTLE_POT_PIN 39
 // #define THROTTLE_POT_USE_NOTCHES false  // if false, only THROTTLE_POT_NOTCH_VALUES 0 and 7 below (first and last) are use. 
-// #define THROTTLE_POT_NOTCH_VALUES {1,585,1170,1755,2340,2925,3510,4094}
-// #define THROTTLE_POT_NOTCH_SPEEDS {0,18,36,54,72,90,108,126}  // 0-126 These numbers will be the speed step for each of the 8 throttle notches.
-
+// #define THROTTLE_POT_NOTCH_VALUES {20,585,1170,1755,2340,2925,3510,4000}
+// the notch speeds misalign with the pot values 
+// i.e. <pot[0] is always absolute speed 0. <pot[1] = notch_speed[0]. >pot[7]=notch_speed[8]
+// values must be 0-126 max
+/// #define THROTTLE_POT_NOTCH_SPEEDS {9, 18,  36,  54,  72,  90, 108, 126}
 // note: The example values above for THROTTLE_POT_NOTCH_VALUES 
 // are useble for a 10k ohm pot but any value pot can be used. 
 // Just adjust the numbers.

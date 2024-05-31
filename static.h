@@ -680,10 +680,10 @@ const char ssidPasswordBlankChar = 164;
    #define THROTTLE_POT_USE_NOTCHES true
 #endif
 #ifndef THROTTLE_POT_NOTCH_VALUES   
-   #define THROTTLE_POT_NOTCH_VALUES {1111,1347,1591,1833,2105,2379,2622,2837};
+   #define THROTTLE_POT_NOTCH_VALUES {20,585,1170,1755,2340,2925,3510,4000}
 #endif
 #ifndef THROTTLE_POT_NOTCH_SPEEDS
-   #define THROTTLE_POT_NOTCH_SPEEDS {0,18,36,54,72,90,108,127}
+#define THROTTLE_POT_NOTCH_SPEEDS {9, 18,  36,  54,  72,  90, 108, 126}
 #endif
 
 #ifndef REVERSER_POT_PIN
@@ -701,6 +701,9 @@ const char ssidPasswordBlankChar = 164;
 #define POT_VALUE_TITLE_REVERSER "Reverser:"
 #define POT_VALUE_TITLE_BRAKE    "Brake:"
 
+#ifndef BRAKE_POT_VALUES
+   #define BRAKE_POT_VALUES  {720, 1365, 2048, 2731, 3413};
+#endif
 #ifndef BRAKE_DELAY_TIMES
    #define BRAKE_DELAY_TIMES {500,250,150,100,25,1};
 #endif
