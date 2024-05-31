@@ -70,12 +70,14 @@ int throttlePotNotchSpeeds[] = THROTTLE_POT_NOTCH_SPEEDS;
 int throttlePotNotch = 0;
 int throttlePotTargetSpeed = 0;
 int lastThrottlePotValue = 0;
+int lastThrottlePotHighValue = 0;  // highest of the most recent
 int lastThrottlePotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 // reverser pot values
 int reverserPotPin = REVERSER_POT_PIN;
 int reverserPotValues[] = REVERSER_POT_VALUES; 
 int lastReverserPotValue = 0;
+int lastReverserPotHighValue = 0;  // highest of the most recent
 int lastReverserPotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 int reverserCurrentPosition = REVERSER_POSITION_NEUTRAL;
 
@@ -83,6 +85,7 @@ int reverserCurrentPosition = REVERSER_POSITION_NEUTRAL;
 int brakePotPin = BRAKE_POT_PIN;
 int brakePotValues[] = BRAKE_POT_VALUES;
 int lastBrakePotValue = 0;
+int lastBrakePotHighValue = 0;  // highest of the most recent
 int lastBrakePotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 int brakeCurrentPosition = 0;
 
@@ -1141,6 +1144,13 @@ void throttlePot_loop(bool forceRead) {
   lastThrottlePotValues[noElements-1] = potValue;
   avgPotValue = (avgPotValue + potValue) / noElements;
 
+  // get the highest recent value
+  lastThrottlePotHighValue = -1;
+  for (int i=0; i<noElements; i++) {
+    if (lastThrottlePotValues[i] > lastThrottlePotHighValue) 
+    lastThrottlePotHighValue = lastThrottlePotValues[i];
+  }
+
   // only do something if the pot value is different
   // or deliberate read
   if ( (avgPotValue!=lastThrottlePotValue) 
@@ -1206,6 +1216,13 @@ void reverserPot_loop() {
   lastReverserPotValues[noElements-1] = potValue;
   avgPotValue = (avgPotValue + potValue) / noElements;
 
+  // get the highest recent value
+  lastReverserPotHighValue = -1;
+  for (int i=0; i<noElements; i++) {
+    if (lastReverserPotValues[i] > lastReverserPotHighValue) 
+    lastReverserPotHighValue = lastReverserPotValues[i];
+  }
+
   // only do something if the pot value is different
   if (avgPotValue!=lastReverserPotValue) { 
     // debug_print("Reverser Pot Value: "); debug_println(potValue);
@@ -1255,6 +1272,13 @@ void brakePot_loop() {
   }
   lastBrakePotValues[noElements-1] = potValue;
   avgPotValue = (avgPotValue + potValue) / noElements;
+
+  // get the highest recent value
+  lastBrakePotHighValue = -1;
+  for (int i=0; i<noElements; i++) {
+    if (lastBrakePotValues[i] > lastBrakePotHighValue) 
+    lastBrakePotHighValue = lastBrakePotValues[i];
+  }
 
   // only do something if the pot value is different
   if (avgPotValue!=lastBrakePotValue) { 
@@ -3039,9 +3063,9 @@ void writeOledPotValues() {
   oledText[1] = POT_VALUE_TITLE_THROTTLE;
   oledText[2] = POT_VALUE_TITLE_REVERSER;
   oledText[3] = POT_VALUE_TITLE_BRAKE;
-  oledText[7] = lastThrottlePotValue;
-  oledText[8] = lastReverserPotValue;
-  oledText[9] = lastBrakePotValue;
+  oledText[7] = String(lastThrottlePotValue) + "  <= " + String(lastThrottlePotHighValue);
+  oledText[8] = String(lastReverserPotValue) + "  <= " + String(lastReverserPotHighValue);
+  oledText[9] = String(lastBrakePotValue) + "  <= " + String(lastBrakePotHighValue);
   oledText[5] = menuText[12][1];
 
   writeOledArray(false, false, true, true);
