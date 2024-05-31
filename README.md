@@ -253,6 +253,9 @@ config_buttons.h can include the following optional defines:
 
 ## Change Log
 
+### v0.06
+- revised throttle processing
+
 ### v0.05
 - change to need one less entry in BRAKE_POT_VALUES than BRAKE_DELAY_TIMES
 
