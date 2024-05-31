@@ -1229,11 +1229,11 @@ void reverserPot_loop() {
     lastReverserPotValue = avgPotValue;
 
     if (lastReverserPotValue < reverserPotValues[0]) {
-      reverserCurrentPosition = REVERSER_POSITION_FORWARD;
+      reverserCurrentPosition = REVERSER_POSITION_REVERSE;
     } else if (lastReverserPotValue < reverserPotValues[1]) {
       reverserCurrentPosition = REVERSER_POSITION_NEUTRAL;
     } else {
-      reverserCurrentPosition = REVERSER_POSITION_REVERSE;
+      reverserCurrentPosition = REVERSER_POSITION_FORWARD;
     }
 
     if (lastReverserPosition != reverserCurrentPosition) {
