@@ -99,6 +99,9 @@ int targetSpeed = 0;
 PotDirection targetDirection = FORWARD;
 double startMomentumTimerMillis = -1;
 
+// E Stop
+bool eStopEngaged = false;
+
 // server variables
 // boolean ssidConnected = false;
 String selectedSsid = "";
@@ -1350,6 +1353,10 @@ void targetSpeedAndDirectionOverride() {
     targetSpeed = 0;
   }
 
+  if (eStopEngaged) {
+    targetSpeed = 0;
+  }
+
   // check the reverser
   if (reverserCurrentPosition==REVERSER_POSITION_FORWARD) {
     if (currentSpeed==0) {
@@ -1953,11 +1960,21 @@ void doDirectAction(int buttonAction) {
         break; 
       }
       case E_STOP: {
-        speedEstop();
+        if (!eStopEngaged) {
+          speedEstop();
+          eStopEngaged = true;
+        } else {
+          eStopEngaged = false;
+        }
         break; 
       }
       case E_STOP_CURRENT_LOCO: {
-        speedEstopCurrentLoco();
+        if (!eStopEngaged) {
+          speedEstopCurrentLoco();
+          eStopEngaged = true;
+        } else {
+          eStopEngaged = false;
+        }
         break; 
       }
       case POWER_ON: {
@@ -2999,6 +3016,12 @@ void writeOledSpeed() {
   }
   u8g2.setFont(FONT_DEFAULT);
 
+  // eStop
+  if (eStopEngaged) {
+    u8g2.setFont(FONT_GLYPHS);
+    u8g2.drawGlyph(120, 32, glyph_eStop);
+  }
+
   // track power
   if (trackPower == PowerOn) {
     u8g2.drawRBox(0,40,9,9,1);
@@ -3029,6 +3052,7 @@ void writeOledSpeed() {
   u8g2.setFont(FONT_SPEED); // big
   int width = u8g2.getStrWidth(cSpeed);
   u8g2.drawStr(22+(55-width),45, cSpeed);
+
 
   u8g2.sendBuffer();
 

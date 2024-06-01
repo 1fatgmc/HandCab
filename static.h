@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "             v0.07";
+const String appVersion = "             v0.08";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -219,6 +219,7 @@ const int glyph_target_speed = 0x010d;
 const int glyph_target_direction_forward = 0x00d8;
 const int glyph_target_direction_neutral = 0x00d2;
 const int glyph_target_direction_reverse = 0x00d7;
+const int glyph_eStop = 0x0079;
 
 #define KEYPAD_USE_OPERATION 0
 #define KEYPAD_USE_SELECT_SSID 1

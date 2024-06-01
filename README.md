@@ -253,6 +253,9 @@ config_buttons.h can include the following optional defines:
 
 ## Change Log
 
+### v0.08
+- added eStop toggle
+
 ### v0.07
 - bug fix for brake last position
 - reverse reverser
