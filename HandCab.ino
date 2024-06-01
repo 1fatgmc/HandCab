@@ -2999,9 +2999,12 @@ void writeOledSpeed() {
   if (targetSpeed!=currentSpeed) {
     u8g2.setDrawColor(1);
     u8g2.setFont(FONT_GLYPHS);
-    u8g2.drawGlyph(104, 48, glyph_target_speed);
+    u8g2.drawGlyph(105, 48, glyph_target_speed);
     u8g2.setFont(FONT_DEFAULT);
-    u8g2.drawStr(113, 48, String(targetSpeed).c_str());
+    String offset = "";
+    if (targetSpeed<10) offset = " ";
+    if (targetSpeed<100) offset = offset + " ";
+    u8g2.drawStr(114, 48, (offset + String(targetSpeed)).c_str());
   }
 
   // target direction
