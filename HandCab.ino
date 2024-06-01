@@ -1298,7 +1298,7 @@ void brakePot_loop() {
       }
     }
     if (brakeCurrentPosition == -1)  { // didn't find it the list 
-      brakeCurrentPosition = noElements-1;  // use the last value
+      brakeCurrentPosition = noElements;  // use the last value (brakeDelayTimes has n-one more element than brakePotValues)
     }
 
     currentBrakeDelayTime = brakeDelayTimes[brakeCurrentPosition];
