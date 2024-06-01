@@ -3013,7 +3013,11 @@ void writeOledSpeed() {
   if (targetDirection==FORWARD) {
     u8g2.drawGlyph(120, 40, glyph_target_direction_forward);
   } else if (targetDirection==NEUTRAL) {
-    u8g2.drawGlyph(120, 40, glyph_target_direction_neutral);
+    if (currentSpeed!=0) {
+      u8g2.setFont(FONT_DEFAULT);
+      u8g2.drawStr(112, 39, String(DIRECTION_NEUTRAL_TEXT).c_str());
+      // u8g2.drawGlyph(120, 40, glyph_target_direction_neutral);
+    }
   } else {
     u8g2.drawGlyph(120, 40, glyph_target_direction_reverse);
   }
@@ -3047,7 +3051,11 @@ void writeOledSpeed() {
   // direction
   // needed for new function state format
   u8g2.setFont(FONT_DIRECTION); // medium
-  u8g2.drawStr(79,36, sDirection.c_str());
+  if ((currentSpeed!=0) || (targetDirection!=NEUTRAL)) {
+    u8g2.drawStr(79,36, sDirection.c_str());
+  } else {
+    u8g2.drawStr(79,36, String(DIRECTION_NEUTRAL_TEXT).c_str());
+  }
 
   // speed
   const char *cSpeed = sSpeed.c_str();

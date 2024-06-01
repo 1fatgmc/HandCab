@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "             v0.09";
+const String appVersion = "             v0.10";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -111,6 +111,9 @@ typedef enum PotDirection {
 #endif 
 #ifndef DIRECTION_REVERSE_TEXT
   #define DIRECTION_REVERSE_TEXT         "Rev"
+#endif 
+#ifndef DIRECTION_NEUTRAL_TEXT
+  #define DIRECTION_NEUTRAL_TEXT         "Neu"
 #endif 
 #ifndef DIRECTION_FORWARD_TEXT_SHORT
   #define DIRECTION_FORWARD_TEXT_SHORT   ">"
