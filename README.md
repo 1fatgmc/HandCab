@@ -30,7 +30,7 @@ Required Components
 * Polymer Lithium Ion Battery LiPo 1150mAh 3.7V 502535 JST Connector (or larger capacity) ([1150mAh Example](https://www.amazon.com/gp/product/B0CLTVB74T/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1))
 * KY-040 Rotary Encoder Module ([Example](https://www.amazon.com/gp/product/B07F26CT6B/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1))
 * 3x 50k potentiometers
-*  
+* an SPDT rocker switch 
 * 1.3" IIC I2C Serial 128x64 SSH1106 SSD1306 OLED LCD Display ([Example](https://www.amazon.com/gp/product/B01MRR4LVE/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1))
 * Case - See print file link for case on thingiverse.com (see below)
 * Wire - If you plan to solder the connections,which is the recommended approach, then stranded, coloured wire is advisable.  ([Example](https://www.jaycar.com.au/rainbow-cable-16-core-sold-per-metre/p/WM4516))
