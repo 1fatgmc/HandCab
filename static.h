@@ -589,6 +589,7 @@ const char ssidPasswordBlankChar = 164;
 // *******************************************************************************************************************
 // OLED
 
+
 #ifdef U8X8_HAVE_HW_SPI
     #include <SPI.h>                       // add to include path [Arduino install]\hardware\arduino\avr\libraries\SPI\src
 #endif
@@ -599,7 +600,8 @@ const char ssidPasswordBlankChar = 164;
 // U8g2 Constructor List (Frame Buffer)
 // you can overide this in config_buttons.h     DO NOT CHANGE IT HERE
 #ifndef OLED_TYPE
-    U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE, /* clock=*/ 22, /* data=*/ 23);
+
+    U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE, /* clock=*/ 22, /* data=*/ 23);
 #else
     OLED_TYPE
 #endif
@@ -689,7 +691,7 @@ const char ssidPasswordBlankChar = 164;
    #define THROTTLE_POT_NOTCH_VALUES {20,585,1170,1755,2340,2925,3510,4000}
 #endif
 #ifndef THROTTLE_POT_NOTCH_SPEEDS
-#define THROTTLE_POT_NOTCH_SPEEDS {9, 18,  36,  54,  72,  90, 108, 126}
+#define THROTTLE_POT_NOTCH_SPEEDS {4, 10,  15,  25,  35,  45, 55, 65}
 #endif
 
 #ifndef REVERSER_POT_PIN
@@ -711,10 +713,10 @@ const char ssidPasswordBlankChar = 164;
    #define BRAKE_POT_VALUES  {720, 1365, 2048, 2731, 3413};
 #endif
 #ifndef BRAKE_DELAY_TIMES
-   #define BRAKE_DELAY_TIMES {500,250,150,100,25,1};
+   #define BRAKE_DELAY_TIMES {500,200,125,50,25,1};
 #endif
 #ifndef ACCELLERATION_DELAY_TIMES
-   #define ACCELLERATION_DELAY_TIMES {100,500,1000}; 
+   #define ACCELLERATION_DELAY_TIMES {182,415,600}; 
 #endif
 #ifndef DCC_SPEED_CHANGE_AMOUNT
    #define DCC_SPEED_CHANGE_AMOUNT 1

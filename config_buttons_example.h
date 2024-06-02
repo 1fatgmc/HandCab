@@ -23,34 +23,31 @@
 // define what each button will do as direct press (not in a menu)   * and # cannot be remapped
 // see static.h or README.md for details on the allowed functions
 
-#define CHOSEN_KEYPAD_0_FUNCTION     FUNCTION_0
-#define CHOSEN_KEYPAD_1_FUNCTION     FUNCTION_1
-#define CHOSEN_KEYPAD_2_FUNCTION     FUNCTION_2
-#define CHOSEN_KEYPAD_3_FUNCTION     FUNCTION_3
-#define CHOSEN_KEYPAD_4_FUNCTION     FUNCTION_4
-#define CHOSEN_KEYPAD_5_FUNCTION     FUNCTION_5
-#define CHOSEN_KEYPAD_6_FUNCTION     SPEED_MULTIPLIER
-#define CHOSEN_KEYPAD_7_FUNCTION     FUNCTION_7
-#define CHOSEN_KEYPAD_8_FUNCTION     E_STOP
-#define CHOSEN_KEYPAD_9_FUNCTION     FUNCTION_9
-// #define CHOSEN_KEYPAD_A_FUNCTION     CUSTOM_1
-// #define CHOSEN_KEYPAD_B_FUNCTION     CUSTOM_2
-// #define CHOSEN_KEYPAD_C_FUNCTION     CUSTOM_3
-// #define CHOSEN_KEYPAD_D_FUNCTION     CUSTOM_4
+ 
+#define CHOSEN_KEYPAD_0_FUNCTION FUNCTION_0
+#define CHOSEN_KEYPAD_1_FUNCTION FUNCTION_1
+#define CHOSEN_KEYPAD_2_FUNCTION FUNCTION_2
+#define CHOSEN_KEYPAD_3_FUNCTION FUNCTION_3        //changed this to a sound function -- coupler
+#define CHOSEN_KEYPAD_4_FUNCTION FUNCTION_9        // changed this to drive hold
+#define CHOSEN_KEYPAD_5_FUNCTION FUNCTION_8        // changed this to turn the prime mover (the sound loco) on/off
+#define CHOSEN_KEYPAD_6_FUNCTION SPEED_MULTIPLIER
+#define CHOSEN_KEYPAD_7_FUNCTION FUNCTION_0 // Might change this to a sound function since I have it mapped to an external button
+#define CHOSEN_KEYPAD_8_FUNCTION FUNCTION_0   // Might change this to a sound function since I have it mapped to an external button
+#define CHOSEN_KEYPAD_9_FUNCTION FUNCTION_0 // Might change this to a sound function since I have it mapped to an external button
 
 // text that will appear when you press #
 // if you rearrange the items above, modify this text to suit    * and # cannot be remapped here
-
-#define CHOSEN_KEYPAD_0_DISPLAY_NAME     "0 Lights"
-#define CHOSEN_KEYPAD_1_DISPLAY_NAME     "1 Bell"
-#define CHOSEN_KEYPAD_2_DISPLAY_NAME     "2 Horn"
-#define CHOSEN_KEYPAD_3_DISPLAY_NAME     "3 F3"
-#define CHOSEN_KEYPAD_4_DISPLAY_NAME     "4 F4"
-#define CHOSEN_KEYPAD_5_DISPLAY_NAME     "5 F5"
-#define CHOSEN_KEYPAD_6_DISPLAY_NAME     "6 X Spd"
-#define CHOSEN_KEYPAD_7_DISPLAY_NAME     "7 F7"
-#define CHOSEN_KEYPAD_8_DISPLAY_NAME     "8 Estop"
-#define CHOSEN_KEYPAD_9_DISPLAY_NAME     "9 F9"
+ 
+#define CHOSEN_KEYPAD_0_DISPLAY_NAME "Lights"
+#define CHOSEN_KEYPAD_1_DISPLAY_NAME "1 Bell"
+#define CHOSEN_KEYPAD_2_DISPLAY_NAME "2 Horn"
+#define CHOSEN_KEYPAD_3_DISPLAY_NAME "3 Coupler"
+#define CHOSEN_KEYPAD_4_DISPLAY_NAME "4 Drive Hold"
+#define CHOSEN_KEYPAD_5_DISPLAY_NAME "5 Prime Mover"
+#define CHOSEN_KEYPAD_6_DISPLAY_NAME "Acceleration Delays"
+#define CHOSEN_KEYPAD_7_DISPLAY_NAME "Lights"    // Will relabel this if I change it to a sound function -- See above
+#define CHOSEN_KEYPAD_8_DISPLAY_NAME "Lights"  // Will relabel this if I change it to a sound function -- See above
+#define CHOSEN_KEYPAD_9_DISPLAY_NAME "Lights"    // Will relabel this if I change it to a sound function -- See above
 
 // by default, # will show the list above. 
 // if you change the following line to true, it will take you to the Loco Function Labels screen directly
@@ -61,8 +58,8 @@
 
 // speed increase for each click of the encoder 
 
-#define SPEED_STEP                       4
-#define SPEED_STEP_MULTIPLIER            3          // for 'fast' speed steps
+//#define SPEED_STEP                       4                                           // 5-28-24 commented out
+//#define SPEED_STEP_MULTIPLIER            3          // for 'fast' speed steps        // 5-28-24 commented out
 
 // Additional multiplier.  If the multiplier is enabled from the menu, each rotation of the encoder becomes the speedStep * the AdditionalMultiplier
 
@@ -91,13 +88,13 @@
 // all must be included, just set the ones you don't need to FUNCTION_NULL
 // the button numbers relate to the GPIO pins 5,15,25,26,27,32,33
 
-#define CHOSEN_ADDITIONAL_BUTTON_0_FUNCTION     FUNCTION_NULL   // GPIO 5
-#define CHOSEN_ADDITIONAL_BUTTON_1_FUNCTION     FUNCTION_NULL   // GPIO 15
-#define CHOSEN_ADDITIONAL_BUTTON_2_FUNCTION     FUNCTION_NULL   // GPIO 25
-#define CHOSEN_ADDITIONAL_BUTTON_3_FUNCTION     FUNCTION_NULL   // GPIO 26
-#define CHOSEN_ADDITIONAL_BUTTON_4_FUNCTION     FUNCTION_NULL   // GPIO 27
-#define CHOSEN_ADDITIONAL_BUTTON_5_FUNCTION     FUNCTION_NULL   // GPIO 32
-#define CHOSEN_ADDITIONAL_BUTTON_6_FUNCTION     FUNCTION_NULL   // GPIO 33
+#define CHOSEN_ADDITIONAL_BUTTON_0_FUNCTION FUNCTION_0   // GPIO 5 --- Turns Lights on/off
+#define CHOSEN_ADDITIONAL_BUTTON_1_FUNCTION FUNCTION_1   // GPIO 15 --- Bell
+#define CHOSEN_ADDITIONAL_BUTTON_2_FUNCTION FUNCTION_2   // GPIO 25 -- Horn
+#define CHOSEN_ADDITIONAL_BUTTON_3_FUNCTION POWER_TOGGLE   // GPIO 26 -- Track Power On/Off
+#define CHOSEN_ADDITIONAL_BUTTON_4_FUNCTION E_STOP_CURRENT_LOCO   // GPIO 27 --- Stops Current Loco
+#define CHOSEN_ADDITIONAL_BUTTON_5_FUNCTION FUNCTION_9  // GPIO 32 --- Drive Hold
+#define CHOSEN_ADDITIONAL_BUTTON_6_FUNCTION SPEED_MULTIPLIER   // GPIO 33 --- 3 Accelleration Delays
 
 // *******************************************************************************************************************
 // additional / optional commands
@@ -127,7 +124,7 @@
 // #define OLED_TYPE U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE, /* clock=*/ 22, /* data=*/ 23);
 
 // this is one of the common 1.3 inch OLED displays
-// #define OLED_TYPE U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE, /* clock=*/ 22, /* data=*/ 23);
+ #define OLED_TYPE U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE, /* clock=*/ 22, /* data=*/ 23);
 
 // *******************************************************************************************************************
 // Debugging
@@ -202,6 +199,7 @@
 // #define KEYPAD_DEBOUNCE_TIME 10
 // #define KEYPAD_HOLD_TIME 200
 
+
 // *******************************************************************************************************************
 // Additional / optional buttons
 // For the 4x3 Keypad 7 buttons can be used
@@ -224,7 +222,8 @@
 
 // default = 50
 // increase if you find the buttons bounce. i.e. activate twice on a single press
-// #define ADDITIONAL_BUTTON_DEBOUNCE_DELAY        50    
+// #define ADDITIONAL_BUTTON_DEBOUNCE_DELAY        50
+#define ADDITIONAL_BUTTON_DEBOUNCE_DELAY 50   // increase if you find the buttons bounce. i.e. activate twice on a single press    
 
 
 // *******************************************************************************************************************
@@ -233,13 +232,11 @@
 //
 // Set the number of notches and the values of the pot at each notch.  must be 8 values
 
-// #define THROTTLE_POT_PIN 39
-// #define THROTTLE_POT_USE_NOTCHES false  // if false, only THROTTLE_POT_NOTCH_VALUES 0 and 7 below (first and last) are use. 
-// #define THROTTLE_POT_NOTCH_VALUES {20,585,1170,1755,2340,2925,3510,4000}
-// the notch speeds misalign with the pot values 
-// i.e. <pot[0] is always absolute speed 0. <pot[1] = notch_speed[0]. >pot[7]=notch_speed[8]
-// values must be 0-126 max
-/// #define THROTTLE_POT_NOTCH_SPEEDS {9, 18,  36,  54,  72,  90, 108, 126}
+ #define THROTTLE_POT_PIN 39
+ #define THROTTLE_POT_USE_NOTCHES false  // if false, only THROTTLE_POT_NOTCH_VALUES 0 and 7 below (first and last) are use. 
+ #define THROTTLE_POT_NOTCH_VALUES {1111,1347,1591,1833,2105,2379,2622,2837}
+ #define THROTTLE_POT_NOTCH_SPEEDS {4,10,15,25,35,45,55,65}  // 0-126 These numbers will be the speed step for each of the 8 throttle notches.
+
 // note: The example values above for THROTTLE_POT_NOTCH_VALUES 
 // are useble for a 10k ohm pot but any value pot can be used. 
 // Just adjust the numbers.
@@ -247,28 +244,28 @@
 
 // *******************************************************************************************************************
 // Reverser Pot
-// #define REVERSER_POT_PIN 35
-// #define REVERSER_POT_VALUES {981,2141}               // Numbers generated by Generate_Throttle__Brake__Reverser__Numbers program.
+ #define REVERSER_POT_PIN 35
+ #define REVERSER_POT_VALUES {981,2141}               // Numbers generated by Generate_Throttle__Brake__Reverser__Numbers program.
 
 // *******************************************************************************************************************
 // brake Pot
-// #define BRAKE_POT_PIN 36
+ #define BRAKE_POT_PIN 34
 // Numbers generated by Generate_Throttle__Brake__Reverser__Numbers program.
-// there will be one less entry for this than for BRAKE_DELAY_TIMES 
-// #define BRAKE_POT_VALUES  { 400, 846,1224,1602,1980}
+// there must be the same number of entries for this and BRAKE_DELAY_TIMES 
+ #define BRAKE_POT_VALUES  {841,1224,1602,1980,2365}
 
 // *******************************************************************************************************************
 // momentum and brake values
 //
 // These numbers will setup the brake delay times.  Left to right.  
 // Less braking to more braking as the brake is applied. 
-// there will be one more entry for this than for BRAKE_POT_VALUES
-// #define BRAKE_DELAY_TIMES {500, 250, 150, 100,  25,   1}
+// there must be the same number of entries for this and BRAKE_POT_VALUES 
+ #define BRAKE_DELAY_TIMES {500,200,125,50,25,1}   // Was {500,250,150,100,25,1};
 //
 // The numbers you input here will set up the accelleration momentum.  
 // They are switchable via a throttle button at any time but only the current 
 // one that is selected will set the current acceleration momentum.
-// #define ACCELLERATION_DELAY_TIMES {100,500,1000}
+ #define ACCELLERATION_DELAY_TIMES {182,415,600} 
 //
 // The amount the DCC speed is changed by on each accelleration or brake period - default is 1
-// #define DCC_SPEED_CHANGE_AMOUNT 1
+ #define DCC_SPEED_CHANGE_AMOUNT 1
