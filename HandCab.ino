@@ -2958,6 +2958,9 @@ void writeOledSpeed() {
     }
     sSpeed = String(getDisplaySpeed());
     sDirection = (currentDirection==Forward) ? DIRECTION_FORWARD_TEXT : DIRECTION_REVERSE_TEXT;
+    if ((currentSpeed==0) && (targetDirection==NEUTRAL)) {
+      sDirection = DIRECTION_NEUTRAL_TEXT;
+    }
 
     oledText[0] = sLocos; 
 
@@ -2984,14 +2987,14 @@ void writeOledSpeed() {
   // currentAccellerationDelayTimeIndex
   u8g2.setDrawColor(1);
   u8g2.setFont(FONT_GLYPHS);
-  u8g2.drawGlyph(0, 38, glyph_speed_step);
+  u8g2.drawGlyph(0, 37, glyph_speed_step);
   u8g2.setFont(FONT_DEFAULT);
   u8g2.drawStr(9, 37, String(currentAccellerationDelayTimeIndex).c_str());
 
   // brakeCurrentPosition
   u8g2.setDrawColor(1);
   u8g2.setFont(FONT_GLYPHS);
-  u8g2.drawGlyph(0, 28, glyph_brake_position);
+  u8g2.drawGlyph(0, 27, glyph_brake_position);
   u8g2.setFont(FONT_DEFAULT);
   u8g2.drawStr(9, 27, String(brakeCurrentPosition).c_str());
 
@@ -3051,11 +3054,7 @@ void writeOledSpeed() {
   // direction
   // needed for new function state format
   u8g2.setFont(FONT_DIRECTION); // medium
-  if ((currentSpeed!=0) || (targetDirection!=NEUTRAL)) {
-    u8g2.drawStr(79,36, sDirection.c_str());
-  } else {
-    u8g2.drawStr(79,36, String(DIRECTION_NEUTRAL_TEXT).c_str());
-  }
+  u8g2.drawStr(79,36, sDirection.c_str());
 
   // speed
   const char *cSpeed = sSpeed.c_str();
@@ -3077,10 +3076,12 @@ void writeOledFunctions() {
    for (int i=0; i < MAX_FUNCTIONS; i++) {
     if (functionStates[i]) {
       // new function state format
-      u8g2.drawRBox(i*4+12,12+1,5,7,2);
+      // u8g2.drawRBox(i*4+12,12+1,5,7,2);
+      u8g2.drawRBox(i*4,12+1,5,7,2);
       u8g2.setDrawColor(0);
       u8g2.setFont(FONT_FUNCTION_INDICATORS);   
-      u8g2.drawStr( i*4+1+12, 18+1, String( (i<10) ? i : ((i<20) ? i-10 : i-20)).c_str());
+      // u8g2.drawStr( i*4+1+12, 18+1, String( (i<10) ? i : ((i<20) ? i-10 : i-20)).c_str());
+      u8g2.drawStr( i*4+1, 18+1, String( (i<10) ? i : ((i<20) ? i-10 : ((i<30) ? i-20 : i-30))).c_str());
       u8g2.setDrawColor(1);
      }
    }
