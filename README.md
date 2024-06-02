@@ -29,6 +29,8 @@ Required Components
 * 3x4 Keypad  ([Example](https://www.digikey.com/en/products/detail/sparkfun-electronics/COM-14662/8702491))
 * Polymer Lithium Ion Battery LiPo 1150mAh 3.7V 502535 JST Connector (or larger capacity) ([1150mAh Example](https://www.amazon.com/gp/product/B0CLTVB74T/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1))
 * KY-040 Rotary Encoder Module ([Example](https://www.amazon.com/gp/product/B07F26CT6B/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1))
+* 3x 50k potentiometers
+*  
 * 1.3" IIC I2C Serial 128x64 SSH1106 SSD1306 OLED LCD Display ([Example](https://www.amazon.com/gp/product/B01MRR4LVE/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1))
 * Case - See print file link for case on thingiverse.com (see below)
 * Wire - If you plan to solder the connections,which is the recommended approach, then stranded, coloured wire is advisable.  ([Example](https://www.jaycar.com.au/rainbow-cable-16-core-sold-per-metre/p/WM4516))
@@ -86,7 +88,7 @@ Notes:
    * The *WiFi.h* and *ESPmDNS.h* libraries were automatically installed for me when I installed the esp32 boards, however you may need to install them manually.
    * Later versions of the esp board support are available and do appear to work, but if you have difficulties version 1.0.6 appears to be stable.
    * Later versions of the libraries generally should work, but if you have difficulties use the versions listed above.
-   * To get the WiTcontroller sketch I recommend using either the git command line, or the far more friendly 'GitHub Desktop' app.  See instructions above.
+   * To get the HandCab sketch I recommend using either the git command line, or the far more friendly 'GitHub Desktop' app.  See instructions above.
    * If you receive and error related to Python, and you are on MacOs 12 and above please edit the platform file, change from python to python3 as follows; preferences->user/path/arduino/packages/hardware/esp32/version/platform.txt and edit the line that looks as follows:tools.gen_esp32part.cmd=python3 "{runtime.platform.path}/tools/gen_esp32part.py"
 
 ---
