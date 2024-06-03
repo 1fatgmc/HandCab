@@ -37,7 +37,7 @@ Required Components
 * Optional: Up to 7 additional buttons can be added, each with their own independent commands.
 
 *Pinouts with Additional 7 Buttons*
-![Alt text](https://1fatgmc.com/RailRoad/DCC/24-05-07%20Build%20Pt%206-1.jpg)
+![Alt text](https://github.com/1fatgmc/HandCab/blob/main/24-06-02%20Schematic-1.jpg?raw=true)
 
 ## Loading the code
 
