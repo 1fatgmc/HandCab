@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "             v0.10";
+const String appVersion = "             v0.11";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -179,6 +179,9 @@ typedef enum PotDirection {
 #ifndef MSG_AUTO_SLEEP
    #define MSG_AUTO_SLEEP               "Waited too long for Select"
 #endif
+#ifndef MSG_BATTERY_SLEEP
+   #define MSG_BATTERY_SLEEP            "Battery critically low"
+#endif
 #ifndef MSG_START_SLEEP
    #define MSG_START_SLEEP              "Shutting Down.        E.btn ON"
 #endif
@@ -225,6 +228,10 @@ const int glyph_target_direction_forward = 0x00d8;
 const int glyph_target_direction_neutral = 0x00d2;
 const int glyph_target_direction_reverse = 0x00d7;
 const int glyph_eStop = 0x0079;
+
+#define SLEEP_REASON_COMMAND 0
+#define SLEEP_REASON_INACTIVITY 1
+#define SLEEP_REASON_BATTERY 2
 
 #define KEYPAD_USE_OPERATION 0
 #define KEYPAD_USE_SELECT_SSID 1
@@ -680,7 +687,10 @@ const char ssidPasswordBlankChar = 164;
 #ifndef CHOSEN_KEYPAD_D_FUNCTION
    #define CHOSEN_KEYPAD_D_FUNCTION     CUSTOM_4
 #endif
-   
+
+// ***************************************************
+// Potentiometers
+
 #ifndef THROTTLE_POT_PIN
    #define THROTTLE_POT_PIN 39
 #endif
@@ -720,4 +730,20 @@ const char ssidPasswordBlankChar = 164;
 #endif
 #ifndef DCC_SPEED_CHANGE_AMOUNT
    #define DCC_SPEED_CHANGE_AMOUNT 1
+#endif
+
+// ***************************************************
+// Battery test
+
+#ifndef USE_BATTERY_TEST
+   #define USE_BATTERY_TEST false
+#endif
+#ifndef BATTERY_TEST_PIN
+   #define BATTERY_TEST_PIN 36
+#endif
+#ifndef USE_BATTERY_PERCENT_AS_WELL_AS_ICON
+   #define USE_BATTERY_PERCENT_AS_WELL_AS_ICON false
+#endif
+#ifndef USE_BATTERY_SLEEP_AT_PERCENT
+   #define USE_BATTERY_SLEEP_AT_PERCENT 3
 #endif

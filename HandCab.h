@@ -189,7 +189,7 @@ void writeOledArray(bool, bool, bool, bool);
 void clearOledArray(void);
 void writeOledDirectCommands(void);
 
-void deepSleepStart(void);
+void deepSleepStart();
 void deepSleepStart(bool);
 
 char getMultiThrottleChar(int);

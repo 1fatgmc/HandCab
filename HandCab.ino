@@ -19,6 +19,7 @@
 #include "config_buttons.h"      // keypad buttons assignments
 #include "config_keypad_etc.h"   // hardware config - GPIOs - keypad, encoder; oled display type
 
+#include "Pangodream_18650_CL.h"
 #include "static.h"              // change for non-english languages
 #include "actions.h"
 
@@ -101,6 +102,13 @@ double startMomentumTimerMillis = -1;
 
 // E Stop
 bool eStopEngaged = false;
+
+// battery test values
+bool useBatteryTest = USE_BATTERY_TEST;
+bool useBatteryPercentAsWellAsIcon = USE_BATTERY_PERCENT_AS_WELL_AS_ICON;
+int lastBatteryTestValue = 0; 
+double lastBatteryCheckTime = 0;
+Pangodream_18650_CL BL(BATTERY_TEST_PIN);
 
 // server variables
 // boolean ssidConnected = false;
@@ -1467,6 +1475,33 @@ void additionalButtonLoop() {
 }
 
 // *********************************************************************************
+//   Battery Test
+// *********************************************************************************
+
+void batteryTest_loop() {
+  // Read the battery pin
+
+  if(millis()-lastBatteryCheckTime>10000) {
+    lastBatteryCheckTime = millis();
+    // debug_print("battery pin: "); debug_print(BATTERY_TEST_PIN);
+    // debug_print("  battery pin Value: "); debug_println(analogRead(batteryTestPin));  //Reads the analog value on the throttle pin.
+    int batteryTestValue = BL.getBatteryChargeLevel();
+    
+    // debug_print("batteryTestValue: "); debug_println(batteryTestValue); 
+
+    if (batteryTestValue!=lastBatteryTestValue) { 
+      lastBatteryTestValue = BL.getBatteryChargeLevel();
+      if ( (keypadUseType==KEYPAD_USE_OPERATION) && (!menuIsShowing)) {
+        writeOledSpeed();
+      }
+    }
+    if (lastBatteryTestValue<USE_BATTERY_SLEEP_AT_PERCENT) { // shutdown if <3% battery
+      deepSleepStart(SLEEP_REASON_BATTERY);
+    }
+  }
+}
+
+// *********************************************************************************
 //  Setup
 // *********************************************************************************
 
@@ -1546,8 +1581,10 @@ void loop() {
   }
 
   additionalButtonLoop(); 
+  
+  if (useBatteryTest) { batteryTest_loop(); }
 
-	// debug_println("loop:" );
+	// debug_println("loop: end" );
 }
 
 // *********************************************************************************
@@ -2994,9 +3031,9 @@ void writeOledSpeed() {
   // brakeCurrentPosition
   u8g2.setDrawColor(1);
   u8g2.setFont(FONT_GLYPHS);
-  u8g2.drawGlyph(0, 27, glyph_brake_position);
+  u8g2.drawGlyph(0, 29, glyph_brake_position);
   u8g2.setFont(FONT_DEFAULT);
-  u8g2.drawStr(9, 27, String(brakeCurrentPosition).c_str());
+  u8g2.drawStr(9, 28, String(brakeCurrentPosition).c_str());
 
   // target speed / throttle position
   if (targetSpeed!=currentSpeed) {
@@ -3032,6 +3069,8 @@ void writeOledSpeed() {
     u8g2.drawGlyph(120, 32, glyph_eStop);
   }
 
+  writeOledBattery();
+
   // track power
   if (trackPower == PowerOn) {
     u8g2.drawRBox(0,40,9,9,1);
@@ -3063,10 +3102,31 @@ void writeOledSpeed() {
   int width = u8g2.getStrWidth(cSpeed);
   u8g2.drawStr(22+(55-width),45, cSpeed);
 
-
   u8g2.sendBuffer();
 
   // debug_println("writeOledSpeed(): end");
+}
+
+void writeOledBattery() {
+    if (useBatteryTest) {
+    //int lastBatteryTestValue = random(0,100);
+    u8g2.setFont(FONT_GLYPHS);
+    u8g2.setDrawColor(1);
+    u8g2.drawStr(1, 21, String("Z").c_str());
+    if (lastBatteryTestValue>10) u8g2.drawLine(2, 15, 2, 18);
+    if (lastBatteryTestValue>25) u8g2.drawLine(3, 15, 3, 18);
+    if (lastBatteryTestValue>50) u8g2.drawLine(4, 15, 4, 18);
+    if (lastBatteryTestValue>75) u8g2.drawLine(5, 15, 5, 18);
+    if (lastBatteryTestValue>90) u8g2.drawLine(6, 15, 6, 18);
+    
+    u8g2.setFont(FONT_FUNCTION_INDICATORS);
+    if (useBatteryPercentAsWellAsIcon) {
+      u8g2.drawStr(12,19, String(String(lastBatteryTestValue)+"%").c_str());
+    }
+    if(lastBatteryTestValue<5) {
+      u8g2.drawStr(12,19, String("LOW").c_str());
+    }
+  }
 }
 
 void writeOledFunctions() {
@@ -3193,15 +3253,18 @@ void writeOledDirectCommands() {
 // *********************************************************************************
 
 void deepSleepStart() {
-  deepSleepStart(false);
+  deepSleepStart(SLEEP_REASON_COMMAND);
 }
 
-void deepSleepStart(bool autoShutdown) {
+void deepSleepStart(int shutdownReason) {
   clearOledArray(); 
   setAppnameForOled();
   int delayPeriod = 2000;
-  if (autoShutdown) {
+  if (shutdownReason==SLEEP_REASON_INACTIVITY) {
     oledText[2] = MSG_AUTO_SLEEP;
+    delayPeriod = 10000;
+  } else if (shutdownReason==SLEEP_REASON_BATTERY) {
+    oledText[2] = MSG_BATTERY_SLEEP;
     delayPeriod = 10000;
   }
   oledText[3] = MSG_START_SLEEP;

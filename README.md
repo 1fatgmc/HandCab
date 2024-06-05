@@ -215,13 +215,6 @@ Note: you need to edit config_buttons.h to alter these assignments   (copy confi
 - POWER_TOGGLE
 - POWER_ON
 - POWER_OFF
-- <strike>DIRECTION_TOGGLE</strike>
-- <strike>DIRECTION_FORWARD</strike>
-- <strike>DIRECTION_REVERSE</strike>
-- <strike>NEXT_THROTTLE</strike>
-- <strike>SPEED_STOP_THEN_TOGGLE_DIRECTION   - stops the loco if moving.  Toggles the direction if stationary.
-- <strike>MAX_THROTTLE_INCREASE    - change the number of available throttles on-the-fly
-- <strike>MAX_THROTTLE_DECREASE    - change the number of available throttles on-the-fly
 
 ### instructions for optional use of a potentiometer (pot) instead of the encoder for the throttle
 
@@ -252,8 +245,22 @@ config_buttons.h can include the following optional defines:
 
   Sumner Patterson is developing an app to help find the appropriate pot values for ``THROTTLE_POT_NOTCH_VALUES``.
 
+### Instructions for optional use of a voltage divider to show the battery charge level
+
+TBA
+
+Recommend adding a physical power switch as this will continually drain the battery, even when no being used.
+
+*Pinouts for Optional Battery Monitor*
+![Assembly diagram - Optional Battery Monitor](https://github.com/flash62au/WiTcontroller/blob/main/WiTcontroller%20-%20Optional%20battery%20monitor.png)
+
+---
+---
 
 ## Change Log
+
+### v0.11
+- add support for the Battery test from WiTController
 
 ### v0.10
 - change target direction indicator

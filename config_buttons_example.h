@@ -269,3 +269,14 @@
 //
 // The amount the DCC speed is changed by on each accelleration or brake period - default is 1
  #define DCC_SPEED_CHANGE_AMOUNT 1
+
+// *******************************************************************************************************************
+// Battery Test
+// To use a battery test
+//  USE_BATTERY_SLEEP_AT_PERCENT - will put the device to sleep if the battery falls below this level
+//                               - set to 0 (zero) to disable
+//
+// #define USE_BATTERY_TEST true
+// #define BATTERY_TEST_PIN 36
+// #define USE_BATTERY_PERCENT_AS_WELL_AS_ICON false
+// #define USE_BATTERY_SLEEP_AT_PERCENT 3   // will put the device to sleep if the battery falls below this level
