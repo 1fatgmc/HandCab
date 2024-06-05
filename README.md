@@ -93,7 +93,7 @@ Notes:
 
 ---
 
-## Using WiTController
+## Using HandCab
 
 **Currently functioning:**
 - Provides a list of discovered SSIDs with the ability to choose one. When you select one:
@@ -134,14 +134,13 @@ Notes:
   - Power Track On/Off
   - Disconnect / Reconnect
   - Put ESP32 in deep sleep and restart it
-- Have up to 6 throttles, each with an unlimited number of locos in consist. Default is 2 throttles, which can be increased or decreased temporarily via the Extras menu (or permanently enabled in config_button.h)
+- <strike>Have up to 6 throttles, each with an unlimited number of locos in consist. Default is 2 throttles, which can be increased or decreased temporarily via the Extras menu (or permanently enabled in config_button.h)</strike>
 - Limited dealing with unexpected disconnects.  It will throw you back to the WiThrottle Server selection screen.
 - Boundary between short and long DCC addresses can be configured in config_buttons.h
-- The default speed step (per encoder click) can be configured in config_buttons.h
+- <strike>The default speed step (per encoder click) can be configured in config_buttons.h</strike>
 - The controller will automatically shut down if no SSID is selected or entered in 4 minutes (to conserve the battery)
 
 **ToDo:**
-- Speed button repeat (i.e. hold the button down)
 - Deal with unexpected disconnects better
   - automatic attempt to reconnect
 - Keep a list of IP addresses and ports if mDNS doesn't provide any
@@ -175,8 +174,8 @@ Notes:
       - 0 then \# to toggle the action the the \# key does as a direct action, either to show the direct action key definitions, or the Function labels.  
       - 1 to change the facing of locos in a consist.
       - 3 to toggle the heartbeat check.
-      - 4 to increase the number of available throttle (up to 6)
-      - 5 to decrease the number of available throttle (down to 1)
+      - <strike>4 to increase the number of available throttle (up to 6)</strike>
+      - <strike>5 to decrease the number of available throttle (down to 1)</strike>
       - 6 then \# to Disconnect/Reconnect.  
       - 7 (or 9) then \# to put into deep sleep
 Pressing '\*' again before the '\#' will terminate the current command (but not start a new command)
@@ -216,7 +215,7 @@ Note: you need to edit config_buttons.h to alter these assignments   (copy confi
 - POWER_ON
 - POWER_OFF
 
-### instructions for optional use of a potentiometer (pot) instead of the encoder for the throttle
+### instructions for the potentiometers (pot) for the throttle
 
 config_buttons.h can include the following optional defines:
 
@@ -239,9 +238,10 @@ config_buttons.h can include the following optional defines:
 
   b) You must define what speed should be sent for each notch - ``THROTTLE_POT_NOTCH_SPEEDS``
 
-  If you want a linear speed instead of notches:
+<strike>  If you want a linear speed instead of notches:
 
   a) You must define the values the pot will send at at zero throw and full throw in the first and last of the 8 values in ``THROTTLE_POT_NOTCH_VALUES``.  The other values will be ignored but you still need to include 8 values.  (They can be zero.)  Note that you should avoid the value zero (0) for notch zero.  Use at least 1 instead.
+</strike>
 
   Sumner Patterson is developing an app to help find the appropriate pot values for ``THROTTLE_POT_NOTCH_VALUES``.
 
@@ -249,7 +249,7 @@ config_buttons.h can include the following optional defines:
 
 TBA
 
-Recommend adding a physical power switch as this will continually drain the battery, even when no being used.
+Recommend adding a physical power switch as this will continually drain the battery, even when not being used.
 
 *Pinouts for Optional Battery Monitor*
 ![Assembly diagram - Optional Battery Monitor](https://github.com/flash62au/WiTcontroller/blob/main/WiTcontroller%20-%20Optional%20battery%20monitor.png)
