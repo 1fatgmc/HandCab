@@ -74,15 +74,15 @@ Notes:
 3. Download or clone *this* repository. (Note: if you 'clone' initially, it is easier to receive updates to the code by doing a 'fetch' subsequently.  See Notes below.)
     * Clone - **First Time**
        * Install *GitHub Desktop* from https://desktop.github.com/
-       * Create a free account on GitHub and authorise the app to allow it to connect top GitHub
+       * Create a free account on GitHub and authorise the app to allow it to connect to GitHub
        * Select *file* -> *Clone Repository* - or 'Clone an repository from the internet' from the welcome page then select the 'URL' tab
        * Enter *https://github.com/flash62au/WiTcontroller* as the URL
        * Select a local folder to install it.  The default folder for the Arduino usually looks like "...username\Documents\Arduino\". (This is a good but not essential place to put it.)
        * Click *Clone*
        * **Subsequently**  (Anytime after the first 'clone')
-         * click *Fetch Origin* and any changes to the code will be bought down to you PC, but you config_buttons.h and config_network.h will not be touched.
+         * click *Fetch Origin* and any changes to the code will be bought down to you PC, but your config_buttons.h and config_network.h will not be touched.
     * Download 
-       * Open *https://github.com/flash62au/WiTcontroller*
+       * Open *https://github.com/1fatgmc/HandCab*
        * Click the green "Code" button and select download zip
        * Extract the zip file to a local folder.  The default folder for the Arduino usually looks like "...username\Documents\Arduino\". This is a good but not essential place to put it.
 4. Load the needed libraries to your PC. These can loaded from the *Library Manager* in the *Arduino IDE*.
