@@ -24,27 +24,16 @@ A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, 
 Required Components
 
     1 - ESP32 LOLIN32 Lite …....................................................... I bought 3 for $16 ( HERE ) but here is one for $7 ( HERE ).
-
     1 - 3x4 Keypad …This one fits the case for sure …................... $5.00 ( HERE ).
-
     1 - 1.3” OlED Display … This one fits....................................... $9.00 ( HERE ). (The display looks small but actually works really well.)
-
     1 - Encoder …............................................................................. 5 for $10 ( HERE ). (The build doesn't currently use this but probably will.)
-
-    3 – 50K potentiometers ….......................................................... 20 for $10 ( HERE ). 
-
+    3 – 50K potentiometers ….......................................................... 20 for $10 ( HERE ).
     2 – On/Off Pushbutton switches …............................................ 5 for $10 ( HERE ). (Only 1 needed if you opt out of using the voltmeter circuit.)
-
     1 – Momentary Limit Switch …................................................. 12 for $5.00 ( HERE ).
-
     7 – SPST Momentary Pushbutton switches ….......................... 30 for $11.00 ( HERE ).
-
     1 – Battery Selector DPDT c/o switch if have 2 batteries ….... 10 for $9.00 ( HERE ).
-
     1- 3 stage Adafruit 4410 USB charger (optional)...................... $6.00 ( HERE ) or ( HERE ). (for $6.00 I like having a better charger than the ESP32 one.)
-
     1 or 2 Batteries …... (I like 2 so I could change if needed) ...... $11.00 (1100 mAh ( HERE )) or $14.00 (2000mAh ( HERE )).
-
     1 or 2 or none JST connectors …............................................. 10 for $7.00 ( HERE ).
 
 * WeMos Lite LOLIN32  (ESP32 Arduino with LiPo charger) ([Example](https://www.amazon.com/gp/product/B0BCJY8HDY/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1))
@@ -68,8 +57,8 @@ Required Components
     The latest versions of the ESP32 Board Library (3.0.0 and later) have renamed an attribute. 
     The WiTcontroller code has been modified to reflect this.  If you are using an earlier version 
     then you need to include the define ``#define USING_OLDER_ESPMDNS true`` in ``config_buttons.h``.
-    The symptom of this problem is if you receive an error like the following when you try to build/compile
-    ``...\static.h:761:42: error: 'class MDNSResponder' has no member named 'address'
+    NOTE: The symptom of this problem is if you receive an error like the following when you try to 
+    build/compile ``...\static.h:761:42: error: 'class MDNSResponder' has no member named 'address'
     #define ESPMDNS_IP_ATTRIBUTE_NAME MDNS.address(i)`` 
 
 1. Download the Arduino IDE.  
