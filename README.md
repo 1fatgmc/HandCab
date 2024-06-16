@@ -8,6 +8,10 @@ A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, 
 
 ---
 
+## Video Overview of the throttle in use.
+
+https://www.youtube.com/watch?v=8vLRVYeE0dU
+
 ## Prerequisites
 
 1. Requires moderate soldering skills.
@@ -15,7 +19,6 @@ A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, 
 2. Loading the code (sketch) requires downloading of one of the IDEs, this sketch, the libraries, etc. so some experience with Arduinos is helpful, but not critical.
 
 3. The HandCab Throttle along with most Android and Apple devices running supported throttle apps will work with any WiThrottle Server such as JMRI, DCC-EX, MRC WiFi, Digitrax LnWi, NCE (WiFi/DCC NCE Cab Bus Interface), TCS CS-105 (Using WiFiTrax WFD-30 or WFD-31)  and others.
-
 
 ---
 ## Building
