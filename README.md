@@ -21,32 +21,21 @@ A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, 
 
 ## Building
 
-Required Components (for links to where I bought the following goto (https://1fatgmc.com/RailRoad/DCC/page-14.html)
-
-* 1 - ESP32 LOLIN32 Lite ….... bought 3 for $16 ( HERE ) but here is one for $7 ( HERE ).
-* 1 - 3x4 Keypad …This one fits the case for sure … $5.00 ([HERE.](https://www.digikey.com/en/products/detail/sparkfun-electronics/COM-14662/8702491))
-* 1 - 1.3” OlED Display … This one fits... $9.00 ( HERE ). (The display looks small but actually works really well.)
-    1 - Encoder …................. 5 for $10 ( HERE ). (The build doesn't currently use this but probably will.)
-    3 – 50K potentiometers …...... 20 for $10 ( HERE ).
-    2 – On/Off Pushbutton switches …..5 for $10 ( HERE ). (Only 1 needed if you opt out of using the voltmeter circuit.)
-    1 – Momentary Limit Switch …...... 12 for $5.00 ( HERE ).
-    7 – SPST Momentary Pushbutton switches ….. 30 for $11.00 ( HERE ).
-    1 – Battery Selector DPDT c/o switch if have 2 batteries ….10 for $9.00 ( HERE ).
-    1- 3 stage Adafruit 4410 USB charger (optional).... $6.00 ( HERE ) or ( HERE ). (for $6.00 I like having a better charger than the ESP32 one.)
-    1 or 2 Batteries …... (I like 2 so I could change if needed) ..... $11.00 (1100 mAh ( HERE )) or $14.00 (2000mAh ( HERE )).
-    1 or 2 or none JST connectors …................ 10 for $7.00 ( HERE ).
-
-* WeMos Lite LOLIN32  (ESP32 Arduino with LiPo charger) ([Example](https://www.amazon.com/gp/product/B0BCJY8HDY/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1))
-* 3x4 Keypad  ([Example](https://www.digikey.com/en/products/detail/sparkfun-electronics/COM-14662/8702491))
-* Polymer Lithium Ion Battery LiPo 1150mAh 3.7V 502535 JST Connector (or larger capacity) ([1150mAh Example](https://www.amazon.com/gp/product/B0CLTVB74T/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1))
-* KY-040 Rotary Encoder Module ([Example](https://www.amazon.com/gp/product/B07F26CT6B/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1))
-* 3x 50k potentiometers
-* a SPDT rocker switch 
-* 1.3" IIC I2C Serial 128x64 SSH1106 SSD1306 OLED LCD Display ([Example](https://www.amazon.com/gp/product/B01MRR4LVE/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1))
-* Case - See print file link for case on thingiverse.com (see below)
-* Wire - If you plan to solder the connections,which is the recommended approach, then stranded, coloured wire is advisable.  ([Example](https://www.jaycar.com.au/rainbow-cable-16-core-sold-per-metre/p/WM4516))
-* Optional: Up to 7 additional buttons can be added, each with their own independent commands.
-
+Required Components 
+(for links to where I bought the following goto (https://1fatgmc.com/RailRoad/DCC/page-14.html)
+* 1 - ESP32 LOLIN32 Lite.
+* 1 - 3x4 Keypad.
+* 1 - 1.3” OlED Display.
+* 1 - Encoder.
+* 3 – 50K potentiometers.
+* 2 – On/Off Pushbutton switches.
+* 1 – Momentary Limit Switch.
+* 7 – SPST Momentary Pushbutton switches.
+* 1 – Battery Selector DPDT c/o switch if have 2 batteries.
+* 1- 3 stage Adafruit 4410 USB charger (optional but I like having a better charger than the ESP32 one.
+* 1 or 2 Batteries …... (I like 2 so I can change if needed).
+* 1 or 2 or No JST connectors.
+* 
 *Pinouts with Additional 7 Buttons*
 ![Alt text](https://github.com/1fatgmc/HandCab/blob/main/24-06-02%20Schematic-1.jpg?raw=true)
 
