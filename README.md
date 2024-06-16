@@ -7,11 +7,11 @@ A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, 
 ![Alt text](https://github.com/1fatgmc/HandCab/blob/main/24-03-27%20HandCab%20vs%20GP9-1.jpg?raw=true)
 
 ---
-
 ## Video Overview of the throttle in use.
 
 https://www.youtube.com/watch?v=8vLRVYeE0dU
 
+---
 ## Prerequisites
 
 1. Requires moderate soldering skills.
@@ -26,6 +26,7 @@ https://www.youtube.com/watch?v=8vLRVYeE0dU
 You can find a detailed build of the throttle on my website:
 https://1fatgmc.com/RailRoad/DCC/HandCab-Index.html
 
+---
 ## Parts
 
 Required Components 
