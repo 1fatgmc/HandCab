@@ -43,10 +43,13 @@ Required Components
 * 1- 3 stage Adafruit 4410 USB charger (optional but I like having a better charger than the ESP32 one.
 * 1 or 2 Batteries …... (I like 2 so I can change if needed).
 * 1 or 2 or No JST connectors.
- 
+* 
+ ---
+## Wiring Schematic
 *Pinouts with Additional 7 Buttons*
 ![Alt text](https://github.com/1fatgmc/HandCab/blob/main/24-06-02%20Schematic-1.jpg?raw=true)
 
+ ---
 ## Loading the code
 
  **WARNING!**
