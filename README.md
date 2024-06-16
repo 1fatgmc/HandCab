@@ -65,9 +65,12 @@ Required Components
 
  **WARNING!**
 
-    The latest versions of the ESP32 Board Library (3.0.0 and later) have renamed an attribute. The WiTcontroller code has been modified to reflect this.  If you are using an earlier version then you need to include the define ``#define USING_OLDER_ESPMDNS true`` in ``config_buttons.h``.
-
-    The symptom of this problem is if you receive an error like the following when you try to build ``...\static.h:761:42: error: 'class MDNSResponder' has no member named 'address'   #define ESPMDNS_IP_ATTRIBUTE_NAME MDNS.address(i)`` 
+    The latest versions of the ESP32 Board Library (3.0.0 and later) have renamed an attribute. 
+    The WiTcontroller code has been modified to reflect this.  If you are using an earlier version 
+    then you need to include the define ``#define USING_OLDER_ESPMDNS true`` in ``config_buttons.h``.
+    The symptom of this problem is if you receive an error like the following when you try to build ``
+    ...\static.h:761:42: error: 'class MDNSResponder' has no member named 'address'
+    #define ESPMDNS_IP_ATTRIBUTE_NAME MDNS.address(i)`` 
 
 1. Download the Arduino IDE.  
     * Available from  https://support.arduino.cc/hc/en-us/articles/360019833020-Download-and-install-Arduino-IDE
