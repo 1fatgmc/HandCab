@@ -1,5 +1,7 @@
 # HandCab
 
+NOTE:  The software shown here at the moment is not finalized or complete.  Please don't try and use any of it until this notice is gone.
+
 A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, DCC-EX  EX-CommandStation and many others) using the WiThrottle protocol to control DCC model trains.  HandCab uses 3 potentiometers (50K) for the throttle, brake and reverser controls and is modelled after a GP7/9 'barrel' control stand.
 
 ![Alt text](https://github.com/1fatgmc/HandCab/blob/main/24-03-27%20HandCab%20vs%20GP9-1.jpg?raw=true)
@@ -56,13 +58,13 @@ The latest versions of the ESP32 Board Library (3.0.0 and later) have renamed an
 3. Download or clone *this* repository. (Note: if you 'clone' initially, it is easier to receive updates to the code by doing a 'fetch' subsequently.  See Notes below.)
     * Clone - **First Time**
        * Install *GitHub Desktop* from https://desktop.github.com/
-       * Create a free account on GitHub and authorise the app to allow it to connect top GitHub
+       * Create a free account on GitHub and authorise the app to allow it to connect to GitHub
        * Select *file* -> *Clone Repository* - or 'Clone an repository from the internet' from the welcome page then select the 'URL' tab
-       * Enter *https://github.com/flash62au/WiTcontroller* as the URL
+       * Enter *https://github.com/1fatgmc/HandCab* as the URL
        * Select a local folder to install it.  The default folder for the Arduino usually looks like "...username\Documents\Arduino\". (This is a good but not essential place to put it.)
        * Click *Clone*
        * **Subsequently**  (Anytime after the first 'clone')
-         * click *Fetch Origin* and any changes to the code will be bought down to you PC, but you config_buttons.h and config_network.h will not be touched.
+         * click *Fetch Origin* and any changes to the code will be bought down to your PC, but you config_buttons.h and config_network.h will not be touched.
     * Download 
        * Open *https://github.com/flash62au/WiTcontroller*
        * Click the green "Code" button and select download zip
