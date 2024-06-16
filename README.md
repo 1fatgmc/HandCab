@@ -30,7 +30,7 @@ https://1fatgmc.com/RailRoad/DCC/HandCab-Index.html
 ## Parts
 
 Required Components 
-(for links to where I bought the following goto (https://1fatgmc.com/RailRoad/DCC/page-14.html)
+(links to where I bought the following & pricing at (https://1fatgmc.com/RailRoad/DCC/page-14.html))
 * 1 - ESP32 LOLIN32 Lite.
 * 1 - 3x4 Keypad.
 * 1 - 1.3” OlED Display.
