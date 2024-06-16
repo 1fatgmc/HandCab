@@ -15,12 +15,13 @@
 #include <U8g2lib.h>              // https://github.com/olikraus/u8g2  (Just get "U8g2" via the Arduino IDE Library Manager)   new-bsd
 #include <string>
 
-#include "config_network.h"      // LAN networks (SSIDs and passwords)
-#include "config_buttons.h"      // keypad buttons assignments
-#include "config_keypad_etc.h"   // hardware config - GPIOs - keypad, encoder; oled display type
+#include "Pangodream_18650_CL.h"  // https://github.com/pangodream/18650CL  
 
-#include "Pangodream_18650_CL.h"
-#include "static.h"              // change for non-english languages
+#include "config_network.h"       // LAN networks (SSIDs and passwords)
+#include "config_buttons.h"       // keypad buttons assignments
+#include "config_keypad_etc.h"    // hardware config - GPIOs - keypad, encoder; oled display type
+
+#include "static.h"
 #include "actions.h"
 
 #include "HandCab.h"
@@ -802,7 +803,8 @@ void browseWitService() {
   if (noOfWitServices > 0) {
     for (int i = 0; ((i < noOfWitServices) && (i<maxFoundWitServers)); ++i) {
       foundWitServersNames[i] = MDNS.hostname(i);
-      foundWitServersIPs[i] = MDNS.IP(i);
+      // foundWitServersIPs[i] = MDNS.IP(i);
+      foundWitServersIPs[i] = ESPMDNS_IP_ATTRIBUTE_NAME;
       foundWitServersPorts[i] = MDNS.port(i);
       if (MDNS.hasTxt(i,"jmri")) {
         String node = MDNS.txt(i,"node");

@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "             v0.11";
+const String appVersion = "             v0.12";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -746,4 +746,17 @@ const char ssidPasswordBlankChar = 164;
 #endif
 #ifndef USE_BATTERY_SLEEP_AT_PERCENT
    #define USE_BATTERY_SLEEP_AT_PERCENT 3
+#endif
+
+// ***************************************************
+//  ESPmDNS problem
+
+#ifndef USING_OLDER_ESPMDNS
+   #define USING_OLDER_ESPMDNS false
+#endif
+
+#if USING_OLDER_ESPMDNS == true
+  #define ESPMDNS_IP_ATTRIBUTE_NAME MDNS.IP(i)
+#else
+  #define ESPMDNS_IP_ATTRIBUTE_NAME MDNS.address(i)
 #endif
