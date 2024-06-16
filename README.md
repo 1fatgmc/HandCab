@@ -26,7 +26,7 @@ https://www.youtube.com/watch?v=8vLRVYeE0dU
 ---
 ## Building
 
-You can find a detailed build of the throttle on my website:
+You can find a detailed step-by-step build of the throttle on my website:
 https://1fatgmc.com/RailRoad/DCC/HandCab-Index.html
 
 ---
