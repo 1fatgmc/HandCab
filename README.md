@@ -21,7 +21,7 @@ A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, 
 
 ## Building
 
-Required Components (for links to where I bought the following goto https://1fatgmc.com/RailRoad/DCC/HandCab-Index.html
+Required Components (for links to where I bought the following goto (https://1fatgmc.com/RailRoad/DCC/page-14.html)
 
 * 1 - ESP32 LOLIN32 Lite ….... bought 3 for $16 ( HERE ) but here is one for $7 ( HERE ).
 * 1 - 3x4 Keypad …This one fits the case for sure … $5.00 ([HERE.](https://www.digikey.com/en/products/detail/sparkfun-electronics/COM-14662/8702491))
