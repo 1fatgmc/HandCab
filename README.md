@@ -7,8 +7,8 @@ A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, 
 Special thanks to Peter Akers who is responsible for the software on the throttle.  Without it this throttle would never have materialized.
 
 ![Alt text](https://github.com/1fatgmc/HandCab/blob/main/24-03-27%20HandCab%20vs%20GP9-1.jpg?raw=true)
-
-Contat me a contactsumner1 (at)gmail (dot)com
+---
+                    Contat me a contactsumner1(at)gmail(dot)com
 ---
 ## Video Overview of the throttle in use.
 
