@@ -1,5 +1,5 @@
 // ********************************************************************************************
-
+// 24-06-17
 // false = Counter clockwise  true = clockwise
 #define ENCODER_ROTATION_CLOCKWISE_IS_INCREASE_SPEED                     false
 
