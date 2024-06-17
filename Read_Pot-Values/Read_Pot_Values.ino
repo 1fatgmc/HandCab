@@ -1,6 +1,6 @@
  // Sketch to read the pot values that will go in a config file. 
  V. 24-06-17 
-
+//
   // Define Pot connections and buttons:
     const int ThrottlePin = 39;   //ESP32 Pin for the Throttle pot.
     const int BrakePin = 34;      //ESP32 Pin for the brake pot.
