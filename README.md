@@ -52,7 +52,7 @@ Required Components
  ---
 ## Wiring Schematic
 *Pinouts with Additional 7 Buttons*
-![Alt text](https://github.com/1fatgmc/HandCab/blob/main/24-06-02%20Schematic-1.jpg?raw=true)
+![Alt text](https://github.com/1fatgmc/HandCab/blob/main/24-06-16%20Wiring%20Large-Volt%20Meter-1.jpg?raw=true)
 
  ---
 ## Loading the code
