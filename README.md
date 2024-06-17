@@ -273,8 +273,11 @@ Recommend adding a physical power switch as this will continually drain the batt
 
 ## Change Log
 
-### v0.12
-- automated fix the latest versions of the ESP32 Board Library (3.0.0 and later) having renamed an atribute. The code now automatically adjusts for this.  
+### v0.13
+- automated fix the latest versions of the ESP32 Board Library (3.0.0 and later) having renamed an attribute. The code now automatically adjusts for this.  
+
+## v0.12
+- manual fix the latest versions of the ESP32 Board Library (3.0.0 and later) having renamed an attribute.
 
 ### v0.11
 - add support for the Battery test from WiTController
