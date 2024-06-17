@@ -751,11 +751,7 @@ const char ssidPasswordBlankChar = 164;
 // ***************************************************
 //  ESPmDNS problem
 
-#ifndef USING_OLDER_ESPMDNS
-   #define USING_OLDER_ESPMDNS false
-#endif
-
-#if USING_OLDER_ESPMDNS == true
+#if ESP_IDF_VERSION_MAJOR < 5
   #define ESPMDNS_IP_ATTRIBUTE_NAME MDNS.IP(i)
 #else
   #define ESPMDNS_IP_ATTRIBUTE_NAME MDNS.address(i)
