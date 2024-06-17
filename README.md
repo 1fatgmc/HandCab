@@ -1,55 +1,74 @@
 # HandCab
 
-NOTE:  The software shown here at the moment is not finalized or complete.  Please don't try and use any of it until this notice is gone.
+# NOTE:  The software shown here at the moment is not finalized or complete.  Please don't try and use any of it until this notice is gone.
 
-A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, DCC-EX  EX-CommandStation and many others) using the WiThrottle protocol to control DCC model trains.  HandCab uses 3 potentiometers (50K) for the throttle, brake and reverser controls and is modelled after a GP7/9 'barrel' control stand.
+A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, DCC-EX  EX-CommandStation and many others) using the WiThrottle protocol to control DCC model trains.  HandCab uses 3 potentiometers (50K) for the throttle, brake and reverser controls and is modelled after a GP7/9 'barrel' control stand.  
+
+Special thanks to Peter Akers who is responsible for the software on the throttle.  Without it this throttle would never have materialized.
 
 ![Alt text](https://github.com/1fatgmc/HandCab/blob/main/24-03-27%20HandCab%20vs%20GP9-1.jpg?raw=true)
 
 ---
+  ##  Contact me at contactsumner1(at)gmail(dot)com
+---
+## Video Overview of the throttle in use.
 
+https://www.youtube.com/watch?v=8vLRVYeE0dU
+
+---
 ## Prerequisites
 
 1. Requires moderate soldering skills.
 
 2. Loading the code (sketch) requires downloading of one of the IDEs, this sketch, the libraries, etc. so some experience with Arduinos is helpful, but not critical.
 
-3. A WiThrottle Server to connect to. HandCab will work with any WiThrottle Server. e.g.
-
-    * JMRI
-    * DCC++EX
-    * MRC WiFi
-    * Dijitrax LnWi
+3. The HandCab Throttle along with most Android and Apple devices running supported throttle apps will work with any WiThrottle Server such as JMRI, DCC-EX, MRC WiFi, Digitrax LnWi, NCE (WiFi/DCC NCE Cab Bus Interface), TCS CS-105 (Using WiFiTrax WFD-30 or WFD-31)  and others.
 
 ---
-
 ## Building
 
-Required Components
+You can find a detailed step-by-step build of the throttle on my website:
+https://1fatgmc.com/RailRoad/DCC/HandCab-Index.html
 
-* WeMos Lite LOLIN32  (ESP32 Arduino with LiPo charger) ([Example](https://www.amazon.com/gp/product/B0BCJY8HDY/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1))
-* 3x4 Keypad  ([Example](https://www.digikey.com/en/products/detail/sparkfun-electronics/COM-14662/8702491))
-* Polymer Lithium Ion Battery LiPo 1150mAh 3.7V 502535 JST Connector (or larger capacity) ([1150mAh Example](https://www.amazon.com/gp/product/B0CLTVB74T/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1))
-* KY-040 Rotary Encoder Module ([Example](https://www.amazon.com/gp/product/B07F26CT6B/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1))
-* 3x 50k potentiometers
-* a SPDT rocker switch 
-* 1.3" IIC I2C Serial 128x64 SSH1106 SSD1306 OLED LCD Display ([Example](https://www.amazon.com/gp/product/B01MRR4LVE/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1))
-* Case - See print file link for case on thingiverse.com (see below)
-* Wire - If you plan to solder the connections,which is the recommended approach, then stranded, coloured wire is advisable.  ([Example](https://www.jaycar.com.au/rainbow-cable-16-core-sold-per-metre/p/WM4516))
-* Optional: Up to 7 additional buttons can be added, each with their own independent commands.
+---
+## Parts
 
+Required Components 
+(links to where I bought the following & pricing at (https://1fatgmc.com/RailRoad/DCC/page-14.html))
+* 1 - ESP32 LOLIN32 Lite.
+* 1 - 3x4 Keypad.
+* 1 - 1.3” OlED Display.
+* 1 - Encoder.
+* 3 – 50K potentiometers.
+* 2 – On/Off Pushbutton switches.
+* 1 – Momentary Limit Switch.
+* 7 – SPST Momentary Pushbutton switches.
+* 1 – Battery Selector DPDT c/o switch if have 2 batteries.
+* 1- 3 stage Adafruit 4410 USB charger (optional but I like having a better charger than the ESP32 one.
+* 1 or 2 Batteries …... (I like 2 so I can change if needed).
+* 1 or 2 or No JST connectors.
+ ---
+## Wiring Schematic
 *Pinouts with Additional 7 Buttons*
-![Alt text](https://github.com/1fatgmc/HandCab/blob/main/24-06-02%20Schematic-1.jpg?raw=true)
+![Alt text](https://github.com/1fatgmc/HandCab/blob/main/24-06-16%20Wiring%20Large-Volt%20Meter-1.jpg?raw=true)
 
+ ---
 ## Loading the code
 
-**WARNING!**
-The latest versions of the ESP32 Board Library (3.0.0 and later) have renamed an attribute. The code has been modified to reflect this.  If you are using an earlier version then you need to include the define ``#define USING_OLDER_ESPMDNS true``
+ **WARNING!**
+
+    The latest versions of the ESP32 Board Library (3.0.0 and later) have renamed an attribute. 
+    The HandCab & WiTcontroller code has been modified to reflect this.  If you are using an 
+    earlier version then you need to include the define ``#define USING_OLDER_ESPMDNS true`` 
+    in ``config_buttons.h``.
+    NOTE: The symptom of this problem is if you receive an error like the following when you try to 
+    build/compile ``...\static.h:761:42: error: 'class MDNSResponder' has no member named 'address'
+    #define ESPMDNS_IP_ATTRIBUTE_NAME MDNS.address(i)`` 
 
 1. Download the Arduino IDE.  
     * Available from  https://support.arduino.cc/hc/en-us/articles/360019833020-Download-and-install-Arduino-IDE
-2. Download the esp32 boards in the Arduino IDE.
-    * add the esp322 support with the following instructions:  (See here for detailed instructions:  https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/)
+2. Download the esp32 boards in the Arduino IDE. **(See warning above. Use ESP32 by Espressif Systems Ver 3.0.0 or later)**
+    * add the esp32 support with the following instructions:  (See here for detailed instructions:  https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/)
         * In the Arduino IDE, go to *File* > *Preferences*
         * Enter the following into the 'Additional Board Manager URLs' field:  https://dl.espressif.com/dl/package_esp32_index.json
     * Then Use the *Boards Manager* in the *Arduino IDE* to install the esp32 board support
@@ -66,7 +85,7 @@ The latest versions of the ESP32 Board Library (3.0.0 and later) have renamed an
        * **Subsequently**  (Anytime after the first 'clone')
          * click *Fetch Origin* and any changes to the code will be bought down to your PC, but you config_buttons.h and config_network.h will not be touched.
     * Download 
-       * Open *https://github.com/flash62au/WiTcontroller*
+       * Open *https://github.com/1fatgmc/HandCab*
        * Click the green "Code" button and select download zip
        * Extract the zip file to a local folder.  The default folder for the Arduino usually looks like "...username\Documents\Arduino\". This is a good but not essential place to put it.
 4. Load the needed libraries to your PC. These can loaded from the *Library Manager* in the *Arduino IDE*.
