@@ -176,7 +176,7 @@ Notes:
   - Able to activate routes
     - from their address
     - from the first 50 routes in the server list
-  - Set/unset a multiplier for the rotary encoder
+  - Toggle throuigh 3 levels of acceleration delays to change the momentum effect for a loco pulling trains with different loads.
   - Power Track On/Off
   - Disconnect / Reconnect
   - Put ESP32 in deep sleep and restart it
