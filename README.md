@@ -94,6 +94,7 @@ ESPmDNS.h - https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP
      * Then edit it to include the network ssids you want to use. (Not essential, but entering passwords via the encoder is tedious.)
 You can have four saved ones.
      * I have my network and password shown.  Change it to yours unless you are using JMRI also and it might then work.
+     * Save the file.
  
 8.  Upload the Read_Pot_Values program/sketch.
      * Connect the ESP32 via USB to your computer.
@@ -109,25 +110,24 @@ You can have four saved ones.
      * You might want to go through the program a second time and see if the numbers are close.  
      * They won't be exact but should be within 100 each time you run it.  You can use any set of them for the next step.
  
-
 9.  Copy 'config_buttons_example.h' to a new file 'config_buttons.h'.  Open it in a plain text editor like Notepad (needs to stay plain text—not formatted).
-Optionally, edit this to change the mapping of the keypad buttons to specific functions from what I use now or later.
-Optionally, edit this to configure the additional pushbuttons to specific functions from what I use now or later.
-Enter the 'Throttle' pot definitions.  There are instructions in the file itself.
-Enter the 'Speed Step' definitions.  There are instructions in the file itself.
-Enter the 'Brake' pot definitions.  There are instructions in the file itself.
-Enter the 'Acceleration' definitions.  There are instructions in the file itself.
-Enter the 'Braking' definitions.  There are instructions in the file itself.
-Save the file.
+     * Optionally, edit this to change the mapping of the keypad buttons to specific functions from what I use now or later.
+     * Optionally, edit this to configure the additional pushbuttons to specific functions from what I use now or later.
+     * Enter the 'Throttle' pot definitions.  There are instructions in the file itself.
+     * Enter the 'Speed Step' definitions.  There are instructions in the file itself.
+     * Enter the 'Brake' pot definitions.  There are instructions in the file itself.
+     * Enter the 'Acceleration' definitions.  There are instructions in the file itself.
+     * Enter the 'Braking' definitions.  There are instructions in the file itself.
+     * Save the file.
 
 10  With the ESP32 still connected run HandCab.INO  
-Click the Upload ==>
-Program should load and come up the first screen showing that it is browsing for SSIDs.
-It will find any networks in the vicinity.
-Click on the appropriate one.
-It should connect and then search for a WiT service and it found the HandCab menu should come up with the version (upper right).
-Click on '*' for the menu and select a loco and off you go.
-If there are problems the DCC-EX website and go to the 'wifi-throttles' section and post.  Peter A, myself (Sumner) or someone will try and help you.
+     * Click the Upload ==>
+     * Program should load and come up the first screen showing that it is browsing for SSIDs.
+     * It will find any networks in the vicinity.
+     * Click on the appropriate one.
+     * It should connect and then search for a WiT service and it found the HandCab menu should come up with the version (upper right).
+     * Click on '*' for the menu and select a loco and off you go.
+     * If there are problems the DCC-EX website and go to the 'wifi-throttles' section and post.  Peter A, myself (Sumner) or someone will try and help you.
 
 Notes: 
    * HandCab version 0.01 or later requires WiThrottleProtocol version 1.1.14 or later.
