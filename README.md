@@ -67,10 +67,10 @@ Required Components
        - Search for "esp32" by Expressive Systems. Install version 3.0.0 or newer.
 
 3.  Download or clone the GitHub repository ( HERE ). (Note: if you 'clone' initially, it is easier to receive updates to the code by doing a 'fetch' subsequently. See Notes below.) 
-  - Clone Option:  
-First time:
-Install GitHub Desktop from https://desktop.github.com/ 
-Create a free account on GitHub and authorise the app to allow it to connect to GitHub 
+     - Clone Option:  
+       - First time:
+         - Install GitHub Desktop from https://desktop.github.com/ 
+         - Create a free account on GitHub and authorise the app to allow it to connect to GitHub 
 Select file -> Clone Repository - or 'Clone an repository from the internet' from the welcome page then select the 'URL' tab 
 Enter https://github.com/1fatgmc/HandCab as the URL 
 Select a local folder to install it (I use the following one). The default folder for the Arduino usually looks like "...username\Documents\Arduino". (This is a good but not essential place to put it.) 
