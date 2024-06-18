@@ -24,13 +24,13 @@
 // see static.h or README.md for details on the allowed functions
 
  
-#define CHOSEN_KEYPAD_0_FUNCTION FUNCTION_0
-#define CHOSEN_KEYPAD_1_FUNCTION FUNCTION_1
-#define CHOSEN_KEYPAD_2_FUNCTION FUNCTION_2
+#define CHOSEN_KEYPAD_0_FUNCTION FUNCTION_0        //lights on/off
+#define CHOSEN_KEYPAD_1_FUNCTION FUNCTION_1        //bell
+#define CHOSEN_KEYPAD_2_FUNCTION FUNCTION_2        //horn
 #define CHOSEN_KEYPAD_3_FUNCTION FUNCTION_3        //changed this to a sound function -- coupler
 #define CHOSEN_KEYPAD_4_FUNCTION FUNCTION_9        // changed this to drive hold
 #define CHOSEN_KEYPAD_5_FUNCTION FUNCTION_8        // changed this to turn the prime mover (the sound loco) on/off
-#define CHOSEN_KEYPAD_6_FUNCTION SPEED_MULTIPLIER
+#define CHOSEN_KEYPAD_6_FUNCTION SPEED_MULTIPLIER  // toggles through the three acceleration delays in stepping up through the speed steps
 #define CHOSEN_KEYPAD_7_FUNCTION FUNCTION_0 // Might change this to a sound function since I have it mapped to an external button
 #define CHOSEN_KEYPAD_8_FUNCTION FUNCTION_0   // Might change this to a sound function since I have it mapped to an external button
 #define CHOSEN_KEYPAD_9_FUNCTION FUNCTION_0 // Might change this to a sound function since I have it mapped to an external button
@@ -45,9 +45,9 @@
 #define CHOSEN_KEYPAD_4_DISPLAY_NAME "4 Drive Hold"
 #define CHOSEN_KEYPAD_5_DISPLAY_NAME "5 Prime Mover"
 #define CHOSEN_KEYPAD_6_DISPLAY_NAME "Acceleration Delays"
-#define CHOSEN_KEYPAD_7_DISPLAY_NAME "Lights"    // Will relabel this if I change it to a sound function -- See above
-#define CHOSEN_KEYPAD_8_DISPLAY_NAME "Lights"  // Will relabel this if I change it to a sound function -- See above
-#define CHOSEN_KEYPAD_9_DISPLAY_NAME "Lights"    // Will relabel this if I change it to a sound function -- See above
+#define CHOSEN_KEYPAD_7_DISPLAY_NAME "NA"    // Will relabel this if I change it to a sound function -- See above
+#define CHOSEN_KEYPAD_8_DISPLAY_NAME "NA"  // Will relabel this if I change it to a sound function -- See above
+#define CHOSEN_KEYPAD_9_DISPLAY_NAME "NA"    // Will relabel this if I change it to a sound function -- See above
 
 // by default, # will show the list above. 
 // if you change the following line to true, it will take you to the Loco Function Labels screen directly
@@ -90,9 +90,9 @@
 //
 // Sumner note:  The following are what I use for the HandCab.  Leave FUNCTION_(0,1,2) as they are.  The othrs for BUTTONS 3-6 can be changed if you want to.
 
-#define CHOSEN_ADDITIONAL_BUTTON_0_FUNCTION FUNCTION_0   // GPIO 5 --- Turns Lights on/off
+#define CHOSEN_ADDITIONAL_BUTTON_0_FUNCTION FUNCTION_0   // GPIO 5 ---- Turns Lights on/off
 #define CHOSEN_ADDITIONAL_BUTTON_1_FUNCTION FUNCTION_1   // GPIO 15 --- Bell
-#define CHOSEN_ADDITIONAL_BUTTON_2_FUNCTION FUNCTION_2   // GPIO 25 -- Horn
+#define CHOSEN_ADDITIONAL_BUTTON_2_FUNCTION FUNCTION_2   // GPIO 25 --- Horn
 #define CHOSEN_ADDITIONAL_BUTTON_3_FUNCTION POWER_TOGGLE   // GPIO 26 -- Track Power On/Off
 #define CHOSEN_ADDITIONAL_BUTTON_4_FUNCTION E_STOP_CURRENT_LOCO   // GPIO 27 --- Stops Current Loco
 #define CHOSEN_ADDITIONAL_BUTTON_5_FUNCTION FUNCTION_9  // GPIO 32 --- Drive Hold
@@ -125,7 +125,8 @@
 // this is one of the common .9 inch OLED displays and is included by default
 // #define OLED_TYPE U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE, /* clock=*/ 22, /* data=*/ 23);
 
-// Sumner Note: This is one of the common 1.3 inch OLED displays and the one that is used in the HandCab.  Don't change this if you use the stock case and recommended OLED.
+// Sumner Note: This is one of the common 1.3 inch OLED displays and the one that is used in the HandCab. 
+// Don't change the following define if you use the stock case and recommended OLED.
  #define OLED_TYPE U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE, /* clock=*/ 22, /* data=*/ 23);
 
 // *******************************************************************************************************************
@@ -195,7 +196,6 @@
 // #define KEYPAD_ROW_PINS    {19, 18, 17, 16}
 // #define KEYPAD_COLUMN_PINS {4, 0, 2, 33}
 
-
 // in miliseconds
 
 // #define KEYPAD_DEBOUNCE_TIME 10
@@ -222,8 +222,9 @@
 
 // default = 50
 // increase if you find the buttons bounce. i.e. activate twice on a single press
+
 // #define ADDITIONAL_BUTTON_DEBOUNCE_DELAY        50
-#define ADDITIONAL_BUTTON_DEBOUNCE_DELAY 50   // increase if you find the buttons bounce. i.e. activate twice on a single press    
+ #define ADDITIONAL_BUTTON_DEBOUNCE_DELAY 50   // increase if you find the buttons bounce. i.e. activate twice on a single press    
 
 // *******************************************************************************************************************
 // Throttle Pot definitions:
@@ -307,3 +308,5 @@
 // The amount the DCC speed (number of speed steps) is changed by on each accelleration or brake delay period - default is 1
 
  #define DCC_SPEED_CHANGE_AMOUNT 1
+
+// ********************************** End of config_buttons **********************************************************
