@@ -55,55 +55,91 @@ Required Components
  ---
 ## Loading the code
 
-1. Download the Arduino IDE.  
-    * Available from  https://support.arduino.cc/hc/en-us/articles/360019833020-Download-and-install-Arduino-IDE
-2. Download the esp32 boards in the Arduino IDE. **(See warning above. Use ESP32 by Espressif Systems Ver 3.0.0 or later)**
-    * add the esp32 support with the following instructions:  (See here for detailed instructions:  https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/)
-        * In the Arduino IDE, go to *File* > *Preferences*
-        * Enter the following into the 'Additional Board Manager URLs' field:  https://dl.espressif.com/dl/package_esp32_index.json
-    * Then Use the *Boards Manager* in the *Arduino IDE* to install the esp32 board support
-        * *Tools* > *Board* > *Boards Manager*
-        * Search for "esp32" by Expressive Systems.  Install version 2.0.11
-3. Download or clone *this* repository. (Note: if you 'clone' initially, it is easier to receive updates to the code by doing a 'fetch' subsequently.  See Notes below.)
-    * Clone - **First Time**
-       * Install *GitHub Desktop* from https://desktop.github.com/
-       * Create a free account on GitHub and authorise the app to allow it to connect to GitHub
-       * Select *file* -> *Clone Repository* - or 'Clone an repository from the internet' from the welcome page then select the 'URL' tab
-       * Enter *https://github.com/1fatgmc/HandCab* as the URL
-       * Select a local folder to install it.  The default folder for the Arduino usually looks like "...username\Documents\Arduino\". (This is a good but not essential place to put it.)
-       * Click *Clone*
-       * **Subsequently**  (Anytime after the first 'clone')
-         * click *Fetch Origin* and any changes to the code will be bought down to your PC, but you config_buttons.h and config_network.h will not be touched.
-    * Download 
-       * Open *https://github.com/1fatgmc/HandCab*
-       * Click the green "Code" button and select download zip
-       * Extract the zip file to a local folder.  The default folder for the Arduino usually looks like "...username\Documents\Arduino\". This is a good but not essential place to put it.
-4. Load the needed libraries to your PC. These can loaded from the *Library Manager* in the *Arduino IDE*.
-    * *U8g2lib.h* -  Search for "U8g2".   Install version 2.34.22
-    * *AiEsp32RotaryEncoder.h* - search for "Ai Esp32 Rotary Encoder".  Install Version 1.6
-    * *Keypad.h* - Search for "Keypad" by Mark Stanley.   Install version 3.1.1
-    * *WiThrottleProtocol.h* - Search for "WiThrottleProtocol" (not "WiThrottle").  Install version 1.0.3 or later if available
-5. These should have been automatically installed when you downloaded the esp32 boards.  *YOU SHOULD NOT NEED TO DO ANYTHING SPECIFIC TO GET THESE*
-    * *WiFi.h*  - https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi
-    * *ESPmDNS.h* - https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS
-6. Copy '**config_network_example.h**' to a new file to '**config_network.h**'.
-    * Then edit it to include the network ssids you want to use.  (Not essential, but entering passwords via the encoder is tedious.)
-7. Copy '**config_buttons_example.h**' to a new file '**config_buttons.h**'.
-    * Optionally, edit this to change the mapping of the keypad buttons to specific functions.
-    * Optionally, edit this to configure the additional buttons (if you have included them) to specific functions.
-    * Optionally, edit this to change if you want the function buttons to display when you press #, instead of the default of showing the Key Definitions
-8. Upload the sketch.  
-    * Select the board type as "WEMOS LOLIN32 Lite" in the *Arduino IDE*.
-    * Connect the board via USB and select the appropriate port in the *Arduino IDE*.
-    * Click *Upload* 
+1.  Download the Arduino IDE.
+Available from https://support.arduino.cc/hc/en-us/articles/360019833020-Download-and-install-Arduino-IDE
+ 
+2.  Download the esp32 boards in the Arduino IDE. (See warning above. Use ESP32 by Espressif Systems Ver 3.0.0 or later) 
+add the esp32 support with the following instructions: (See here for detailed instructions: https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/) 
+In the Arduino IDE, go to File > Preferences 
+Enter the following into the 'Additional Board Manager URLs' field:  https://dl.espressif.com/dl/package_esp32_index.json 
+Then Use the Boards Manager in the Arduino IDE to install the esp32 board support. 
+Tools > Board > Boards Manager 
+Search for "esp32" by Expressive Systems. Install version 3.0.0 or newer.
 
-Notes: 
-   * HandCab version 0.01 or later requires WiThrottleProtocol version 1.1.14 or later.
-   * The *WiFi.h* and *ESPmDNS.h* libraries were automatically installed for me when I installed the esp32 boards, however you may need to install them manually.
-   * Later versions of the esp board support are available and do appear to work, but if you have difficulties version 1.0.6 appears to be stable.
-   * Later versions of the libraries generally should work, but if you have difficulties use the versions listed above.
-   * To get the HandCab sketch I recommend using either the git command line, or the far more friendly 'GitHub Desktop' app.  See instructions above.
-   * If you receive and error related to Python, and you are on MacOs 12 and above please edit the platform file, change from python to python3 as follows; preferences->user/path/arduino/packages/hardware/esp32/version/platform.txt and edit the line that looks as follows:tools.gen_esp32part.cmd=python3 "{runtime.platform.path}/tools/gen_esp32part.py"
+3.  Download or clone the GitHub repository ( HERE ). (Note: if you 'clone' initially, it is easier to receive updates to the code by doing a 'fetch' subsequently. See Notes below.) 
+Clone Option:  
+First time:
+Install GitHub Desktop from https://desktop.github.com/ 
+Create a free account on GitHub and authorise the app to allow it to connect to GitHub 
+Select file -> Clone Repository - or 'Clone an repository from the internet' from the welcome page then select the 'URL' tab 
+Enter https://github.com/1fatgmc/HandCab as the URL 
+Select a local folder to install it (I use the following one). The default folder for the Arduino usually looks like "...username\Documents\Arduino". (This is a good but not essential place to put it.) 
+Click Clone 
+Subsequently (Anytime after the first 'clone'):
+click Fetch Origin and any changes to the code will be bought down to your PC, but you config_buttons.h and config_network.h will not be touched. 
+Download Option:
+Open https://github.com/1fatgmc/HandCab 
+Click the green "Code" button and select download zip 
+Extract the zip file to a local folder. The default folder for the Arduino usually looks like "...username\Documents\Arduino". This is a good but not essential place to put it.
+ 
+4.  Load the needed libraries to your PC. These can loaded from the Library Manager in the Arduino IDE. 
+U8g2lib.h - Search for "U8g2". Install version 2.34.22 
+AiEsp32RotaryEncoder.h - search for "Ai Esp32 Rotary Encoder". Install Version 1.6 
+Keypad.h - Search for "Keypad" by Mark Stanley. Install version 3.1.1 
+WiThrottleProtocol.h - Search for "WiThrottleProtocol" (not "WiThrottle"). Install version 1.0.3 or later if available
+
+6.  These should have been automatically installed when you downloaded the esp32 boards. YOU SHOULD NOT NEED TO DO ANYTHING SPECIFIC TO GET THESE 
+WiFi.h - https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi 
+ESPmDNS.h - https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS 
+
+7.   Copy 'config_network_example.h' to a new file named 'config_network.h'. 
+Then edit it to include the network ssids you want to use. (Not essential, but entering passwords via the encoder is tedious.)
+You can have four saved ones.
+I have my network and password shown.  Change it to yours unless you are using JMRI also and it might then work.
+ 
+8.  Upload the Read_Pot_Values program/sketch.
+Connect the ESP32 via USB to your computer.
+The Read_Pot_Values software/sketch is in the Read_Pot_Values folder.  
+Open the folder and run  Read_Pot_Values.INO
+Click the Upload ==>
+Select the board type as "WEMOS LOLIN32 Lite" in the Arduino IDE.
+Go to 'Tools', 'Board', 'esp32' then scroll down to 'WEMOS LOLIN32 Lite' and select it. 
+Go to 'Tools',  'Port' and select the appropriate port.  More than one will probably show.  Unplug and re-plug to see which one you need. 
+Run the program.  
+If there is nothing on the screen turn the serial monitor on at bottom left of screen or 'Tools', 'Serial Monitor'
+You will hit lower case 'c' and enter a number of times and will have to follow the instructions on the screen.
+It will get to the point where it will give you numbers to write down that you will put in the 'config_buttons.h' file next.
+You might want to go through the program a second time and see if the numbers are close.  
+They won't be exact but should be within 100 each time you run it.  You can use any set of them for the next step.
+ 
+
+9.  Copy 'config_buttons_example.h' to a new file 'config_buttons.h'.  Open it in a plain text editor like Notepad (needs to stay plain text—not formatted).
+Optionally, edit this to change the mapping of the keypad buttons to specific functions from what I use now or later.
+Optionally, edit this to configure the additional pushbuttons to specific functions from what I use now or later.
+Enter the 'Throttle' pot definitions.  There are instructions in the file itself.
+Enter the 'Speed Step' definitions.  There are instructions in the file itself.
+Enter the 'Brake' pot definitions.  There are instructions in the file itself.
+Enter the 'Acceleration' definitions.  There are instructions in the file itself.
+Enter the 'Braking' definitions.  There are instructions in the file itself.
+Save the file.
+
+10  With the ESP32 still connected run HandCab.INO  
+Click the Upload ==>
+Program should load and come up the first screen showing that it is browsing for SSIDs.
+It will find any networks in the vicinity.
+Click on the appropriate one.
+It should connect and then search for a WiT service and it found the HandCab menu should come up with the version (upper right).
+Click on '*' for the menu and select a loco and off you go.
+If there are problems the DCC-EX website and go to the 'wifi-throttles' section and post.  Peter A, myself (Sumner) or someone will try and help you.
+
+
+Notes:
+HandCab version 0.01 or later requires WiThrottleProtocol version 1.1.14 or later. 
+The WiFi.h and ESPmDNS.h libraries were automatically installed for me when I installed the esp32 boards, however you may need to install them manually. 
+Later versions of the esp board support are available and do appear to work, but if you have difficulties version 1.0.6 appears to be stable. 
+Later versions of the libraries generally should work, but if you have difficulties use the versions listed above. 
+To get the HandCab sketch I recommend using either the git command line, or the far more friendly 'GitHub Desktop' app. See instructions above. 
+If you receive and error related to Python, and you are on MacOs 12 and above please edit the platform file, change from python to python3 as follows; preferences->user/path/arduino/packages/hardware/esp32/version/platform.txt and edit the line that looks as follows:tools.gen_esp32part.cmd=python3 "{runtime.platform.path}/tools/gen_esp32part.py" 
 
 ---
 
