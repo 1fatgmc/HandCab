@@ -86,16 +86,49 @@ Required Components
 5. These should have been automatically installed when you downloaded the esp32 boards.  *YOU SHOULD NOT NEED TO DO ANYTHING SPECIFIC TO GET THESE*
     * *WiFi.h*  - https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi
     * *ESPmDNS.h* - https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS
-6. Copy '**config_network_example.h**' to a new file to '**config_network.h**'.
-    * Then edit it to include the network ssids you want to use.  (Not essential, but entering passwords via the encoder is tedious.)
-7. Copy '**config_buttons_example.h**' to a new file '**config_buttons.h**'.
-    * Optionally, edit this to change the mapping of the keypad buttons to specific functions.
-    * Optionally, edit this to configure the additional buttons (if you have included them) to specific functions.
-    * Optionally, edit this to change if you want the function buttons to display when you press #, instead of the default of showing the Key Definitions
-8. Upload the sketch.  
-    * Select the board type as "WEMOS LOLIN32 Lite" in the *Arduino IDE*.
-    * Connect the board via USB and select the appropriate port in the *Arduino IDE*.
-    * Click *Upload* 
+6.  These should have been automatically installed when you downloaded the esp32 boards. YOU SHOULD NOT NEED TO DO ANYTHING SPECIFIC TO GET THESE 
+WiFi.h - https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi 
+ESPmDNS.h - https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS 
+
+7.   Copy 'config_network_example.h' to a new file named 'config_network.h'. 
+    * Then edit it to include the network ssids you want to use. (Not essential, but entering passwords via the encoder is tedious.)
+You can have four saved ones.
+    * I have my network and password shown.  Change it to yours unless you are using JMRI also and it might then work.
+ 
+8.  Upload the Read_Pot_Values program/sketch.
+Connect the ESP32 via USB to your computer.
+The Read_Pot_Values software/sketch is in the Read_Pot_Values folder.  
+Open the folder and run  Read_Pot_Values.INO
+Click the Upload ==>
+Select the board type as "WEMOS LOLIN32 Lite" in the Arduino IDE.
+Go to 'Tools', 'Board', 'esp32' then scroll down to 'WEMOS LOLIN32 Lite' and select it. 
+Go to 'Tools',  'Port' and select the appropriate port.  More than one will probably show.  Unplug and re-plug to see which one you need. 
+Run the program.  
+If there is nothing on the screen turn the serial monitor on at bottom left of screen or 'Tools', 'Serial Monitor'
+You will hit lower case 'c' and enter a number of times and will have to follow the instructions on the screen.
+It will get to the point where it will give you numbers to write down that you will put in the 'config_buttons.h' file next.
+You might want to go through the program a second time and see if the numbers are close.  
+They won't be exact but should be within 100 each time you run it.  You can use any set of them for the next step.
+ 
+
+9.  Copy 'config_buttons_example.h' to a new file 'config_buttons.h'.  Open it in a plain text editor like Notepad (needs to stay plain text—not formatted).
+Optionally, edit this to change the mapping of the keypad buttons to specific functions from what I use now or later.
+Optionally, edit this to configure the additional pushbuttons to specific functions from what I use now or later.
+Enter the 'Throttle' pot definitions.  There are instructions in the file itself.
+Enter the 'Speed Step' definitions.  There are instructions in the file itself.
+Enter the 'Brake' pot definitions.  There are instructions in the file itself.
+Enter the 'Acceleration' definitions.  There are instructions in the file itself.
+Enter the 'Braking' definitions.  There are instructions in the file itself.
+Save the file.
+
+10  With the ESP32 still connected run HandCab.INO  
+Click the Upload ==>
+Program should load and come up the first screen showing that it is browsing for SSIDs.
+It will find any networks in the vicinity.
+Click on the appropriate one.
+It should connect and then search for a WiT service and it found the HandCab menu should come up with the version (upper right).
+Click on '*' for the menu and select a loco and off you go.
+If there are problems the DCC-EX website and go to the 'wifi-throttles' section and post.  Peter A, myself (Sumner) or someone will try and help you.
 
 Notes: 
    * HandCab version 0.01 or later requires WiThrottleProtocol version 1.1.14 or later.
