@@ -59,10 +59,10 @@ Required Components
   - Available from https://support.arduino.cc/hc/en-us/articles/360019833020-Download-and-install-Arduino-IDE
  
 2.  Download the esp32 boards in the Arduino IDE. (See warning above. Use ESP32 by Espressif Systems Ver 3.0.0 or later) 
-    -    add the esp32 support with the following instructions: (See here for detailed instructions: https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/) 
-    -    In the Arduino IDE, go to File > Preferences 
-     -    Enter the following into the 'Additional Board Manager URLs' field:  https://dl.espressif.com/dl/package_esp32_index.json 
-     -    Then Use the Boards Manager in the Arduino IDE to install the esp32 board support. 
+  -    add the esp32 support with the following instructions: (See here for detailed instructions: https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/) 
+  -    In the Arduino IDE, go to File > Preferences 
+  -    Enter the following into the 'Additional Board Manager URLs' field:  https://dl.espressif.com/dl/package_esp32_index.json 
+  -    Then Use the Boards Manager in the Arduino IDE to install the esp32 board support. 
   -    Tools > Board > Boards Manager 
   -    Search for "esp32" by Expressive Systems. Install version 3.0.0 or newer.
 
