@@ -111,8 +111,8 @@ You can have four saved ones.
      * They won't be exact but should be within 100 each time you run it.  You can use any set of them for the next step.
  
 9.  Copy 'config_buttons_example.h' to a new file 'config_buttons.h'.  Open it in a plain text editor like Notepad (needs to stay plain text—not formatted).
-     * Optionally, edit this to change the mapping of the keypad buttons to specific functions from what I use now or later.
-     * Optionally, edit this to configure the additional pushbuttons to specific functions from what I use now or later.
+     * Optionally, edit config_buttons.h to change the mapping of the keypad buttons to specific functions from what I use now or later.
+     * Optionally, edit config_buttons.h to configure the additional pushbuttons to specific functions from what I use now or later.
      * Enter the 'Throttle' pot definitions.  There are instructions in the file itself.
      * Enter the 'Speed Step' definitions.  There are instructions in the file itself.
      * Enter the 'Brake' pot definitions.  There are instructions in the file itself.
@@ -120,7 +120,7 @@ You can have four saved ones.
      * Enter the 'Braking' definitions.  There are instructions in the file itself.
      * Save the file.
 
-10  With the ESP32 still connected run HandCab.INO  
+10.  With the ESP32 still connected run HandCab.INO  
      * Click the Upload ==>
      * Program should load and come up the first screen showing that it is browsing for SSIDs.
      * It will find any networks in the vicinity.
