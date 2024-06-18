@@ -267,8 +267,6 @@ TBA
 
 Recommend adding a physical power switch as this will continually drain the battery, even when not being used.
 
-*Pinouts for Optional Battery Monitor*
-![Assembly diagram - Optional Battery Monitor](https://github.com/flash62au/WiTcontroller/blob/main/WiTcontroller%20-%20Optional%20battery%20monitor.png)
 
 ---
 ---
