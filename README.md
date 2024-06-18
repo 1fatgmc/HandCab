@@ -66,21 +66,21 @@ Required Components
        - Tools > Board > Boards Manager 
        - Search for "esp32" by Expressive Systems. Install version 3.0.0 or newer.
 
-3.  Download or clone the GitHub repository ( HERE ). (Note: if you 'clone' initially, it is easier to receive updates to the code by doing a 'fetch' subsequently. See Notes below.) 
+3.  Download or clone the GitHub repository https://github.com/1fatgmc/HandCab. (Note: if you 'clone' initially, it is easier to receive updates to the code by doing a 'fetch' subsequently. See Notes below.) 
      - Clone Option:  
        - First time:
          - Install GitHub Desktop from https://desktop.github.com/ 
          - Create a free account on GitHub and authorise the app to allow it to connect to GitHub 
-Select file -> Clone Repository - or 'Clone an repository from the internet' from the welcome page then select the 'URL' tab 
-Enter https://github.com/1fatgmc/HandCab as the URL 
-Select a local folder to install it (I use the following one). The default folder for the Arduino usually looks like "...username\Documents\Arduino". (This is a good but not essential place to put it.) 
-Click Clone 
-Subsequently (Anytime after the first 'clone'):
-click Fetch Origin and any changes to the code will be bought down to your PC, but you config_buttons.h and config_network.h will not be touched. 
-Download Option:
-Open https://github.com/1fatgmc/HandCab 
-Click the green "Code" button and select download zip 
-Extract the zip file to a local folder. The default folder for the Arduino usually looks like "...username\Documents\Arduino". This is a good but not essential place to put it.
+         - Select file -> Clone Repository - or 'Clone an repository from the internet' from the welcome page then select the 'URL' tab 
+         - Enter https://github.com/1fatgmc/HandCab as the URL 
+         - Select a local folder to install it (I use the following one). The default folder for the Arduino usually looks like "...username\Documents\Arduino". (This is a good but not essential place to put it.) 
+         - Click Clone 
+       - Subsequently (Anytime after the first 'clone'):
+         - click Fetch Origin and any changes to the code will be bought down to your PC, but you config_buttons.h and config_network.h will not be touched. 
+     - Download Option:
+       - Open https://github.com/1fatgmc/HandCab 
+       - Click the green "Code" button and select download zip 
+       - Extract the zip file to a local folder. The default folder for the Arduino usually looks like "...username\Documents\Arduino". This is a good but not essential place to put it.
  
 4.  Load the needed libraries to your PC. These can loaded from the Library Manager in the Arduino IDE. 
 U8g2lib.h - Search for "U8g2". Install version 2.34.22 
