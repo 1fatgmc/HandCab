@@ -261,36 +261,6 @@ Note: you need to edit config_buttons.h to alter these assignments   (copy confi
 - POWER_ON
 - POWER_OFF
 
-### instructions for the potentiometers (pot) for the throttle
-
-config_buttons.h can include the following optional defines:
-
-  * \#define THROTTLE_POT_PIN 39
-  * \#define THROTTLE_POT_USE_NOTCHES true 
-  * \#define THROTTLE_POT_NOTCH_VALUES {1,585,1170,1755,2340,2925,3510,4094}
-  * \#define THROTTLE_POT_NOTCH_SPEEDS {0,18,36,54,72,90,108,127} 
-
-  You must specify the PIN to be used.  Currently PINs 34, 35 and 39 are the only ones that cannot be used by the app for other purposes, so these are the safest to use.  this should be connected to the centre pin of the pot. The 3v and GND should be connected to the outer pins of the pot.
-
-    Note that eventually the app will upgraded to support a brake and reverser pots.  These will use pins 34 and 35 by default.
-
-  The pot can be set to have 8 defined 'notches' (the default) or just a linear value.
-
-  If you want to have the 8 notches:
-  
-  a) You must define the values the pot will send at each of 8 points - ``THROTTLE_POT_NOTCH_VALUES``.  Note that you should avoid the value zero (0) for notch zero.  Use at least 1 instead.
-
-    The example values above are usable for a 50k ohm pot but any value pot can be used. Just adjust the numbers.
-
-  b) You must define what speed should be sent for each notch - ``THROTTLE_POT_NOTCH_SPEEDS``
-
-<strike>  If you want a linear speed instead of notches:
-
-  a) You must define the values the pot will send at at zero throw and full throw in the first and last of the 8 values in ``THROTTLE_POT_NOTCH_VALUES``.  The other values will be ignored but you still need to include 8 values.  (They can be zero.)  Note that you should avoid the value zero (0) for notch zero.  Use at least 1 instead.
-</strike>
-
-  Sumner Patterson is developing an app to help find the appropriate pot values for ``THROTTLE_POT_NOTCH_VALUES``.
-
 ### Instructions for optional use of a voltage divider to show the battery charge level
 
 TBA
