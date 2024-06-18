@@ -91,19 +91,18 @@ WiFi.h - https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi
 ESPmDNS.h - https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS 
 
 7.   Copy 'config_network_example.h' to a new file named 'config_network.h'. 
-     * *Then edit it to include the network ssids you want to use. (Not essential, but entering passwords via the encoder is tedious.)
+     * Then edit it to include the network ssids you want to use. (Not essential, but entering passwords via the encoder is tedious.)
 You can have four saved ones.
-     * *I have my network and password shown.  Change it to yours unless you are using JMRI also and it might then work.
+     * I have my network and password shown.  Change it to yours unless you are using JMRI also and it might then work.
  
 8.  Upload the Read_Pot_Values program/sketch.
-Connect the ESP32 via USB to your computer.
-The Read_Pot_Values software/sketch is in the Read_Pot_Values folder.  
-Open the folder and run  Read_Pot_Values.INO
-Click the Upload ==>
-Select the board type as "WEMOS LOLIN32 Lite" in the Arduino IDE.
-Go to 'Tools', 'Board', 'esp32' then scroll down to 'WEMOS LOLIN32 Lite' and select it. 
-Go to 'Tools',  'Port' and select the appropriate port.  More than one will probably show.  Unplug and re-plug to see which one you need. 
-Run the program.  
+     * Connect the ESP32 via USB to your computer.
+     * The Read_Pot_Values software/sketch is in the Read_Pot_Values folder.  
+       * Open the folder and run  Read_Pot_Values.INO       
+       * Select the board type as "WEMOS LOLIN32 Lite" in the Arduino IDE.
+         * Go to 'Tools', 'Board', 'esp32' then scroll down to 'WEMOS LOLIN32 Lite' and select it. 
+         * Go to 'Tools',  'Port' and select the appropriate port.  More than one will probably show.  Unplug and re-plug to see which one you need. 
+     * Click the Upload ==>  
 If there is nothing on the screen turn the serial monitor on at bottom left of screen or 'Tools', 'Serial Monitor'
 You will hit lower case 'c' and enter a number of times and will have to follow the instructions on the screen.
 It will get to the point where it will give you numbers to write down that you will put in the 'config_buttons.h' file next.
