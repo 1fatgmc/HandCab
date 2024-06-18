@@ -91,9 +91,9 @@ WiFi.h - https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi
 ESPmDNS.h - https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS 
 
 7.   Copy 'config_network_example.h' to a new file named 'config_network.h'. 
-    * *Then edit it to include the network ssids you want to use. (Not essential, but entering passwords via the encoder is tedious.)
+     * *Then edit it to include the network ssids you want to use. (Not essential, but entering passwords via the encoder is tedious.)
 You can have four saved ones.
-    * *I have my network and password shown.  Change it to yours unless you are using JMRI also and it might then work.
+     * *I have my network and password shown.  Change it to yours unless you are using JMRI also and it might then work.
  
 8.  Upload the Read_Pot_Values program/sketch.
 Connect the ESP32 via USB to your computer.
