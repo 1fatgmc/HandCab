@@ -35,18 +35,18 @@ https://1fatgmc.com/RailRoad/DCC/HandCab-Index.html
 
 Required Components 
 (links to where I bought the following & pricing at (https://1fatgmc.com/RailRoad/DCC/page-14.html))
-* 1 - ESP32 LOLIN32 Lite.
-* 1 - 3x4 Keypad.
-* 1 - 1.3” OlED Display.
-* 1 - Encoder.
-* 3 – 50K potentiometers.
-* 2 – On/Off Pushbutton switches.
-* 1 – Momentary Limit Switch.
-* 7 – SPST Momentary Pushbutton switches.
-* 1 – Battery Selector DPDT c/o switch if have 2 batteries.
-* 1- 3 stage Adafruit 4410 USB charger (optional but I like having a better charger than the ESP32 one.
-* 1 or 2 Batteries …... (I like 2 so I can change if needed).
-* 1 or 2 or No JST connectors.
+    * 1 - ESP32 LOLIN32 Lite.
+    * 1 - 3x4 Keypad.
+    * 1 - 1.3” OlED Display.
+    * 1 - Encoder.
+    * 3 – 50K potentiometers.
+    * 2 – On/Off Pushbutton switches.
+    * 1 – Momentary Limit Switch.
+    * 7 – SPST Momentary Pushbutton switches.
+    * 1 – Battery Selector DPDT c/o switch if have 2 batteries.
+    * 1- 3 stage Adafruit 4410 USB charger (optional but I like having a better charger than the ESP32 one.
+    * 1 or 2 Batteries …... (I like 2 so I can change if needed).
+    * 1 or 2 or No JST connectors.
  ---
 ## Wiring Schematic
 *Pinouts with Additional 7 Buttons*
@@ -56,15 +56,15 @@ Required Components
 ## Loading the code
 
 1.  Download the Arduino IDE.
-Available from https://support.arduino.cc/hc/en-us/articles/360019833020-Download-and-install-Arduino-IDE
+    *Available from https://support.arduino.cc/hc/en-us/articles/360019833020-Download-and-install-Arduino-IDE
  
 2.  Download the esp32 boards in the Arduino IDE. (See warning above. Use ESP32 by Espressif Systems Ver 3.0.0 or later) 
-add the esp32 support with the following instructions: (See here for detailed instructions: https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/) 
-In the Arduino IDE, go to File > Preferences 
-Enter the following into the 'Additional Board Manager URLs' field:  https://dl.espressif.com/dl/package_esp32_index.json 
-Then Use the Boards Manager in the Arduino IDE to install the esp32 board support. 
-Tools > Board > Boards Manager 
-Search for "esp32" by Expressive Systems. Install version 3.0.0 or newer.
+    *add the esp32 support with the following instructions: (See here for detailed instructions: https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/) 
+    *In the Arduino IDE, go to File > Preferences 
+    *Enter the following into the 'Additional Board Manager URLs' field:  https://dl.espressif.com/dl/package_esp32_index.json 
+    *Then Use the Boards Manager in the Arduino IDE to install the esp32 board support. 
+    *Tools > Board > Boards Manager 
+    *Search for "esp32" by Expressive Systems. Install version 3.0.0 or newer.
 
 3.  Download or clone the GitHub repository ( HERE ). (Note: if you 'clone' initially, it is easier to receive updates to the code by doing a 'fetch' subsequently. See Notes below.) 
 Clone Option:  
@@ -123,7 +123,7 @@ Enter the 'Acceleration' definitions.  There are instructions in the file itself
 Enter the 'Braking' definitions.  There are instructions in the file itself.
 Save the file.
 
-10  With the ESP32 still connected run HandCab.INO  
+10.  With the ESP32 still connected run HandCab.INO  
 Click the Upload ==>
 Program should load and come up the first screen showing that it is browsing for SSIDs.
 It will find any networks in the vicinity.
