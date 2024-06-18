@@ -127,7 +127,7 @@ You can have four saved ones.
      * Click on the appropriate one.
      * It should connect and then search for a WiT service and it found the HandCab menu should come up with the version (upper right).
      * Click on '*' for the menu and select a loco and off you go.
-     * If there are problems the DCC-EX website and go to the 'wifi-throttles' section and post.  Peter A, myself (Sumner) or someone will try and help you.
+     * If there are problems go to the DCC-EX website (https://discord.com/invite/PuPnNMp8Qf) and go to the 'wifi-throttles' section and post.  Peter A, myself (Sumner) or someone will try and help you.
 
 Notes: 
    * HandCab version 0.01 or later requires WiThrottleProtocol version 1.1.14 or later.
