@@ -301,6 +301,9 @@
 
  #define BRAKE_DELAY_TIMES {0000,0000,0000,0000,0000,0000}  //I'd start with my numbers and then experiment and change them to what you like.
 
+// *******************************************************************************************************************
+// Speed Step Setting  definition:
 //
-// The amount the DCC speed is changed by on each accelleration or brake delay period - default is 1
+// The amount the DCC speed (number of speed steps) is changed by on each accelleration or brake delay period - default is 1
+
  #define DCC_SPEED_CHANGE_AMOUNT 1
