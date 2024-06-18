@@ -101,13 +101,13 @@ You can have four saved ones.
        * Open the folder and run  Read_Pot_Values.INO       
        * Select the board type as "WEMOS LOLIN32 Lite" in the Arduino IDE.
          * Go to 'Tools', 'Board', 'esp32' then scroll down to 'WEMOS LOLIN32 Lite' and select it. 
-         * Go to 'Tools',  'Port' and select the appropriate port.  More than one will probably show.  Unplug and re-plug to see which one you need. 
+       * Go to 'Tools',  'Port' and select the appropriate port.  More than one will probably show.  Unplug and re-plug to see which one you need. 
      * Click the Upload ==>  
-If there is nothing on the screen turn the serial monitor on at bottom left of screen or 'Tools', 'Serial Monitor'
-You will hit lower case 'c' and enter a number of times and will have to follow the instructions on the screen.
-It will get to the point where it will give you numbers to write down that you will put in the 'config_buttons.h' file next.
-You might want to go through the program a second time and see if the numbers are close.  
-They won't be exact but should be within 100 each time you run it.  You can use any set of them for the next step.
+     * If there is nothing on the screen turn the serial monitor on at bottom left of screen or 'Tools', 'Serial Monitor'
+     * You will hit lower case 'c' and enter a number of times and will have to follow the instructions on the screen.
+     * It will get to the point where it will give you numbers to write down that you will put in the 'config_buttons.h' file next.
+     * You might want to go through the program a second time and see if the numbers are close.  
+     * They won't be exact but should be within 100 each time you run it.  You can use any set of them for the next step.
  
 
 9.  Copy 'config_buttons_example.h' to a new file 'config_buttons.h'.  Open it in a plain text editor like Notepad (needs to stay plain text—not formatted).
