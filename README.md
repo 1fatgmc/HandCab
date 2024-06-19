@@ -31,6 +31,11 @@ You can find a detailed step-by-step build of the throttle on my website:
 https://1fatgmc.com/RailRoad/DCC/HandCab-Index.html
 
 ---
+## Print Files
+
+Print files on thingiverse.com https://www.thingiverse.com/sumner/designs
+
+---
 ## Parts
 
 Required Components 
@@ -51,12 +56,6 @@ Required Components
 ## Wiring Schematic
 *Pinouts with Additional 7 Buttons*
 ![Alt text](https://github.com/1fatgmc/HandCab/blob/main/24-06-16%20Wiring%20Large-Volt%20Meter-1.jpg?raw=true)
-
----
-## Print Files
-
-Print files on thingiverse.com https://www.thingiverse.com/sumner/designs
-
 
  ---
 ## Loading the code
