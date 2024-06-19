@@ -57,6 +57,7 @@ Required Components
 
 1. Download the Arduino IDE.  
     * Available from  https://support.arduino.cc/hc/en-us/articles/360019833020-Download-and-install-Arduino-IDE
+
 2. Download the esp32 boards in the Arduino IDE. **(See warning above. Use ESP32 by Espressif Systems Ver 3.0.0 or later)**
     * add the esp32 support with the following instructions:  (See here for detailed instructions:  https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/)
         * In the Arduino IDE, go to *File* > *Preferences*
@@ -64,6 +65,7 @@ Required Components
     * Then Use the *Boards Manager* in the *Arduino IDE* to install the esp32 board support
         * *Tools* > *Board* > *Boards Manager*
         * Search for "esp32" by Expressive Systems.  Install version 2.0.11
+
 3. Download or clone *this* repository. (Note: if you 'clone' initially, it is easier to receive updates to the code by doing a 'fetch' subsequently.  See Notes below.)
     * Clone - **First Time**
        * Install *GitHub Desktop* from https://desktop.github.com/
@@ -78,17 +80,20 @@ Required Components
        * Open *https://github.com/1fatgmc/HandCab*
        * Click the green "Code" button and select download zip
        * Extract the zip file to a local folder.  The default folder for the Arduino usually looks like "...username\Documents\Arduino\". This is a good but not essential place to put it.
+
 4. Load the needed libraries to your PC. These can loaded from the *Library Manager* in the *Arduino IDE*.
     * *U8g2lib.h* -  Search for "U8g2".   Install version 2.34.22
     * *AiEsp32RotaryEncoder.h* - search for "Ai Esp32 Rotary Encoder".  Install Version 1.6
     * *Keypad.h* - Search for "Keypad" by Mark Stanley.   Install version 3.1.1
     * *WiThrottleProtocol.h* - Search for "WiThrottleProtocol" (not "WiThrottle").  Install version 1.0.3 or later if available
+
 5. These should have been automatically installed when you downloaded the esp32 boards.  *YOU SHOULD NOT NEED TO DO ANYTHING SPECIFIC TO GET THESE*
     * *WiFi.h*  - https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi
     * *ESPmDNS.h* - https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS
+
 6.  These should have been automatically installed when you downloaded the esp32 boards. YOU SHOULD NOT NEED TO DO ANYTHING SPECIFIC TO GET THESE 
-WiFi.h - https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi 
-ESPmDNS.h - https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS 
+    * WiFi.h - https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi 
+    * ESPmDNS.h - https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS 
 
 7.   Copy 'config_network_example.h' to a new file named 'config_network.h'. 
      * Then edit it to include the network ssids you want to use. (Not essential, but entering passwords via the encoder is tedious.)
@@ -123,9 +128,10 @@ You can have four saved ones.
 10.  With the ESP32 still connected run HandCab.INO  
      * Click the Upload ==>
      * Program should load and come up the first screen showing that it is browsing for SSIDs.
-     * It will find any networks in the vicinity.
+     * It will find and show any networks in the vicinity.
      * Click on the appropriate one.
-     * It should connect and then search for a WiT service and it found the HandCab menu should come up with the version (upper right).
+     * It should connect if you have the correct network name and password in you 'config_network.h' file. 
+     * It will then search for a WiT service and if found the HandCab menu should come up with the version (upper right).
      * Click on '*' for the menu and select a loco and off you go.
      * If there are problems go to the DCC-EX website (https://discord.com/invite/PuPnNMp8Qf) and go to the 'wifi-throttles' section and post.  Peter A, myself (Sumner) or someone will try and help you.
 
