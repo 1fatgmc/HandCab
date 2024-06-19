@@ -111,8 +111,8 @@ You can have four saved ones.
      * They won't be exact but should be within 100 each time you run it.  You can use any set of them for the next step.
  
 9.  Copy 'config_buttons_example.h' to a new file 'config_buttons.h'.  Open it in a plain text editor like Notepad (needs to stay plain text—not formatted).
-     * Optionally, edit config_buttons.h to change the mapping of the keypad buttons to specific functions from what I use now or later.
-     * Optionally, edit config_buttons.h to configure the additional pushbuttons to specific functions from what I use now or later.
+     * Optionally, edit config_buttons.h to change the mapping of the keypad buttons to specific functions different from what they are (recommend you start what is there).
+     * Optionally, edit config_buttons.h to configure the additional pushbuttons to specific functions different from what they are (recommend you start what is there).
      * Enter the 'Throttle' pot definitions.  There are instructions in the file itself.
      * Enter the 'Speed Step' definitions.  There are instructions in the file itself.
      * Enter the 'Brake' pot definitions.  There are instructions in the file itself.
