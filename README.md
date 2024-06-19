@@ -127,7 +127,7 @@ You can have four saved ones.
 
 10.  With the ESP32 still connected run HandCab.INO  
      * Click the Upload ==>
-     * Program should load and come up the first screen showing that it is browsing for SSIDs.
+     * Program should load and come up with the first screen showing that it is browsing for SSIDs.
      * It will find and show any networks in the vicinity.
      * Click on the appropriate one.
      * It should connect if you have the correct network name and password in you 'config_network.h' file. 
