@@ -148,7 +148,8 @@ Notes:
 ## Using HandCab
 
 **Currently functioning:**
-- NOTE:  There are items shown below that are striked out.  They work on the WiTcontroller software but not the software for the HandCab because of the use of the 'pots' on the HandCab.  One can load the WiTcontroller software and use the throttle with the encoder but then the pots are non-functional.
+- NOTE:  There are items shown below that are  <strike>striked out</strike>
+.  They work on the WiTcontroller software but not the software for the HandCab because of the use of the 'pots' on the HandCab.  One can load the WiTcontroller software and use the throttle with the encoder but then the pots are non-functional.
 
 - Provides a list of discovered SSIDs with the ability to choose one. When you select one:
   - if it is one in your specified list (in the sketch), it will use that specified password 
