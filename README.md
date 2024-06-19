@@ -211,29 +211,25 @@ Notes:
   - 2 = release loco:
      - Followed by the loco number, followed by \# to release an individual loco.  e.g. to deselect the loco 99 you would press '\*299\#'
      - Otherwise followed directly by \#  to release all e.g. '\*2\#'
-  - 3 = <strike>Toggle direction.</strike>
-  - 4 = Set / Unset a 2 times multiplier for the rotary encoder dial.
-  - 5 = Throw turnout/point.  
+  - 3 = Set / Unset a 2 times multiplier for the rotary encoder dial.
+  - 4 = Throw turnout/point.  
      - Followed by the turnout/point number, followed by the \# to complete.  e.g. Throw turnout XX12 '\*512\#'  (where XX is a prefix defined in the sketch) 
      - or \# alone to show the list from the server   \# again will show the next page
-  - 6 = Close turnout.    
+  - 5 = Close turnout.    
      - Followed by the turnout/point number, followed by \# to complete.  e.g. Close turnout XX12 '\*612\#'  (where XX is a prefix defined in the sketch)
      - or \# alone to show the list from the server
-  - 7 = Set Route.    
+  - 6 = Set Route.    
       - Followed by the Route number, followed by \# to complete.  e.g. to Set route XX:XX:0012 '\*60012\#'  (where \'XX:XX:\' is a prefix defined in the sketch)
       - or \# alone to show the list from the server   \# again will show the next page
-  - 0 = Function button. Followed by...
+  - 7 = Function button. Followed by...
       - the function number, Followed by \# to complete.  e.g. to set function 17 you would press '\*017\#'
       - \# alone, to show the list of functions.
   - 8 = Track Power On/Off.
   - 9 = Extras. Followed by...
       - 0 then \# to toggle the action the the \# key does as a direct action, either to show the direct action key definitions, or the Function labels.  
       - 1 to change the facing of locos in a consist.
-      - 3 to toggle the heartbeat check.
-      - <strike>4 to increase the number of available throttle (up to 6)</strike>
-      - <strike>5 to decrease the number of available throttle (down to 1)</strike>
-      - 6 then \# to Disconnect/Reconnect.  
-      - 7 (or 9) then \# to put into deep sleep
+      - 3 to toggle the heartbeat check.- 6 then \# to Disconnect/Reconnect.  
+      - 4 (or 9) then \# to put into deep sleep
 Pressing '\*' again before the '\#' will terminate the current command (but not start a new command)
  - \# = Pressing # alone will show the function the the numbered keys (0-9) perform, outside the menu.
        Optionally, you can configure it so that the the Function labels from the roster show 
