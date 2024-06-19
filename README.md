@@ -154,7 +154,7 @@ Notes:
 
 **Currently functioning:**
 - NOTE:  There are items shown below that are  <strike>striked out</strike>
-.  They work on the WiTcontroller software but not the software for the HandCab because of the use of the 'pots' on the HandCab.  One can load the WiTcontroller software and use the throttle with the encoder but then the pots are non-functional.
+.  They work on the WiTcontroller software but not the software for the HandCab because of the use of the 'pots' on the HandCab.  One can load the WiTcontroller software (https://github.com/flash62au/WiTcontroller) and use the throttle with the encoder but then the brake and reverser pots are non-functional.  You can select to use the throttle pot.
 
 - Provides a list of discovered SSIDs with the ability to choose one. When you select one:
   - if it is one in your specified list (in the sketch), it will use that specified password 
@@ -252,23 +252,23 @@ Pressing the Encoder button while the ESP32 is in Deep Sleep will revive it.
 * 2 = FUNCTION_3 (DCC Horn/Whistle)
 * 3 = FUNCTION_3
 * 4 = FUNCTION_4
-* 5 = <strike>NEXT_THROTLE</strike>
-* 6 = <strike>SPEED_MULTIPLIER</strike>
-* 7 = <strike>DIRECTION_REVERSE</strike>
-* 8 = <strike>SPEED_STOP</strike>
-* 9 = <strike>DIRECTION_FORWARD</strike>
+* 5 = User assigned assignment
+* 6 = User assigned assignment
+* 7 = User assigned assignment
+* 8 = User assigned assignment
+* 9 = User assigned assignment
 
 ### Allowed assignments for the 0-9 keys:
 
 Note: you need to edit config_buttons.h to alter these assignments   (copy config_buttons_example.h)
 - FUNCTION_NULL   - don't do anything
 - FUNCTION_0 - FUNCTION_31
-- <strike>SPEED_STOP</strike>
-- <strike>SPEED_UP</strike>
-- <strike>SPEED_DOWN</strike>
-- <strike>SPEED_UP_FAST</strike>
-- <strike>SPEED_DOWN_FAST</strike>
-- <strike>SPEED_MULTIPLIER</strike>
+- User assigned Function
+- User assigned Function
+- User assigned Function
+- User assigned Function
+- User assigned Function
+- User assigned Function
 - E_STOP   - E Stop all locos on all throttles
 - E_STOP_CURRENT_LOCO - E Stop locos on current throttle only
 - POWER_TOGGLE
