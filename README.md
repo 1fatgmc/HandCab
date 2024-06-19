@@ -193,9 +193,7 @@ Notes:
   - Toggle throuigh 3 levels of acceleration delays to change the momentum effect for a loco pulling trains with different loads.
   - Power Track On/Off
   - Disconnect / Reconnect
-  - Put ESP32 in deep sleep and restart it
-- <strike>Have up to 6 throttles, each with an unlimited number of locos in consist. Default is 2 throttles, which can be increased or decreased temporarily via the Extras menu (or permanently enabled in config_button.h)</strike>
-- Limited dealing with unexpected disconnects.  It will throw you back to the WiThrottle Server selection screen.
+  - Put ESP32 in deep sleep and restart it- Limited dealing with unexpected disconnects.  It will throw you back to the WiThrottle Server selection screen.
 - Boundary between short and long DCC addresses can be configured in config_buttons.h
 - <strike>The default speed step (per encoder click) can be configured in config_buttons.h</strike>
 - The controller will automatically shut down if no SSID is selected or entered in 4 minutes (to conserve the battery)
