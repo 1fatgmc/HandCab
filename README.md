@@ -194,9 +194,7 @@ Notes:
   - Power Track On/Off
   - Disconnect / Reconnect
   - Put ESP32 in deep sleep and restart it- Limited dealing with unexpected disconnects.  It will throw you back to the WiThrottle Server selection screen.
-- Boundary between short and long DCC addresses can be configured in config_buttons.h
-- <strike>The default speed step (per encoder click) can be configured in config_buttons.h</strike>
-- The controller will automatically shut down if no SSID is selected or entered in 4 minutes (to conserve the battery)
+- Boundary between short and long DCC addresses can be configured in config_buttons.h- The controller will automatically shut down if no SSID is selected or entered in 4 minutes (to conserve the battery)
 
 **ToDo:**
 - Deal with unexpected disconnects better
