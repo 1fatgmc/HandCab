@@ -113,12 +113,12 @@ You can have four saved ones.
 9.  Copy 'config_buttons_example.h' to a new file 'config_buttons.h'.  Open it in a plain text editor like Notepad (needs to stay plain text—not formatted).
      * Optionally, edit config_buttons.h to change the mapping of the keypad buttons to specific functions different from what they are (recommend you start what is there).
      * Optionally, edit config_buttons.h to configure the additional pushbuttons to specific functions different from what they are (recommend you start what is there).
-     * Enter the 'Throttle' pot definitions.  There are instructions in the file itself.
-     * Enter the 'Speed Step' definitions.  There are instructions in the file itself.
-     * Enter the 'Brake' pot definitions.  There are instructions in the file itself.
-     * Enter the 'Acceleration' definitions.  There are instructions in the file itself.
-     * Enter the 'Braking' definitions.  There are instructions in the file itself.
-     * Save the file.
+     * Enter the 'Throttle' pot definitions.  There are instructions in the 'config_buttons_example.h' file itself.
+     * Enter the 'Speed Step' definitions.  There are instructions in the 'config_buttons_example.h' file itself.
+     * Enter the 'Brake' pot definitions.  There are instructions in the 'config_buttons_example.h' file itself.
+     * Enter the 'Acceleration' definitions.  There are instructions in the 'config_buttons_example.h' file itself.
+     * Enter the 'Braking' definitions.  There are instructions in the 'config_buttons_example.h' file itself.
+     * Save the file when done.
 
 10.  With the ESP32 still connected run HandCab.INO  
      * Click the Upload ==>
