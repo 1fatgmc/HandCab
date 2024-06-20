@@ -31,6 +31,11 @@ You can find a detailed step-by-step build of the throttle on my website:
 https://1fatgmc.com/RailRoad/DCC/HandCab-Index.html
 
 ---
+## Print Files
+
+Print files on thingiverse.com https://www.thingiverse.com/sumner/designs
+
+---
 ## Parts
 
 Required Components 
@@ -57,6 +62,7 @@ Required Components
 
 1. Download the Arduino IDE.  
     * Available from  https://support.arduino.cc/hc/en-us/articles/360019833020-Download-and-install-Arduino-IDE
+
 2. Download the esp32 boards in the Arduino IDE. **(See warning above. Use ESP32 by Espressif Systems Ver 3.0.0 or later)**
     * add the esp32 support with the following instructions:  (See here for detailed instructions:  https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/)
         * In the Arduino IDE, go to *File* > *Preferences*
@@ -64,6 +70,7 @@ Required Components
     * Then Use the *Boards Manager* in the *Arduino IDE* to install the esp32 board support
         * *Tools* > *Board* > *Boards Manager*
         * Search for "esp32" by Expressive Systems.  Install version 2.0.11
+
 3. Download or clone *this* repository. (Note: if you 'clone' initially, it is easier to receive updates to the code by doing a 'fetch' subsequently.  See Notes below.)
     * Clone - **First Time**
        * Install *GitHub Desktop* from https://desktop.github.com/
@@ -78,21 +85,28 @@ Required Components
        * Open *https://github.com/1fatgmc/HandCab*
        * Click the green "Code" button and select download zip
        * Extract the zip file to a local folder.  The default folder for the Arduino usually looks like "...username\Documents\Arduino\". This is a good but not essential place to put it.
+
 4. Load the needed libraries to your PC. These can loaded from the *Library Manager* in the *Arduino IDE*.
     * *U8g2lib.h* -  Search for "U8g2".   Install version 2.34.22
     * *AiEsp32RotaryEncoder.h* - search for "Ai Esp32 Rotary Encoder".  Install Version 1.6
     * *Keypad.h* - Search for "Keypad" by Mark Stanley.   Install version 3.1.1
     * *WiThrottleProtocol.h* - Search for "WiThrottleProtocol" (not "WiThrottle").  Install version 1.0.3 or later if available
+
 5. These should have been automatically installed when you downloaded the esp32 boards.  *YOU SHOULD NOT NEED TO DO ANYTHING SPECIFIC TO GET THESE*
     * *WiFi.h*  - https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi
     * *ESPmDNS.h* - https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS
-6.   Copy 'config_network_example.h' to a new file named 'config_network.h'. 
+
+6.  These should have been automatically installed when you downloaded the esp32 boards. YOU SHOULD NOT NEED TO DO ANYTHING SPECIFIC TO GET THESE 
+    * WiFi.h - https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi 
+    * ESPmDNS.h - https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS 
+
+7.   Copy 'config_network_example.h' to a new file named 'config_network.h'. 
      * Then edit it to include the network ssids you want to use. (Not essential, but entering passwords via the encoder is tedious.)
 You can have four saved ones.
      * I have my network and password shown.  Change it to yours unless you are using JMRI also and it might then work.
      * Save the file.
  
-7.  Upload the Read_Pot_Values program/sketch.
+8.  Upload the Read_Pot_Values program/sketch.
      * Connect the ESP32 via USB to your computer.
      * The Read_Pot_Values software/sketch is in the Read_Pot_Values folder.  
        * Open the folder and run  Read_Pot_Values.INO       
@@ -106,22 +120,23 @@ You can have four saved ones.
      * You might want to go through the program a second time and see if the numbers are close.  
      * They won't be exact but should be within 100 each time you run it.  You can use any set of them for the next step.
  
-8.  Copy 'config_buttons_example.h' to a new file 'config_buttons.h'.  Open it in a plain text editor like Notepad (needs to stay plain text—not formatted).
-     * Optionally, edit config_buttons.h to change the mapping of the keypad buttons to specific functions from what I use now or later.
-     * Optionally, edit config_buttons.h to configure the additional pushbuttons to specific functions from what I use now or later.
-     * Enter the 'Throttle' pot definitions.  There are instructions in the file itself.
-     * Enter the 'Speed Step' definitions.  There are instructions in the file itself.
-     * Enter the 'Brake' pot definitions.  There are instructions in the file itself.
-     * Enter the 'Acceleration' definitions.  There are instructions in the file itself.
-     * Enter the 'Braking' definitions.  There are instructions in the file itself.
-     * Save the file.
+9.  Copy 'config_buttons_example.h' to a new file 'config_buttons.h'.  Open it in a plain text editor like Notepad (needs to stay plain text—not formatted).
+     * Optionally, edit config_buttons.h to change the mapping of the keypad buttons to specific functions different from what they are (recommend you start what is there).
+     * Optionally, edit config_buttons.h to configure the additional pushbuttons to specific functions different from what they are (recommend you start what is there).
+     * Enter the 'Throttle' pot definitions.  There are instructions in the 'config_buttons_example.h' file itself.
+     * Enter the 'Speed Step' definitions.  There are instructions in the 'config_buttons_example.h' file itself.
+     * Enter the 'Brake' pot definitions.  There are instructions in the 'config_buttons_example.h' file itself.
+     * Enter the 'Acceleration' definitions.  There are instructions in the 'config_buttons_example.h' file itself.
+     * Enter the 'Braking' definitions.  There are instructions in the 'config_buttons_example.h' file itself.
+     * Save the file when done.
 
-9.  With the ESP32 still connected run HandCab.INO  
+10.  With the ESP32 still connected run HandCab.INO  
      * Click the Upload ==>
-     * Program should load and come up the first screen showing that it is browsing for SSIDs.
-     * It will find any networks in the vicinity.
+     * Program should load and come up with the first screen showing that it is browsing for SSIDs.
+     * It will find and show any networks in the vicinity.
      * Click on the appropriate one.
-     * It should connect and then search for a WiT service and it found the HandCab menu should come up with the version (upper right).
+     * It should connect if you have the correct network name and password in you 'config_network.h' file. 
+     * It will then search for a WiT service and if found the HandCab menu should come up with the version (upper right).
      * Click on '*' for the menu and select a loco and off you go.
      * If there are problems go to the DCC-EX website (https://discord.com/invite/PuPnNMp8Qf) and go to the 'wifi-throttles' section and post.  Peter A, myself (Sumner) or someone will try and help you.
 
@@ -138,6 +153,9 @@ Notes:
 ## Using HandCab
 
 **Currently functioning:**
+- NOTE:  There are items shown below that are  <strike>striked out</strike>
+.  They work on the WiTcontroller software but not the software for the HandCab because of the use of the 'pots' on the HandCab.  One can load the WiTcontroller software (https://github.com/flash62au/WiTcontroller) and use the throttle with the encoder but then the brake and reverser pots are non-functional.  You can select to use the throttle pot.
+
 - Provides a list of discovered SSIDs with the ability to choose one. When you select one:
   - if it is one in your specified list (in the sketch), it will use that specified password 
   - if it is a DCC++EX WiFi Command Station in access Point mode, it will guess the password
@@ -175,12 +193,8 @@ Notes:
   - Toggle throuigh 3 levels of acceleration delays to change the momentum effect for a loco pulling trains with different loads.
   - Power Track On/Off
   - Disconnect / Reconnect
-  - Put ESP32 in deep sleep and restart it
-- <strike>Have up to 6 throttles, each with an unlimited number of locos in consist. Default is 2 throttles, which can be increased or decreased temporarily via the Extras menu (or permanently enabled in config_button.h)</strike>
-- Limited dealing with unexpected disconnects.  It will throw you back to the WiThrottle Server selection screen.
-- Boundary between short and long DCC addresses can be configured in config_buttons.h
-- <strike>The default speed step (per encoder click) can be configured in config_buttons.h</strike>
-- The controller will automatically shut down if no SSID is selected or entered in 4 minutes (to conserve the battery)
+  - Put ESP32 in deep sleep and restart it- Limited dealing with unexpected disconnects.  It will throw you back to the WiThrottle Server selection screen.
+- Boundary between short and long DCC addresses can be configured in config_buttons.h- The controller will automatically shut down if no SSID is selected or entered in 4 minutes (to conserve the battery)
 
 **ToDo:**
 - Deal with unexpected disconnects better
@@ -197,29 +211,25 @@ Notes:
   - 2 = release loco:
      - Followed by the loco number, followed by \# to release an individual loco.  e.g. to deselect the loco 99 you would press '\*299\#'
      - Otherwise followed directly by \#  to release all e.g. '\*2\#'
-  - 3 = <strike>Toggle direction.</strike>
-  - 4 = Set / Unset a 2 times multiplier for the rotary encoder dial.
-  - 5 = Throw turnout/point.  
+  - 3 = Set / Unset a 2 times multiplier for the rotary encoder dial.
+  - 4 = Throw turnout/point.  
      - Followed by the turnout/point number, followed by the \# to complete.  e.g. Throw turnout XX12 '\*512\#'  (where XX is a prefix defined in the sketch) 
      - or \# alone to show the list from the server   \# again will show the next page
-  - 6 = Close turnout.    
+  - 5 = Close turnout.    
      - Followed by the turnout/point number, followed by \# to complete.  e.g. Close turnout XX12 '\*612\#'  (where XX is a prefix defined in the sketch)
      - or \# alone to show the list from the server
-  - 7 = Set Route.    
+  - 6 = Set Route.    
       - Followed by the Route number, followed by \# to complete.  e.g. to Set route XX:XX:0012 '\*60012\#'  (where \'XX:XX:\' is a prefix defined in the sketch)
       - or \# alone to show the list from the server   \# again will show the next page
-  - 0 = Function button. Followed by...
+  - 7 = Function button. Followed by...
       - the function number, Followed by \# to complete.  e.g. to set function 17 you would press '\*017\#'
       - \# alone, to show the list of functions.
   - 8 = Track Power On/Off.
   - 9 = Extras. Followed by...
       - 0 then \# to toggle the action the the \# key does as a direct action, either to show the direct action key definitions, or the Function labels.  
       - 1 to change the facing of locos in a consist.
-      - 3 to toggle the heartbeat check.
-      - <strike>4 to increase the number of available throttle (up to 6)</strike>
-      - <strike>5 to decrease the number of available throttle (down to 1)</strike>
-      - 6 then \# to Disconnect/Reconnect.  
-      - 7 (or 9) then \# to put into deep sleep
+      - 3 to toggle the heartbeat check.- 6 then \# to Disconnect/Reconnect.  
+      - 4 (or 9) then \# to put into deep sleep
 Pressing '\*' again before the '\#' will terminate the current command (but not start a new command)
  - \# = Pressing # alone will show the function the the numbered keys (0-9) perform, outside the menu.
        Optionally, you can configure it so that the the Function labels from the roster show 
@@ -234,23 +244,23 @@ Pressing the Encoder button while the ESP32 is in Deep Sleep will revive it.
 * 2 = FUNCTION_3 (DCC Horn/Whistle)
 * 3 = FUNCTION_3
 * 4 = FUNCTION_4
-* 5 = <strike>NEXT_THROTLE</strike>
-* 6 = <strike>SPEED_MULTIPLIER</strike>
-* 7 = <strike>DIRECTION_REVERSE</strike>
-* 8 = <strike>SPEED_STOP</strike>
-* 9 = <strike>DIRECTION_FORWARD</strike>
+* 5 = User assigned assignment
+* 6 = User assigned assignment
+* 7 = User assigned assignment
+* 8 = User assigned assignment
+* 9 = User assigned assignment
 
 ### Allowed assignments for the 0-9 keys:
 
 Note: you need to edit config_buttons.h to alter these assignments   (copy config_buttons_example.h)
 - FUNCTION_NULL   - don't do anything
 - FUNCTION_0 - FUNCTION_31
-- <strike>SPEED_STOP</strike>
-- <strike>SPEED_UP</strike>
-- <strike>SPEED_DOWN</strike>
-- <strike>SPEED_UP_FAST</strike>
-- <strike>SPEED_DOWN_FAST</strike>
-- <strike>SPEED_MULTIPLIER</strike>
+- User assigned Function
+- User assigned Function
+- User assigned Function
+- User assigned Function
+- User assigned Function
+- User assigned Function
 - E_STOP   - E Stop all locos on all throttles
 - E_STOP_CURRENT_LOCO - E Stop locos on current throttle only
 - POWER_TOGGLE
