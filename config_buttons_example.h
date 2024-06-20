@@ -95,7 +95,7 @@
 #define CHOSEN_ADDITIONAL_BUTTON_2_FUNCTION FUNCTION_2   // GPIO 25 --- Horn
 #define CHOSEN_ADDITIONAL_BUTTON_3_FUNCTION POWER_TOGGLE   // GPIO 26 -- Track Power On/Off
 #define CHOSEN_ADDITIONAL_BUTTON_4_FUNCTION E_STOP_CURRENT_LOCO   // GPIO 27 --- Stops Current Loco
-#define CHOSEN_ADDITIONAL_BUTTON_5_FUNCTION FUNCTION_9  // GPIO 32 --- Drive Hold
+#define CHOSEN_ADDITIONAL_BUTTON_5_FUNCTION FUNCTION_8  // GPIO 32 --- changed this to turn the prime mover (the sound loco) on/off
 #define CHOSEN_ADDITIONAL_BUTTON_6_FUNCTION SPEED_MULTIPLIER   // GPIO 33 --- 3 Accelleration Delays
 
 // *******************************************************************************************************************
