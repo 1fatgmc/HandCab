@@ -86,17 +86,13 @@ Required Components
 5. These should have been automatically installed when you downloaded the esp32 boards.  *YOU SHOULD NOT NEED TO DO ANYTHING SPECIFIC TO GET THESE*
     * *WiFi.h*  - https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi
     * *ESPmDNS.h* - https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS
-6.  These should have been automatically installed when you downloaded the esp32 boards. YOU SHOULD NOT NEED TO DO ANYTHING SPECIFIC TO GET THESE 
-WiFi.h - https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi 
-ESPmDNS.h - https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS 
-
-7.   Copy 'config_network_example.h' to a new file named 'config_network.h'. 
+6.   Copy 'config_network_example.h' to a new file named 'config_network.h'. 
      * Then edit it to include the network ssids you want to use. (Not essential, but entering passwords via the encoder is tedious.)
 You can have four saved ones.
      * I have my network and password shown.  Change it to yours unless you are using JMRI also and it might then work.
      * Save the file.
  
-8.  Upload the Read_Pot_Values program/sketch.
+7.  Upload the Read_Pot_Values program/sketch.
      * Connect the ESP32 via USB to your computer.
      * The Read_Pot_Values software/sketch is in the Read_Pot_Values folder.  
        * Open the folder and run  Read_Pot_Values.INO       
@@ -110,7 +106,7 @@ You can have four saved ones.
      * You might want to go through the program a second time and see if the numbers are close.  
      * They won't be exact but should be within 100 each time you run it.  You can use any set of them for the next step.
  
-9.  Copy 'config_buttons_example.h' to a new file 'config_buttons.h'.  Open it in a plain text editor like Notepad (needs to stay plain text—not formatted).
+8.  Copy 'config_buttons_example.h' to a new file 'config_buttons.h'.  Open it in a plain text editor like Notepad (needs to stay plain text—not formatted).
      * Optionally, edit config_buttons.h to change the mapping of the keypad buttons to specific functions from what I use now or later.
      * Optionally, edit config_buttons.h to configure the additional pushbuttons to specific functions from what I use now or later.
      * Enter the 'Throttle' pot definitions.  There are instructions in the file itself.
@@ -120,7 +116,7 @@ You can have four saved ones.
      * Enter the 'Braking' definitions.  There are instructions in the file itself.
      * Save the file.
 
-10.  With the ESP32 still connected run HandCab.INO  
+9.  With the ESP32 still connected run HandCab.INO  
      * Click the Upload ==>
      * Program should load and come up the first screen showing that it is browsing for SSIDs.
      * It will find any networks in the vicinity.
