@@ -74,6 +74,9 @@ int throttlePotTargetSpeed = 0;
 int lastThrottlePotValue = 0;
 int lastThrottlePotHighValue = 0;  // highest of the most recent
 int lastThrottlePotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+int throttlePotTempValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+int throttlePotRecalibratedValues[] = THROTTLE_POT_NOTCH_VALUES; 
 int lowestThrottlePotValue = 32768;
 int highestThrottlePotValue = -1;
 
@@ -182,7 +185,7 @@ String lastOledStringParameter = "";
 int lastOledIntParameter = 0;
 boolean lastOledBooleanParameter = false;
 TurnoutAction lastOledTurnoutParameter = TurnoutToggle;
-int lastOledPotValuesState = 1;  // 1=Brake or 2=Reverser
+int lastOledPotValuesState = 1;  // 1=Brake, 2=Reverser
 
 // turnout variables
 int turnoutListSize = 0;
@@ -1204,7 +1207,7 @@ void throttlePot_loop(bool forceRead) {
       if (throttlePotNotch == -1) { //didn't find it, so it must be above the last element in the pot values
         throttlePotNotch = noElements-1;
         throttlePotTargetSpeed = throttlePotNotchSpeeds[noElements-1];
-        debug_print("throttlePot_loop() above max: setting notch: "); debug_print(noElements); debug_print(" - ");  debug_println(avgPotValue);
+        debug_print("throttlePot_loop() above max: setting notch: "); debug_print(throttlePotNotch); debug_print(" - ");  debug_println(avgPotValue);
       }
       debug_print("throttlePot_loop() current notch: "); debug_print(currentThrottlePotNotch); debug_print(" new: "); debug_println(throttlePotNotch);
       if ( (throttlePotNotch!=currentThrottlePotNotch) 
@@ -1946,6 +1949,29 @@ void doKeyPress(char key, bool pressed) {
         break;
 
 
+      case KEYPAD_USE_THROTTLE_POT_VALUES:
+        debug_print("Showing Throttle Pot values... "); debug_println(key);
+        switch (key){
+          case '0': case '1': case '2': case '3': case '4': 
+          case '5': case '6': case '7': case '8':
+            throttlePotTempValues[(key - '0')] = lastThrottlePotHighValue;
+            break;
+          case '9': 
+            recalibateThrottlePotValues();
+            break;
+          case '*':  // cancel
+            resetMenu();
+            writeOledSpeed();
+            break;
+          case '#':  // next page
+            clearLastPotValues();
+            break;
+          default:  // do nothing 
+            break;
+        }
+        break;
+
+
       default:  // do nothing 
         break;
     }
@@ -2215,6 +2241,11 @@ void doMenu() {
             case EXTRA_MENU_CHAR_POT_VALUES: { // show the potentiometer values
                 clearLastPotValues();
                 writeOledPotValues();
+                break;
+              } 
+            case EXTRA_MENU_CHAR_THROTTLE_POT_VALUES: { // show the throttle potentiometer values
+                clearLastPotValues();
+                writeOledThrottlePotValues();
                 break;
               } 
             case EXTRA_MENU_CHAR_HEARTBEAT_TOGGLE: { // disable/enable the heartbeat Check
@@ -2677,6 +2708,51 @@ String getSuggestedReverserPotRange() {
   return rslt;
 }
 
+String getThrottlePotNotchValues(int line) {
+  debug_println("getThrottlePotNotchValues() ");
+  String rslt = "";
+  int noElements = sizeof(throttlePotTempValues) / sizeof(throttlePotTempValues[0]);
+  int start = 0;
+  int end = 3;
+  if (line==1) {
+    start = 3;
+    end = 6;
+  } else if (line==2) {
+    start = 6;
+    end = noElements;
+  }
+  for (int i=start; i<end; i++) {
+    if ( (i!=0) && (i!=3) && (i!=6) ) rslt = rslt + ",";
+    rslt = rslt + String(throttlePotTempValues[i]);
+  }  
+  return rslt;
+}
+
+String getSuggestedThrottlePotNotchValues(int line) {
+  debug_println("getSuggestedThrottlePotNotchValues() ");
+  String rslt = "";
+  int noElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
+  int start = 0;
+  int end = 3;
+  if (line==1) {
+    start = 3;
+    end = 6;
+  } else if (line==2) {
+    start = 6;
+    end = noElements;
+  }
+  for (int i=0; i<noElements; i++) {
+      throttlePotRecalibratedValues[i] = (throttlePotTempValues[i+1] - throttlePotTempValues[i])/ 2 + throttlePotTempValues[i];
+  }
+  
+  for (int i=start; i<end; i++) {
+    throttlePotRecalibratedValues[i] = (throttlePotTempValues[i+1] - throttlePotTempValues[i])/ 2 + throttlePotTempValues[i];
+    if ( (i!=0) && (i!=3) && (i!=6) ) rslt = rslt + ",";
+    rslt = rslt + String(throttlePotRecalibratedValues[i]);
+  }
+  return rslt;
+}
+
 void recalibatePotValues() {
   debug_print("recalibatePotValues() "); debug_println(lastOledPotValuesState);
   int noElements = 0;
@@ -2690,6 +2766,14 @@ void recalibatePotValues() {
     for (int i=0; i<noElements; i++) {
       reverserPotValues[i] = reverserPotRecalibratedValues[i];
     }
+  }
+}
+
+void recalibateThrottlePotValues() {
+  debug_println("recalibateThrottlePotValues() ");
+  int noElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
+  for (int i=0; i<noElements; i++) {
+    throttlePotNotchValues[i] = throttlePotRecalibratedValues[i];
   }
 }
 
@@ -2812,6 +2896,9 @@ void refreshOled() {
       break;
     case last_oled_screen_pot_values:
       writeOledPotValues();
+      break;
+    case last_oled_screen_throttle_pot_values:
+      writeOledThrottlePotValues();
       break;
   }
 }
@@ -3249,29 +3336,50 @@ void writeOledFunctions() {
   // debug_println("writeOledFunctions(): end");
 }
 
-
 void writeOledPotValues() {
   lastOledScreen = last_oled_screen_pot_values;
   keypadUseType = KEYPAD_USE_POT_VALUES;
   menuIsShowing = true;
+  writeOledEitherPotValues(false);
+}
 
+void writeOledThrottlePotValues() {
+  lastOledScreen = last_oled_screen_throttle_pot_values;
+  keypadUseType = KEYPAD_USE_THROTTLE_POT_VALUES;
+  menuIsShowing = true;
+  writeOledEitherPotValues(true);
+}
+
+void writeOledEitherPotValues(bool throttleOnly) {
   clearOledArray();
-  oledText[0] = MENU_ITEM_TEXT_TITLE_POT_VALUES;
   oledText[1] = POT_VALUE_TITLE_THROTTLE + String(lastThrottlePotValue) + " <=" + String(lastThrottlePotHighValue);
-  oledText[2] = POT_VALUE_TITLE_REVERSER + String(lastReverserPotValue) + " <=" + String(lastReverserPotHighValue);
-  oledText[3] = POT_VALUE_TITLE_BRAKE + String(lastBrakePotValue) + " <=" + String(lastBrakePotHighValue);
   oledText[7] = ":" + String(throttlePotNotch) + " " + String(lowestThrottlePotValue) + "-" + String(highestThrottlePotValue);
-  oledText[8] = ":" + String(reverserCurrentPosition) + " " + String(lowestReverserPotValue) + "-" + String(highestReverserPotValue);
-  oledText[9] = ":" + String(brakeCurrentPosition) + " " + String(lowestBrakePotValue) + "-" + String(highestBrakePotValue);
+  if (!throttleOnly) {
+    oledText[0] = MENU_ITEM_TEXT_TITLE_POT_VALUES;
+    oledText[2] = POT_VALUE_TITLE_REVERSER + String(lastReverserPotValue) + " <=" + String(lastReverserPotHighValue);
+    oledText[3] = POT_VALUE_TITLE_BRAKE + String(lastBrakePotValue) + " <=" + String(lastBrakePotHighValue);
+    oledText[8] = ":" + String(reverserCurrentPosition) + " " + String(lowestReverserPotValue) + "-" + String(highestReverserPotValue);
+    oledText[9] = ":" + String(brakeCurrentPosition) + " " + String(lowestBrakePotValue) + "-" + String(highestBrakePotValue);
 
-  if (lastOledPotValuesState==1) {
-    oledText[4] = getSuggestedBrakePotRange();
-  } else { // 2
-    oledText[4] = getSuggestedReverserPotRange();
+    if (lastOledPotValuesState==1) {
+      oledText[4] = getSuggestedBrakePotRange();
+    } else { // 2
+      oledText[4] = getSuggestedReverserPotRange();
+    }
+    oledText[5] = menuText[12][1];
+
+  } else {
+    oledText[0] = MENU_ITEM_TEXT_TITLE_THROTTLE_POT_VALUES;
+    oledText[2] = getThrottlePotNotchValues(0);
+    oledText[3] = getThrottlePotNotchValues(1);
+    oledText[4] = getThrottlePotNotchValues(2);
+
+    oledText[8] = getSuggestedThrottlePotNotchValues(0);
+    oledText[9] = getSuggestedThrottlePotNotchValues(1);
+    oledText[10] = getSuggestedThrottlePotNotchValues(2);
+
+    oledText[5] = menuText[14][1];
   }
-  // oledText[8] = String(lastReverserPotValue) + "  <= " + String(lastReverserPotHighValue);
-  // oledText[9] = String(lastBrakePotValue) + "  <= " + String(lastBrakePotHighValue);
-  oledText[5] = menuText[12][1];
 
   writeOledArray(false, false, true, true);
 }

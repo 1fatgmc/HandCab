@@ -50,8 +50,11 @@ const String appVersion = "             v0.14";
 #ifndef MENU_TEXT_POT_VALUES
    #define MENU_TEXT_POT_VALUES                "* Cancel"
 #endif
+#ifndef MENU_TEXT_THROTTLE_POT_VALUES
+   #define MENU_TEXT_THROTTLE_POT_VALUES       "* Cancel"
+#endif
 
-const String menu_text[15] = {
+const String menu_text[16] = {
   MENU_TEXT_MENU,
   MENU_TEXT_MENU_HASH_IS_FUNCTIONS,
   MENU_TEXT_FINISH,
@@ -66,7 +69,8 @@ const String menu_text[15] = {
   MENU_TEXT_SELECT_SSIDS,
   MENU_TEXT_SELECT_SSIDS_FROM_FOUND,
   MENU_TEXT_ENTER_SSID_PASSWORD,
-  MENU_TEXT_POT_VALUES
+  MENU_TEXT_POT_VALUES,
+  MENU_TEXT_THROTTLE_POT_VALUES
 };
 
 const int menu_menu =                     0;
@@ -84,6 +88,7 @@ const int menu_select_ssids =            11;
 const int menu_select_ssids_from_found = 12;
 const int menu_enter_ssid_password =     13;
 const int menu_pot_values =              14;
+const int menu_throttle_pot_values =     15;
 
 const int last_oled_screen_speed =            0;
 const int last_oled_screen_roster =           1;
@@ -96,6 +101,7 @@ const int last_oled_screen_all_locos =        7;
 const int last_oled_screen_edit_consist =     8;
 const int last_oled_screen_direct_commands =  9;
 const int last_oled_screen_pot_values     =  10;
+const int last_oled_screen_throttle_pot_values = 11;
 
 typedef enum PotDirection {
     REVERSE = 0,
@@ -246,6 +252,7 @@ const int glyph_eStop = 0x0079;
 #define KEYPAD_USE_ENTER_SSID_PASSWORD 10
 #define KEYPAD_USE_EDIT_CONSIST 11
 #define KEYPAD_USE_POT_VALUES 12
+#define KEYPAD_USE_THROTTLE_POT_VALUES 13
 
 #define ENCODER_USE_OPERATION 0
 #define ENCODER_USE_SSID_PASSWORD 1
@@ -316,6 +323,9 @@ const int glyph_eStop = 0x0079;
 #ifndef MENU_ITEM_TEXT_TITLE_POT_VALUES
    #define MENU_ITEM_TEXT_TITLE_POT_VALUES             "Potentiometer Values"
 #endif
+#ifndef MENU_ITEM_TEXT_TITLE_THROTTLE_POT_VALUES
+   #define MENU_ITEM_TEXT_TITLE_THROTTLE_POT_VALUES    "Throttle Pot Values"
+#endif
 
 #ifndef MENU_ITEM_TEXT_MENU_FUNCTION
    #define MENU_ITEM_TEXT_MENU_FUNCTION               "no+# Select   * Cancel  # List"
@@ -356,8 +366,11 @@ const int glyph_eStop = 0x0079;
 #ifndef MENU_ITEM_TEXT_MENU_POT_VALUES
    #define MENU_ITEM_TEXT_MENU_POT_VALUES             "* Close  1.B 2.R 9.ReCl  # clear"
 #endif
+#ifndef MENU_ITEM_TEXT_MENU_THROTTLE_POT_VALUES
+   #define MENU_ITEM_TEXT_MENU_THROTTLE_POT_VALUES    "* Close  0-8 ntch 9.ReCl # clear"
+#endif
 
-const String menuText[13][3] = {
+const String menuText[15][3] = {
   {MENU_ITEM_TEXT_TITLE_FUNCTION,              MENU_ITEM_TEXT_MENU_FUNCTION, ""},   //0
   {MENU_ITEM_TEXT_TITLE_ADD_LOCO,              MENU_ITEM_TEXT_MENU_ADD_LOCO, ""},   //1
   {MENU_ITEM_TEXT_TITLE_DROP_LOCO,             MENU_ITEM_TEXT_MENU_DROP_LOCO, ""},   //2
@@ -369,12 +382,14 @@ const String menuText[13][3] = {
   {MENU_ITEM_TEXT_TITLE_TRACK_POWER,           MENU_ITEM_TEXT_MENU_TRACK_POWER, ""},   //8 
   {MENU_ITEM_TEXT_TITLE_EXTRAS,                MENU_ITEM_TEXT_MENU_EXTRAS,      ""},   //9
 
-  {MENU_ITEM_TEXT_TITLE_HEARTBEAT,             MENU_ITEM_TEXT_MENU_HEARTBEAT,    ""},   //10
-  {MENU_ITEM_TEXT_TITLE_EDIT_CONSIST,          MENU_ITEM_TEXT_MENU_EDIT_CONSIST, ""},   //11
-  {MENU_ITEM_TEXT_TITLE_POT_VALUES,            MENU_ITEM_TEXT_MENU_POT_VALUES,   ""}    //12
+  {MENU_ITEM_TEXT_TITLE_HEARTBEAT,             MENU_ITEM_TEXT_MENU_HEARTBEAT,           ""},   //10
+  {MENU_ITEM_TEXT_TITLE_EDIT_CONSIST,          MENU_ITEM_TEXT_MENU_EDIT_CONSIST,        ""},   //11
+  {MENU_ITEM_TEXT_TITLE_POT_VALUES,            MENU_ITEM_TEXT_MENU_POT_VALUES,          ""},   //12
+  {"",                                         "",                                      ""},   //13
+  {MENU_ITEM_TEXT_TITLE_THROTTLE_POT_VALUES,   MENU_ITEM_TEXT_MENU_THROTTLE_POT_VALUES, ""}    //14
 };
 
-const int menuCharsRequired[12] = {  // 0=none effectively a direct command / 1=one used for sub menus / 2=one or more
+const int menuCharsRequired[15] = {  // 0=none effectively a direct command / 1=one used for sub menus / 2=one or more
   2,   //0
   2,   //1
   2,   //2
@@ -386,7 +401,10 @@ const int menuCharsRequired[12] = {  // 0=none effectively a direct command / 1=
   0,   //8
   1,   //9
   2,   //10
-  2   //11
+  2,   //11
+  1,   //12
+  1,   //13
+  1    //14
 };
 
 
@@ -397,7 +415,10 @@ const int menuCharsRequired[12] = {  // 0=none effectively a direct command / 1=
    #define EXTRA_MENU_TEXT_CHAR_EDIT_CONSIST           "Edt Consist"
 #endif
 #ifndef EXTRA_MENU_TEXT_CHAR_POT_VALUES
-   #define EXTRA_MENU_TEXT_CHAR_POT_VALUES              "POT values"
+   #define EXTRA_MENU_TEXT_CHAR_POT_VALUES             "POT values"
+#endif
+#ifndef EXTRA_MENU_TEXT_CHAR_THROTTLE_POT_VALUES
+   #define EXTRA_MENU_TEXT_CHAR_THROTTLE_POT_VALUES    "Throttle POT"
 #endif
 #ifndef EXTRA_MENU_TEXT_CHAR_TBA
    #define EXTRA_MENU_TEXT_CHAR_TBA                    "" 
@@ -417,7 +438,7 @@ const String extraSubMenuText[8] = {
    EXTRA_MENU_TEXT_CHAR_EDIT_CONSIST,             //1
    EXTRA_MENU_TEXT_CHAR_POT_VALUES,               //2
    EXTRA_MENU_TEXT_CHAR_HEARTBEAT_TOGGLE,         //3  
-   EXTRA_MENU_TEXT_CHAR_TBA,                      //4
+   EXTRA_MENU_TEXT_CHAR_THROTTLE_POT_VALUES,      //4
    EXTRA_MENU_TEXT_CHAR_TBA,                      //5
    EXTRA_MENU_TEXT_CHAR_DISCONNECT,               //6
    EXTRA_MENU_TEXT_CHAR_OFF_SLEEP };              //7
@@ -426,7 +447,7 @@ const String extraSubMenuText[8] = {
 #define EXTRA_MENU_CHAR_EDIT_CONSIST           '1'
 #define EXTRA_MENU_CHAR_POT_VALUES             '2'
 #define EXTRA_MENU_CHAR_HEARTBEAT_TOGGLE       '3'
-#define EXTRA_MENU_CHAR_INCREASE_MAX_THROTTLES '4'  //TODO: remove
+#define EXTRA_MENU_CHAR_THROTTLE_POT_VALUES    '4'
 #define EXTRA_MENU_CHAR_DECREASE_MAX_THROTTLES '5'  //TODO: remove
 #define EXTRA_MENU_CHAR_DISCONNECT             '6'
 #define EXTRA_MENU_CHAR_OFF_SLEEP              '7'

@@ -275,6 +275,7 @@ Recommend adding a physical power switch as this will continually drain the batt
 
 ### v0.14
 - Added dynamic (temporary) recalibration of the Reverser and Brake pots to the *92 menu  
+- Added dynamic (temporary) recalibration of the 8 throttle pots to the *94 menu  
 
 ### v0.13
 - automated fix the latest versions of the ESP32 Board Library (3.0.0 and later) having renamed an attribute. The code now automatically adjusts for this.  
