@@ -3353,13 +3353,13 @@ void writeOledThrottlePotValues() {
 void writeOledEitherPotValues(bool throttleOnly) {
   clearOledArray();
   oledText[1] = POT_VALUE_TITLE_THROTTLE + String(lastThrottlePotValue) + " <=" + String(lastThrottlePotHighValue);
-  oledText[7] = ":" + String(throttlePotNotch) + " " + String(lowestThrottlePotValue) + "-" + String(highestThrottlePotValue);
+  oledText[7] = ":" + String(throttlePotNotch) + ": " + String(lowestThrottlePotValue) + "-" + String(highestThrottlePotValue);
   if (!throttleOnly) {
     oledText[0] = MENU_ITEM_TEXT_TITLE_POT_VALUES;
     oledText[2] = POT_VALUE_TITLE_REVERSER + String(lastReverserPotValue) + " <=" + String(lastReverserPotHighValue);
     oledText[3] = POT_VALUE_TITLE_BRAKE + String(lastBrakePotValue) + " <=" + String(lastBrakePotHighValue);
-    oledText[8] = ":" + String(reverserCurrentPosition) + " " + String(lowestReverserPotValue) + "-" + String(highestReverserPotValue);
-    oledText[9] = ":" + String(brakeCurrentPosition) + " " + String(lowestBrakePotValue) + "-" + String(highestBrakePotValue);
+    oledText[8] = ":" + String(reverserCurrentPosition) + ": " + String(lowestReverserPotValue) + "-" + String(highestReverserPotValue);
+    oledText[9] = ":" + String(brakeCurrentPosition) + ": " + String(lowestBrakePotValue) + "-" + String(highestBrakePotValue);
 
     if (lastOledPotValuesState==1) {
       oledText[4] = getSuggestedBrakePotRange();
@@ -3367,21 +3367,36 @@ void writeOledEitherPotValues(bool throttleOnly) {
       oledText[4] = getSuggestedReverserPotRange();
     }
     oledText[5] = menuText[12][1];
+    writeOledArray(false, false, true, true, false);
 
   } else {
+
+    bool ready = true;
+    int noElements = sizeof(throttlePotTempValues) / sizeof(throttlePotTempValues[0]);
+    for (int i=1; i<noElements; i++) {
+      if (throttlePotTempValues[i]<=throttlePotTempValues[i-1]) { 
+        ready = false;
+        break;
+      }
+    }
+
     oledText[0] = MENU_ITEM_TEXT_TITLE_THROTTLE_POT_VALUES;
     oledText[2] = getThrottlePotNotchValues(0);
     oledText[3] = getThrottlePotNotchValues(1);
     oledText[4] = getThrottlePotNotchValues(2);
 
-    oledText[8] = getSuggestedThrottlePotNotchValues(0);
-    oledText[9] = getSuggestedThrottlePotNotchValues(1);
-    oledText[10] = getSuggestedThrottlePotNotchValues(2);
-
+    if (ready) {
+      oledText[8] = getSuggestedThrottlePotNotchValues(0);
+      oledText[9] = getSuggestedThrottlePotNotchValues(1);
+      oledText[10] = getSuggestedThrottlePotNotchValues(2);
+    } else {
+      oledText[9] = MSG_THROTTLE_POT_INCOMPLETE;
+    }
     oledText[5] = menuText[14][1];
+
+    writeOledArray(false, false, true, true, true);
   }
 
-  writeOledArray(false, false, true, true);
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * *
@@ -3395,6 +3410,10 @@ void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer) {
 }
 
 void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool drawTopLine) {
+  writeOledArray(isThreeColums, isPassword, sendBuffer, drawTopLine, false);
+}
+
+void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool drawTopLine, bool useSmallFontForContent) {
   // debug_println("Start writeOledArray()");
   u8g2.clearBuffer();					// clear the internal memory
 
@@ -3411,6 +3430,13 @@ void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool d
 
   for (int i=0; i < max; i++) {
     const char *cLine1 = oledText[i].c_str();
+
+    if ( (useSmallFontForContent) && ((i>0) && (i<5)) ) {
+      u8g2.setFont(FONT_FUNCTION_INDICATORS); 
+    } else {
+      u8g2.setFont(FONT_DEFAULT);
+    }
+
     if ((isPassword) && (i==2)) u8g2.setFont(FONT_PASSWORD); 
 
     if (oledTextInvert[i]) {

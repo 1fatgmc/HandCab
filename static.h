@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "             v0.14";
+const String appVersion = "             v0.15";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -215,6 +215,9 @@ typedef enum PotDirection {
 #ifndef MSG_HEARTBEAT_CHECK_DISABLED
    #define MSG_HEARTBEAT_CHECK_DISABLED "Heartbeat Check Disabled"
 #endif
+#ifndef MSG_THROTTLE_POT_INCOMPLETE
+   #define MSG_THROTTLE_POT_INCOMPLETE "  Set all notches"
+#endif
 
 // const String label_locos = "Locos: ";
 // const String label_speed = "Speed: ";
@@ -367,7 +370,7 @@ const int glyph_eStop = 0x0079;
    #define MENU_ITEM_TEXT_MENU_POT_VALUES             "* Close  1.B 2.R 9.ReCl  # clear"
 #endif
 #ifndef MENU_ITEM_TEXT_MENU_THROTTLE_POT_VALUES
-   #define MENU_ITEM_TEXT_MENU_THROTTLE_POT_VALUES    "* Close  0-8 ntch 9.ReCl # clear"
+   #define MENU_ITEM_TEXT_MENU_THROTTLE_POT_VALUES    "* Close   0-8 Set notch   9 ReCl"
 #endif
 
 const String menuText[15][3] = {
