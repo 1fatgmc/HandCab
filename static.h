@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "             v0.13";
+const String appVersion = "             v0.14";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -354,7 +354,7 @@ const int glyph_eStop = 0x0079;
    #define MENU_ITEM_TEXT_MENU_EDIT_CONSIST           "no Chng Facing   * Close"
 #endif
 #ifndef MENU_ITEM_TEXT_MENU_POT_VALUES
-   #define MENU_ITEM_TEXT_MENU_POT_VALUES           "* Close"
+   #define MENU_ITEM_TEXT_MENU_POT_VALUES             "* Close  1.B 2.R 9.ReCl  # clear"
 #endif
 
 const String menuText[13][3] = {
@@ -715,9 +715,9 @@ const char ssidPasswordBlankChar = 164;
 #define REVERSER_POSITION_NEUTRAL 1
 #define REVERSER_POSITION_REVERSE 2
 
-#define POT_VALUE_TITLE_THROTTLE "Throttle:"
-#define POT_VALUE_TITLE_REVERSER "Reverser:"
-#define POT_VALUE_TITLE_BRAKE    "Brake:"
+#define POT_VALUE_TITLE_THROTTLE "T:"
+#define POT_VALUE_TITLE_REVERSER "R:"
+#define POT_VALUE_TITLE_BRAKE    "B:"
 
 #ifndef BRAKE_POT_VALUES
    #define BRAKE_POT_VALUES  {720, 1365, 2048, 2731, 3413};
