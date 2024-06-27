@@ -1198,7 +1198,7 @@ void throttlePot_loop(bool forceRead) {
             throttlePotTargetSpeed = 0;
           } else {// use the speed values element 1 less than the notch number
             throttlePotTargetSpeed = throttlePotNotchSpeeds[i-1];
-            debug_print("throttlePot_loop() notch: "); debug_print(i); debug_print(" - "); debug_println(avgPotValue);
+            // debug_print("throttlePot_loop() notch: "); debug_print(i); debug_print(" - "); debug_println(avgPotValue);
           } 
           throttlePotNotch = i;
           break;
@@ -1207,12 +1207,12 @@ void throttlePot_loop(bool forceRead) {
       if (throttlePotNotch == -1) { //didn't find it, so it must be above the last element in the pot values
         throttlePotNotch = noElements-1;
         throttlePotTargetSpeed = throttlePotNotchSpeeds[noElements-1];
-        debug_print("throttlePot_loop() above max: setting notch: "); debug_print(throttlePotNotch); debug_print(" - ");  debug_println(avgPotValue);
+        // debug_print("throttlePot_loop() above max: setting notch: "); debug_print(throttlePotNotch); debug_print(" - ");  debug_println(avgPotValue);
       }
-      debug_print("throttlePot_loop() current notch: "); debug_print(currentThrottlePotNotch); debug_print(" new: "); debug_println(throttlePotNotch);
+      // debug_print("throttlePot_loop() current notch: "); debug_print(currentThrottlePotNotch); debug_print(" new: "); debug_println(throttlePotNotch);
       if ( (throttlePotNotch!=currentThrottlePotNotch) 
       || (forceRead) ) {
-           debug_print("throttlePot_loop() changing speed to: ");   debug_println(throttlePotTargetSpeed);
+          //  debug_print("throttlePot_loop() changing speed to: ");   debug_println(throttlePotTargetSpeed);
             targetSpeed = throttlePotTargetSpeed;
             targetSpeedAndDirectionOverride();
             if (!forceRead) startMomentumTimerMillis = millis(); // don't reset the timer on a forced read
@@ -2709,7 +2709,7 @@ String getSuggestedReverserPotRange() {
 }
 
 String getThrottlePotNotchValues(int line) {
-  debug_println("getThrottlePotNotchValues() ");
+  // debug_println("getThrottlePotNotchValues() ");
   String rslt = "";
   int noElements = sizeof(throttlePotTempValues) / sizeof(throttlePotTempValues[0]);
   int start = 0;
@@ -2729,7 +2729,7 @@ String getThrottlePotNotchValues(int line) {
 }
 
 String getSuggestedThrottlePotNotchValues(int line) {
-  debug_println("getSuggestedThrottlePotNotchValues() ");
+  // debug_println("getSuggestedThrottlePotNotchValues() ");
   String rslt = "";
   int noElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
   int start = 0;
@@ -2754,7 +2754,7 @@ String getSuggestedThrottlePotNotchValues(int line) {
 }
 
 void recalibatePotValues() {
-  debug_print("recalibatePotValues() "); debug_println(lastOledPotValuesState);
+  // debug_print("recalibatePotValues() "); debug_println(lastOledPotValuesState);
   int noElements = 0;
   if (lastOledPotValuesState==1) {
     noElements = sizeof(brakePotValues) / sizeof(brakePotValues[0]);
@@ -2770,7 +2770,7 @@ void recalibatePotValues() {
 }
 
 void recalibateThrottlePotValues() {
-  debug_println("recalibateThrottlePotValues() ");
+  // debug_println("recalibateThrottlePotValues() ");
   int noElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
   for (int i=0; i<noElements; i++) {
     throttlePotNotchValues[i] = throttlePotRecalibratedValues[i];
