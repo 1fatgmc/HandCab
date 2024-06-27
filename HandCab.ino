@@ -3362,9 +3362,19 @@ void writeOledEitherPotValues(bool throttleOnly) {
     oledText[9] = ":" + String(brakeCurrentPosition) + ": " + String(lowestBrakePotValue) + "-" + String(highestBrakePotValue);
 
     if (lastOledPotValuesState==1) {
-      oledText[4] = getSuggestedBrakePotRange();
+      int brakeRange = highestBrakePotValue - lowestBrakePotValue;
+      if (brakeRange>100) {
+        oledText[4] = getSuggestedBrakePotRange();
+      } else {
+        oledText[4] = MSG_POT_INCOMPLETE;
+      }
     } else { // 2
-      oledText[4] = getSuggestedReverserPotRange();
+      int reverserRange = highestReverserPotValue - lowestReverserPotValue;
+      if (reverserRange>300) {
+        oledText[4] = getSuggestedReverserPotRange();
+      } else {
+        oledText[4] = MSG_POT_INCOMPLETE;
+      }
     }
     oledText[5] = menuText[12][1];
     writeOledArray(false, false, true, true, false);

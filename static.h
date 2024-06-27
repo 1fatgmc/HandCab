@@ -215,6 +215,9 @@ typedef enum PotDirection {
 #ifndef MSG_HEARTBEAT_CHECK_DISABLED
    #define MSG_HEARTBEAT_CHECK_DISABLED "Heartbeat Check Disabled"
 #endif
+#ifndef MSG_POT_INCOMPLETE
+   #define MSG_POT_INCOMPLETE "  Move full range, many times"
+#endif
 #ifndef MSG_THROTTLE_POT_INCOMPLETE
    #define MSG_THROTTLE_POT_INCOMPLETE "  Set all notches"
 #endif
