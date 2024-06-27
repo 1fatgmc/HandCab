@@ -3363,7 +3363,7 @@ void writeOledEitherPotValues(bool throttleOnly) {
 
     if (lastOledPotValuesState==1) {
       int brakeRange = highestBrakePotValue - lowestBrakePotValue;
-      if (brakeRange>100) {
+      if (brakeRange>300) {
         oledText[4] = getSuggestedBrakePotRange();
       } else {
         oledText[4] = MSG_POT_INCOMPLETE;
