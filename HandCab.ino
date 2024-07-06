@@ -73,7 +73,9 @@ int throttlePotNotch = 0;
 int throttlePotTargetSpeed = 0;
 int lastThrottlePotValue = 0;
 int lastThrottlePotHighValue = 0;  // highest of the most recent
-int lastThrottlePotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+// int lastThrottlePotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+int lastThrottlePotValues[] = {0, 0, 0, 0, 0};
+int lastThrottlePotReadTime = -1;
 
 int throttlePotTempValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 int throttlePotRecalibratedValues[] = THROTTLE_POT_NOTCH_VALUES; 
@@ -85,8 +87,10 @@ int reverserPotPin = REVERSER_POT_PIN;
 int reverserPotValues[] = REVERSER_POT_VALUES; 
 int lastReverserPotValue = 0;
 int lastReverserPotHighValue = 0;  // highest of the most recent
-int lastReverserPotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+// int lastReverserPotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+int lastReverserPotValues[] = {0, 0, 0, 0, 0};
 int reverserCurrentPosition = REVERSER_POSITION_NEUTRAL;
+int lastReverserPotReadTime = -1;
 
 int reverserPotRecalibratedValues[] = REVERSER_POT_VALUES; 
 int lowestReverserPotValue = 32768;
@@ -97,12 +101,17 @@ int brakePotPin = BRAKE_POT_PIN;
 int brakePotValues[] = BRAKE_POT_VALUES;
 int lastBrakePotValue = 0;
 int lastBrakePotHighValue = 0;  // highest of the most recent
-int lastBrakePotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+// int lastBrakePotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+int lastBrakePotValues[] = {0, 0, 0, 0, 0};
 int brakeCurrentPosition = 0;
+int lastBrakePotReadTime = -1;
 
 int brakePotRecalibratedValues[] = BRAKE_POT_VALUES;
 int lowestBrakePotValue = 32768;
 int highestBrakePotValue = -1;
+
+//general pot values
+bool potValuesInitiallyCleared = false;
 
 // Momentum - acceleration and brake
 int brakeDelayTimes[] = BRAKE_DELAY_TIMES;
@@ -122,7 +131,9 @@ bool useBatteryTest = USE_BATTERY_TEST;
 bool useBatteryPercentAsWellAsIcon = USE_BATTERY_PERCENT_AS_WELL_AS_ICON;
 int lastBatteryTestValue = 0; 
 double lastBatteryCheckTime = 0;
-Pangodream_18650_CL BL(BATTERY_TEST_PIN);
+#if USE_BATTERY_TEST
+ Pangodream_18650_CL BL(BATTERY_TEST_PIN);
+#endif   
 
 // server variables
 // boolean ssidConnected = false;
@@ -1157,9 +1168,16 @@ void encoderSpeedChange(bool rotationIsClockwise, int speedChange) {
 // *********************************************************************************
 
 void throttlePot_loop(bool forceRead) {
+  if ( (millis() < lastThrottlePotReadTime + 100) 
+    && (!forceRead) ) { // only ready it one every x seconds
+    return;
+  }
+  lastThrottlePotReadTime = millis();
+
   // Read the throttle pot to see what notch it is on.
   int currentThrottlePotNotch = throttlePotNotch;
   int potValue = ( analogRead(throttlePotPin) );  //Reads the analog value on the throttle pin.
+  potValue = ( analogRead(throttlePotPin) );  //Reads the analog value on the throttle pin.
 
   // average out the last x values from the pot
   int noElements = sizeof(lastThrottlePotValues) / sizeof(lastThrottlePotValues[0]);
@@ -1184,7 +1202,8 @@ void throttlePot_loop(bool forceRead) {
 
   // only do something if the pot value is different
   // or deliberate read
-  if ( (avgPotValue!=lastThrottlePotValue) 
+  // if ( (avgPotValue!=lastThrottlePotValue) 
+  if ( (avgPotValue<lastThrottlePotValue-5) || (avgPotValue>lastThrottlePotValue+5)
   || (forceRead) )  { 
     lastThrottlePotValue = avgPotValue;
     noElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
@@ -1238,8 +1257,14 @@ void throttlePot_loop(bool forceRead) {
 // *********************************************************************************
 
 void reverserPot_loop() {
+  if (millis() < lastReverserPotReadTime + 100) {
+    return;
+  }
+  lastReverserPotReadTime = millis();
+
   int lastReverserPosition = reverserCurrentPosition;
   int potValue = ( analogRead(reverserPotPin) );  //Reads the analog value on the reverser pin.
+  potValue = ( analogRead(reverserPotPin) );  //Reads the analog value on the reverser pin.
 
   // average out the last x values from the pot
   int noElements = sizeof(lastReverserPotValues) / sizeof(lastReverserPotValues[0]);
@@ -1263,7 +1288,7 @@ void reverserPot_loop() {
   if (avgPotValue>highestReverserPotValue) highestReverserPotValue = avgPotValue;
 
   // only do something if the pot value is different
-  if (avgPotValue!=lastReverserPotValue) { 
+  if ( (avgPotValue<lastReverserPotValue-5) || (avgPotValue>lastReverserPotValue+5) ) { 
     // debug_print("Reverser Pot Value: "); debug_println(potValue);
     lastReverserPotValue = avgPotValue;
 
@@ -1300,7 +1325,12 @@ void reverserPot_loop() {
 // *********************************************************************************
 
 void brakePot_loop() {
+  if (millis() < lastBrakePotReadTime + 100) {
+    return;
+  }
+  lastBrakePotReadTime = millis();
   int potValue = ( analogRead(brakePotPin) );  //Reads the analog value on the brake pin.
+  potValue = ( analogRead(brakePotPin) );  //Reads the analog value on the brake pin.
 
   // average out the last x values from the pot
   int noElements = sizeof(lastBrakePotValues) / sizeof(lastBrakePotValues[0]);
@@ -1319,12 +1349,12 @@ void brakePot_loop() {
     lastBrakePotHighValue = lastBrakePotValues[i];
   }
 
-  // save the lowest and higest pot values seen
+  // save the lowest and highest pot values seen
   if (avgPotValue<lowestBrakePotValue) lowestBrakePotValue = avgPotValue;
   if (avgPotValue>highestBrakePotValue) highestBrakePotValue = avgPotValue;
 
   // only do something if the pot value is different
-  if (avgPotValue!=lastBrakePotValue) { 
+  if ( (avgPotValue<lastBrakePotValue-5) || (avgPotValue>lastBrakePotValue+5) ) { 
     // debug_print("Brake Pot Value: "); debug_println(potValue);
     lastBrakePotValue = avgPotValue;
 
@@ -1512,7 +1542,7 @@ void additionalButtonLoop() {
 
 void batteryTest_loop() {
   // Read the battery pin
-
+#if USE_BATTERY_TEST
   if(millis()-lastBatteryCheckTime>10000) {
     lastBatteryCheckTime = millis();
     // debug_print("battery pin: "); debug_print(BATTERY_TEST_PIN);
@@ -1527,10 +1557,12 @@ void batteryTest_loop() {
         writeOledSpeed();
       }
     }
-    if (lastBatteryTestValue<USE_BATTERY_SLEEP_AT_PERCENT) { // shutdown if <3% battery
+    if ( (lastBatteryTestValue<USE_BATTERY_SLEEP_AT_PERCENT)  // shutdown if <X% battery
+    && (USE_BATTERY_SLEEP_AT_PERCENT > 0) ) {
       deepSleepStart(SLEEP_REASON_BATTERY);
     }
   }
+#endif
 }
 
 // *********************************************************************************
@@ -2071,6 +2103,7 @@ void doDirectAction(int buttonAction) {
           eStopEngaged = true;
         } else {
           eStopEngaged = false;
+          throttlePot_loop(true);
         }
         break; 
       }
@@ -2080,6 +2113,7 @@ void doDirectAction(int buttonAction) {
           eStopEngaged = true;
         } else {
           eStopEngaged = false;
+          throttlePot_loop(true);
         }
         break; 
       }
@@ -2239,12 +2273,18 @@ void doMenu() {
                 break;
               } 
             case EXTRA_MENU_CHAR_POT_VALUES: { // show the potentiometer values
-                clearLastPotValues();
+                if(!potValuesInitiallyCleared) { // only automatically clear on first use of this pot screens
+                  potValuesInitiallyCleared = true;
+                  clearLastPotValues();
+                }
                 writeOledPotValues();
                 break;
               } 
             case EXTRA_MENU_CHAR_THROTTLE_POT_VALUES: { // show the throttle potentiometer values
-                clearLastPotValues();
+                if(!potValuesInitiallyCleared) { // only automatically clear on first use of this pot screens
+                  potValuesInitiallyCleared = true;
+                  clearLastPotValues();
+                }
                 writeOledThrottlePotValues();
                 break;
               } 
@@ -2699,8 +2739,8 @@ String getSuggestedBrakePotRange() {
 String getSuggestedReverserPotRange() {
   String rslt = String(">") + POT_VALUE_TITLE_REVERSER;
   int reverserRange = highestReverserPotValue - lowestReverserPotValue;
-  int neutralLow = lowestReverserPotValue+ (reverserRange*.1) + 1;
-  int neutralHigh = neutralLow + reverserRange*.7;
+  int neutralLow = lowestReverserPotValue+ (reverserRange*.33);
+  int neutralHigh = lowestReverserPotValue+ (reverserRange*.66);
   rslt = rslt + neutralLow + ", " + neutralHigh ;
   
   reverserPotRecalibratedValues[0] = neutralLow;
@@ -2746,7 +2786,7 @@ String getSuggestedThrottlePotNotchValues(int line) {
   }
   
   for (int i=start; i<end; i++) {
-    throttlePotRecalibratedValues[i] = (throttlePotTempValues[i+1] - throttlePotTempValues[i])/ 2 + throttlePotTempValues[i];
+    // throttlePotRecalibratedValues[i] = (throttlePotTempValues[i+1] - (throttlePotTempValues[i])/ 2) + throttlePotTempValues[i];
     if ( (i!=0) && (i!=3) && (i!=6) ) rslt = rslt + ",";
     rslt = rslt + String(throttlePotRecalibratedValues[i]);
   }
@@ -3296,16 +3336,16 @@ void writeOledSpeed() {
 }
 
 void writeOledBattery() {
-    if (useBatteryTest) {
+  if (useBatteryTest) {
     //int lastBatteryTestValue = random(0,100);
     u8g2.setFont(FONT_GLYPHS);
     u8g2.setDrawColor(1);
-    u8g2.drawStr(1, 21, String("Z").c_str());
-    if (lastBatteryTestValue>10) u8g2.drawLine(2, 15, 2, 18);
-    if (lastBatteryTestValue>25) u8g2.drawLine(3, 15, 3, 18);
-    if (lastBatteryTestValue>50) u8g2.drawLine(4, 15, 4, 18);
-    if (lastBatteryTestValue>75) u8g2.drawLine(5, 15, 5, 18);
-    if (lastBatteryTestValue>90) u8g2.drawLine(6, 15, 6, 18);
+    u8g2.drawStr(16, 29, String("Z").c_str());
+    if (lastBatteryTestValue>10) u8g2.drawLine(17, 23, 17, 26);
+    if (lastBatteryTestValue>25) u8g2.drawLine(18, 23, 18, 26);
+    if (lastBatteryTestValue>50) u8g2.drawLine(19, 23, 19, 26);
+    if (lastBatteryTestValue>75) u8g2.drawLine(20, 23, 20, 26);
+    if (lastBatteryTestValue>90) u8g2.drawLine(21, 23, 21, 26);
     
     u8g2.setFont(FONT_FUNCTION_INDICATORS);
     if (useBatteryPercentAsWellAsIcon) {
@@ -3377,9 +3417,9 @@ void writeOledEitherPotValues(bool throttleOnly) {
       }
     }
     oledText[5] = menuText[12][1];
-    writeOledArray(false, false, true, true, false);
+    writeOledArray(false, false, true, true, USE_POTS_SMALL_FONTS);
 
-  } else {
+  } else { // trhrottle only
 
     bool ready = true;
     int noElements = sizeof(throttlePotTempValues) / sizeof(throttlePotTempValues[0]);
@@ -3404,7 +3444,7 @@ void writeOledEitherPotValues(bool throttleOnly) {
     }
     oledText[5] = menuText[14][1];
 
-    writeOledArray(false, false, true, true, true);
+    writeOledArray(false, false, true, true, USE_THROTTLE_POT_SMALL_FONTS);
   }
 
 }
@@ -3420,10 +3460,10 @@ void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer) {
 }
 
 void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool drawTopLine) {
-  writeOledArray(isThreeColums, isPassword, sendBuffer, drawTopLine, false);
+  writeOledArray(isThreeColums, isPassword, sendBuffer, drawTopLine, USE_NO_SMALL_FONTS);
 }
 
-void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool drawTopLine, bool useSmallFontForContent) {
+void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool drawTopLine, WhenToUseSmallFonts useSmallFontForContent) {
   // debug_println("Start writeOledArray()");
   u8g2.clearBuffer();					// clear the internal memory
 
@@ -3438,10 +3478,20 @@ void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool d
     max = 18;
   }
 
+  bool useSmallFonts = false;
   for (int i=0; i < max; i++) {
     const char *cLine1 = oledText[i].c_str();
 
-    if ( (useSmallFontForContent) && ((i>0) && (i<5)) ) {
+    useSmallFonts = false;
+    if ( (useSmallFontForContent == USE_POTS_SMALL_FONTS) 
+          && (((i>0) && (i<4)) || ((i>6) && (i<10))) ) { 
+      useSmallFonts = true;
+    } else if ( (useSmallFontForContent == USE_THROTTLE_POT_SMALL_FONTS) 
+              && (((i>0) && (i<5)) || (i==7)) ) { 
+      useSmallFonts = true;
+    } 
+
+    if (useSmallFonts) {
       u8g2.setFont(FONT_FUNCTION_INDICATORS); 
     } else {
       u8g2.setFont(FONT_DEFAULT);

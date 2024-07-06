@@ -273,6 +273,10 @@ Recommend adding a physical power switch as this will continually drain the batt
 
 ## Change Log
 
+### v0.16
+- Additional work to smooth out the pot values
+- UI changes the pot value screens
+
 ### v0.15
 - UI improvements for the Throttle Pot (temporary) recalibration
 

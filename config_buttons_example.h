@@ -285,7 +285,7 @@
 //  
 // EXAMPLE: #define ACCELLERATION_DELAY_TIMES {182,415,600} // Numbers to the left are Sumner's. Start with these then experiment some and use numbers that work for you.
 
- #define ACCELLERATION_DELAY_TIMES {000,000,000} // I'd start with my numbers and then experiment and change them to what you like.
+ #define ACCELLERATION_DELAY_TIMES {182,415,600} // I'd start with my numbers and then experiment and change them to what you like.
 
 // With the above numbers & my top speed step set at 65 the '182' results in 15 sec. for 0 to 65, '415' = 30 sec. 0 to 65 and '600' = 40 sec. 0 to 65.
 
@@ -309,4 +309,14 @@
 
  #define DCC_SPEED_CHANGE_AMOUNT 1
 
+// *******************************************************************************************************************
+// Battery Test
+// To use a battery test
+// set USE_BATTERY_SLEEP_AT_PERCENT to a value less than zero e.g. -1) to disable the automatic sleep
+// #define USE_BATTERY_TEST true
+// #define BATTERY_TEST_PIN 36
+// #define USE_BATTERY_PERCENT_AS_WELL_AS_ICON true
+// #define USE_BATTERY_SLEEP_AT_PERCENT -1
+
 // ********************************** End of config_buttons **********************************************************
+

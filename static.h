@@ -1,12 +1,12 @@
 const String appName = "HandCab";
-const String appVersion = "             v0.15";
+const String appVersion = "             v0.16";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
 #endif
 
 #ifndef MENU_TEXT_MENU
-   #define MENU_TEXT_MENU                      "* Menu                # Key Defs"
+   #define MENU_TEXT_MENU                      "* Menu                 # Key Defs"
 #endif
 #ifndef MENU_TEXT_MENU_HASH_IS_FUNCTIONS
    #define MENU_TEXT_MENU_HASH_IS_FUNCTIONS    "* Menu                          # Fn"
@@ -108,6 +108,12 @@ typedef enum PotDirection {
     FORWARD = 1,
     NEUTRAL = 2
 } PotDirection;
+
+typedef enum WhenToUseSmallFonts {
+    USE_NO_SMALL_FONTS = 0,
+    USE_POTS_SMALL_FONTS = 1,
+    USE_THROTTLE_POT_SMALL_FONTS = 2
+} WhenToUseSmallFonts;
 
 #ifndef DIRECT_COMMAND_LIST
   #define DIRECT_COMMAND_LIST            "Direct Commands"
@@ -370,10 +376,10 @@ const int glyph_eStop = 0x0079;
    #define MENU_ITEM_TEXT_MENU_EDIT_CONSIST           "no Chng Facing   * Close"
 #endif
 #ifndef MENU_ITEM_TEXT_MENU_POT_VALUES
-   #define MENU_ITEM_TEXT_MENU_POT_VALUES             "* Close  1.B 2.R 9.ReCl  # clear"
+   #define MENU_ITEM_TEXT_MENU_POT_VALUES             "* Close  1.B 2.R  9.Set  # clear"
 #endif
 #ifndef MENU_ITEM_TEXT_MENU_THROTTLE_POT_VALUES
-   #define MENU_ITEM_TEXT_MENU_THROTTLE_POT_VALUES    "* Close   0-8 Set notch   9 ReCl"
+   #define MENU_ITEM_TEXT_MENU_THROTTLE_POT_VALUES    "* Close   0-8 Set notch    9 Set"
 #endif
 
 const String menuText[15][3] = {
