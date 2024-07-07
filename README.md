@@ -261,17 +261,97 @@ Note: you need to edit config_buttons.h to alter these assignments   (copy confi
 - POWER_ON
 - POWER_OFF
 
+---
+
 ### Instructions for optional use of a voltage divider to show the battery charge level
 
 TBA
 
 Recommend adding a physical power switch as this will continually drain the battery, even when not being used.
 
+---
+
+### Instructions for temporarily changing the pot values
+
+Normally the pot values are set in config_buttons.h.  
+You can get the appropriate values using the Read_Pot_Values sketch.
+
+We have found that occasioanlly (for reasons we don't understand) the values can 'dift'.  If that happens you will notice that you can no longer get into the lower or higher break or reverser positions, or the Throttle notch is not the one you expect.
+
+You can use the following feature to temporarily recalibrate the pots and, if you wish, to store the values to non-volatile memory so they will be automatically restored at startup.
+
+#### To Temporarily Change the Brake values.
+
+1. Open the 'Potentiometer Values' screen via the menu `#` -> `9` -> `2` 
+
+   The values for all three pots are continuously shown on three rows:
+
+   ``actual value`` <= ``averaged value``  :``position``: ``lowest values seen``-``highest value seen``  
+   
+   Where 'position' is the Throttle Notch (0-8), the Reverser position (0=Fwd 1=Nue 2=Rev) or the Brake position (0-5) based on the currently (temporary or permanent) pot values and the current position of each pot.
+
+2. Move the Brake pot (lever) back and forwards several times
+
+   The proposed values will be shown at the bottom of the screen prefixed with ``>B:``
+
+3. press `9` to temporarily set the Brake Pot values it has discovered to be used for the current session (till you turn the device)
+
+The values shown as a result of this process can be used instead of using the Read_Pot_Values sketch and added into config_buttons.h. The values will be similar.
+
+#### To Temporarily change the Reverser values.
+
+1. Open the 'Potentiometer Values' screen via the menu `#` -> `9` -> `2` 
+
+   The values for all three pots are continuously shown.
+2. press `2`
+
+   The proposed values will be shown at the bottom of the screen prefixed with ``>R:``
+
+3. Move the Reverser pot (lever) back and forwards several times
+4. press `9` to temporarily set the values it has discovered to be used for the current session (till you turn the device)
+
+The values shown as a result of this process can be used instead of using the Read_Pot_Values sketch and added into config_buttons.h. The values will be similar.
+
+#### To Temporarily change the Throttle values.
+
+1. Open the 'Throttle Pot Values' screen via the menu `#` -> `9` -> `4` 
+2. Move the Throttle pot (lever) to the first notch (throttle zero)
+3. press `0` 
+4. Move the Throttle pot (lever) to the second notch (throttle one)
+5. press `1` 
+... repeat for the reamining positions (2 to 8)
+
+   The proposed values will be shown in the right side of the screen.
+
+6. Press '9' to temporarily set the values it has discovered to be used for the current session (till you turn the device)
+
+The values shown as a result of this process can be used instead of using the Read_Pot_Values sketch and added into config_buttons.h. The values will be similar.
+
+#### Starting again and clearing the non-volatile memory
+
+If you wish to start the temporary recalibartion again.
+
+1. Open the 'potentiometer Values' screen via the menu `#` -> `9` -> `2` 
+2. Press `#`
+
+**Note that this also clears the values from non-volatile memory.**
+
+#### Saving the values to non-volatile memory
+
+1. Open the 'potentiometer Values' screen via the menu `#` -> `9` -> `2` 
+2. Press `8` to save the values to non-volatile memory
+
+Note that once saved, they will be automatically restored at device startup. *If you no longer wish them to be restored at startup you must clear the values from non-volatile memory (see above).*
+
 
 ---
 ---
 
 ## Change Log
+
+### v0.17
+- Add the ability to store the 'temporary' pot values to non-volatile memory, and automatically restore them at startup.
+- change platfom.ini to specifically wemos_d1_mini32 (for VCS users only)
 
 ### v0.16
 - Additional work to smooth out the pot values

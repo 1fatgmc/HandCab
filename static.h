@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "             v0.16";
+const String appVersion = "              v0.17";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -376,10 +376,10 @@ const int glyph_eStop = 0x0079;
    #define MENU_ITEM_TEXT_MENU_EDIT_CONSIST           "no Chng Facing   * Close"
 #endif
 #ifndef MENU_ITEM_TEXT_MENU_POT_VALUES
-   #define MENU_ITEM_TEXT_MENU_POT_VALUES             "* Close  1.B 2.R  9.Set  # clear"
+   #define MENU_ITEM_TEXT_MENU_POT_VALUES             "* Close 1B 2R  8sav 9set #clr"
 #endif
 #ifndef MENU_ITEM_TEXT_MENU_THROTTLE_POT_VALUES
-   #define MENU_ITEM_TEXT_MENU_THROTTLE_POT_VALUES    "* Close   0-8 Set notch    9 Set"
+   #define MENU_ITEM_TEXT_MENU_THROTTLE_POT_VALUES    "* Close  0-8 set ntch  9 Set"
 #endif
 
 const String menuText[15][3] = {

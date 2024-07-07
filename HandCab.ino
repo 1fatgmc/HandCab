@@ -9,6 +9,7 @@
 
 #include <WiFi.h>                 // https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi     GPL 2.1
 #include <ESPmDNS.h>              // https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS (You should be able to download it from here https://github.com/espressif/arduino-esp32 Then unzip it and copy 'just' the ESPmDNS folder to your own libraries folder )
+#include <Preferences.h>
 #include <WiThrottleProtocol.h>   // https://github.com/flash62au/WiThrottleProtocol                           Creative Commons 4.0  Attribution-ShareAlike
 #include <AiEsp32RotaryEncoder.h> // https://github.com/igorantolic/ai-esp32-rotary-encoder                    GPL 2.0
 #include <Keypad.h>               // https://www.arduinolibraries.info/libraries/keypad                        GPL 3.0
@@ -35,6 +36,12 @@
  #define debug_println(...)
  #define debug_printf(...)
 #endif
+
+// *********************************************************************************
+
+Preferences nvsPrefs;
+bool nvsInit = false;
+bool nvsPrefsSaved = false;
 
 // *********************************************************************************
 
@@ -1043,6 +1050,89 @@ void buildWitEntry() {
 }
 
 // *********************************************************************************
+//   Non Volitile Storage (flash memory)
+// *********************************************************************************
+
+void setupPreferences(bool forceClear) {
+  
+  nvsPrefs.begin("HandCabPrefs", true);        //  open it in readOnly mode.
+  nvsInit = nvsPrefs.isKey("prefsSaved");    // Test for the existence of the "already initialized" key.
+  if ( (nvsInit == false) || (forceClear) ) {
+    debug_println("Initialising non-volitile storage ");
+    // If nsvInit is 'false', the key "nvsInit" does not yet exist therefore this
+    //  must be our first-time run.
+    nvsPrefs.end();                             // close the namespace in RO mode and...
+
+    nvsPrefs.begin("HandCabPrefs", false);       // reopen it in readWrite mode.
+    nvsPrefs.putBool("nvsInit", true);          // remeber that we have initilaised it
+    nvsPrefs.putBool("prefsSaved", false);      // but we have not store any values yet
+
+    nvsInit = nvsPrefs.isKey("prefsSaved");
+  } else { 
+     if (nvsPrefs.getBool("prefsSaved")) {
+        readPreferences();
+     }
+  }
+  nvsPrefs.end();                             // Close the namespace
+}
+
+void readPreferences() {
+  debug_println("Reading preferences from non-volitile storage ");
+  nvsPrefs.begin("HandCabPrefs", true);        //  open it in readonly mode.
+  if (nvsInit) {
+    char key[2];
+    key[0] = 'T';
+    for (int i=0; i<8; i++) {
+      key[1] = '0'+i;
+      throttlePotNotchValues[i] = nvsPrefs.getLong(key);
+    }
+    key[0] = 'R';
+    for (int i=0; i<2; i++) {
+      key[1] = '0'+i;
+      reverserPotValues[i] = nvsPrefs.getLong(key);
+    }
+    key[0] = 'B';
+    for (int i=0; i<5; i++) {
+      key[1] = '0'+i;
+      brakePotValues[i] = nvsPrefs.getLong(key);
+    }
+  } else {
+    debug_println("Non-volitile storage not initialised");
+  }
+   nvsPrefs.end();                             // Close the namespace
+}
+
+void writePreferences() {
+  debug_println("Writing preferences to non-volitile storage ");
+  nvsPrefs.begin("HandCabPrefs", false);        //  open it in readWrite mode.
+  if (nvsInit) {
+    char key[2];
+    key[0] = 'T';
+    for (int i=0; i<8; i++) {
+      key[1] = '0'+i;
+      nvsPrefs.putLong(key,throttlePotNotchValues[i]);
+    }
+    key[0] = 'R';
+    for (int i=0; i<2; i++) {
+      key[1] = '0'+i;
+      nvsPrefs.putLong(key,reverserPotValues[i]);
+    }
+    key[0] = 'B';
+    for (int i=0; i<5; i++) {
+      key[1] = '0'+i;
+       nvsPrefs.putLong(key,brakePotValues[i]);
+    }
+  } else {
+    debug_println("Non-volitile storage not initialised");
+  }
+   nvsPrefs.end();                             // Close the namespace
+}
+
+void clearPreferences() {
+  setupPreferences(true); // force a reset 
+}
+
+// *********************************************************************************
 //   Rotary Encoder
 // *********************************************************************************
 
@@ -1607,6 +1697,7 @@ void setup() {
   currentSpeedStep = speedStep;
 
   clearLastPotValues();
+  setupPreferences(false);
 }
 
 // *********************************************************************************
@@ -1956,7 +2047,7 @@ void doKeyPress(char key, bool pressed) {
         debug_print("Showing Pot values... "); debug_println(key);
         switch (key){
           case '0': case '4': 
-          case '5': case '6': case '7': case '8':
+          case '5': case '6': case '7':
             // do nothing
             break;
           case '1': 
@@ -1965,6 +2056,9 @@ void doKeyPress(char key, bool pressed) {
           case '2': 
             lastOledPotValuesState = 2;  // reverser
             break;
+          case '8':
+            writePreferences();
+            break;
           case '9': 
             recalibatePotValues();
             break;
@@ -1972,8 +2066,9 @@ void doKeyPress(char key, bool pressed) {
             resetMenu();
             writeOledSpeed();
             break;
-          case '#':  // next page
+          case '#':  // clear last recorded values and the saved preferences
             clearLastPotValues();
+            clearPreferences();
             break;
           default:  // do nothing 
             break;
