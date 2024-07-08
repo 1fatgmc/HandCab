@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "              v0.18";
+const String appVersion = "v0.18";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -772,11 +772,14 @@ const char ssidPasswordBlankChar = 164;
 #ifndef BATTERY_TEST_PIN
    #define BATTERY_TEST_PIN 36
 #endif
+#ifndef BATTERY_CONVERSION_FACTOR
+   #define BATTERY_CONVERSION_FACTOR 1.7
+#endif
 #ifndef USE_BATTERY_PERCENT_AS_WELL_AS_ICON
    #define USE_BATTERY_PERCENT_AS_WELL_AS_ICON false
 #endif
 #ifndef USE_BATTERY_SLEEP_AT_PERCENT
-   #define USE_BATTERY_SLEEP_AT_PERCENT 3
+   #define USE_BATTERY_SLEEP_AT_PERCENT -1
 #endif
 
 // ***************************************************

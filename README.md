@@ -267,6 +267,22 @@ Note: you need to edit config_buttons.h to alter these assignments   (copy confi
 
 TBA
 
+To enable the battery monitor, set the following to ``true``. The default is `false``.
+``#define USE_BATTERY_TEST true``
+
+To set which pin to use The default is `36``.
+``#define BATTERY_TEST_PIN 36``
+
+If the battery does not show 100% when plugged into the charger, you may need to adjust this value. The default is `1.7``.
+``#define BATTERY_CONVERSION_FACTOR 1.7``
+
+To show the calculated percentage, set the following to ``true`` The default is `false``.
+``#define USE_BATTERY_PERCENT_AS_WELL_AS_ICON true``
+
+To force the HandCab to go to sleep at a specific level, set this value. e.g to 3 or 5. a value of less than zero (e.g. -1) will disabel the feature. By default it is disabled (-1).
+``#define USE_BATTERY_SLEEP_AT_PERCENT 3``
+
+
 Recommend adding a physical power switch as this will continually drain the battery, even when not being used.
 
 ---
@@ -351,6 +367,9 @@ Note that once saved, they will be automatically restored at device startup. *If
 
 ### v0.18
 - Bug fix for the ability to store the 'temporary' pot values to non-volatile memory
+- Added the ability override the conversion factor used to calculate the pattery level ``#define BATTERY_CONVERSION_FACTOR``. Default is 1.7
+- Moved the battery indicator to the top right corner
+- Brake and Accelleration indicators are hidden if zero
 
 ### v0.17
 - Add the ability to store the 'temporary' pot values to non-volatile memory, and automatically restore them at startup.

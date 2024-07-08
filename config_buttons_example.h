@@ -315,6 +315,7 @@
 // set USE_BATTERY_SLEEP_AT_PERCENT to a value less than zero e.g. -1) to disable the automatic sleep
 // #define USE_BATTERY_TEST true
 // #define BATTERY_TEST_PIN 36
+// #define BATTERY_CONVERSION_FACTOR 1.7
 // #define USE_BATTERY_PERCENT_AS_WELL_AS_ICON true
 // #define USE_BATTERY_SLEEP_AT_PERCENT -1
 

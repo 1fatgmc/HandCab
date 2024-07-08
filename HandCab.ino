@@ -139,7 +139,7 @@ bool useBatteryPercentAsWellAsIcon = USE_BATTERY_PERCENT_AS_WELL_AS_ICON;
 int lastBatteryTestValue = 0; 
 double lastBatteryCheckTime = 0;
 #if USE_BATTERY_TEST
- Pangodream_18650_CL BL(BATTERY_TEST_PIN);
+ Pangodream_18650_CL BL(BATTERY_TEST_PIN,BATTERY_CONVERSION_FACTOR);
 #endif   
 
 // server variables
@@ -725,12 +725,15 @@ void connectSsid() {
       nowTime = startTime;      
       WiFi.begin(cSsid, cPassword); 
 
+      int j = 0;
       int tempTimer = millis();
       debug_print("Trying Network ... Checking status "); debug_print(cSsid); debug_print(" :"); debug_print(cPassword); debug_println(":");
       while ( (WiFi.status() != WL_CONNECTED) 
-        && ((nowTime-startTime) <= SSID_CONNECTION_TIMEOUT) ) { // wait for X seconds to see if the connection worked
-        // delay(250);
+            && ((nowTime-startTime) <= SSID_CONNECTION_TIMEOUT) ) { // wait for X seconds to see if the connection worked
         if (millis() > tempTimer + 250) {
+          oledText[3] = getDots(j);
+          writeOledArray(false, false, true, true);
+          j++;
           debug_print(".");
           tempTimer = millis();
         }
@@ -826,18 +829,14 @@ void browseWitService() {
     writeOledArray(false, false, true, true);
     delay(500);
   } else {
-    int tempTimer = millis();
+    int j = 0;
     while ( (noOfWitServices == 0) 
-      && ((nowTime-startTime) <= 5000) ) { // try for 5 seconds
+    && ((nowTime-startTime) <= 10000)) { // try for 10 seconds 
       noOfWitServices = MDNS.queryService(service, proto);
-      if (noOfWitServices == 0 ) {
-        // delay(500);
-        // debug_print(".");
-        if (millis() > tempTimer + 500) {
-          debug_print(".");
-          tempTimer = millis();
-        }
-      }
+      oledText[3] = getDots(j);
+      writeOledArray(false, false, true, true);
+      j++;
+      debug_print(".");
       nowTime = millis();
     }
     debug_println("");
@@ -2940,6 +2939,13 @@ void recalibateThrottlePotValues() {
   }
 }
 
+String getDots(int howMany) {
+  //             123456789_123456789_123456789_123456789_123456789_123456789_
+  String dots = "............................................................";
+  if (howMany>dots.length()) howMany = dots.length();
+  return dots.substring(0,howMany);
+}
+
 // *********************************************************************************
 //  Select functions
 // *********************************************************************************
@@ -3184,7 +3190,7 @@ void writeOledFunctionList(String soFar) {
     } else {
       oledText[0] = MSG_NO_FUNCTIONS;
       // oledText[2] = MSG_THROTTLE_NUMBER + String(currentThrottleIndex+1);
-      oledText[4] = MSG_NO_LOCO_SELECTED;
+      oledText[3] = MSG_NO_LOCO_SELECTED;
       // oledText[5] = menu_cancel;
       setMenuTextForOled(menu_cancel);
     }
@@ -3249,7 +3255,7 @@ void writeOledMenu(String soFar) {
       // case MENU_ITEM_TOGGLE_DIRECTION: {
           if (wiThrottleProtocol.getNumberOfLocomotives('0') <= 0 ) {
             // oledText[2] = MSG_THROTTLE_NUMBER + String(1);
-            oledText[4] = MSG_NO_LOCO_SELECTED;
+            oledText[3] = MSG_NO_LOCO_SELECTED;
             // oledText[5] = menu_cancel;
             setMenuTextForOled(menu_cancel);
           } 
@@ -3356,7 +3362,7 @@ void writeOledSpeed() {
 
   } else {
     setAppnameForOled();
-    oledText[4] = MSG_NO_LOCO_SELECTED;
+    oledText[3] = MSG_NO_LOCO_SELECTED;
     drawTopLine = true;
   }
 
@@ -3373,22 +3379,22 @@ void writeOledSpeed() {
   }
 
   // currentAccellerationDelayTimeIndex
-  u8g2.setDrawColor(1);
-  // u8g2.setFont(FONT_GLYPHS);
-  // u8g2.drawGlyph(0, 37, glyph_speed_step);
-  u8g2.drawLine(0, 34, 2, 32);
-  u8g2.drawLine(4, 34, 2, 32);
-  u8g2.setFont(FONT_DEFAULT);
-  u8g2.drawStr(6, 37, String(currentAccellerationDelayTimeIndex).c_str());
+  if (currentAccellerationDelayTimeIndex>0) {
+    u8g2.setDrawColor(1);
+    u8g2.drawLine(0, 34, 2, 32);
+    u8g2.drawLine(4, 34, 2, 32);
+    u8g2.setFont(FONT_DEFAULT);
+    u8g2.drawStr(6, 37, String(currentAccellerationDelayTimeIndex).c_str());
+  }
 
   // brakeCurrentPosition
-  u8g2.setDrawColor(1);
-  // u8g2.setFont(FONT_GLYPHS);
-  // u8g2.drawGlyph(0, 29, glyph_brake_position);
-  u8g2.drawLine(0, 23, 2, 25);
-  u8g2.drawLine(4, 23, 2, 25);
-  u8g2.setFont(FONT_DEFAULT);
-  u8g2.drawStr(6, 28, String(brakeCurrentPosition).c_str());
+  if (brakeCurrentPosition>0) {
+    u8g2.setDrawColor(1);
+    u8g2.drawLine(0, 23, 2, 25);
+    u8g2.drawLine(4, 23, 2, 25);
+    u8g2.setFont(FONT_DEFAULT);
+    u8g2.drawStr(6, 28, String(brakeCurrentPosition).c_str());
+  }
 
   // target speed / throttle position
   if (targetSpeed!=currentSpeed) {
@@ -3467,19 +3473,25 @@ void writeOledBattery() {
     //int lastBatteryTestValue = random(0,100);
     u8g2.setFont(FONT_GLYPHS);
     u8g2.setDrawColor(1);
-    u8g2.drawStr(13, 28, String("Z").c_str());
-    if (lastBatteryTestValue>10) u8g2.drawLine(14, 22, 14, 25);
-    if (lastBatteryTestValue>25) u8g2.drawLine(15, 22, 15, 25);
-    if (lastBatteryTestValue>50) u8g2.drawLine(16, 22, 16, 25);
-    if (lastBatteryTestValue>75) u8g2.drawLine(17, 22, 17, 25);
-    if (lastBatteryTestValue>90) u8g2.drawLine(18, 22, 18, 25);
+    // int x = 13; int y = 28;
+    int x = 120; int y = 11;
+    if (useBatteryPercentAsWellAsIcon) x = 102;
+    u8g2.drawStr(x, y, String("Z").c_str());
+    if (lastBatteryTestValue>10) u8g2.drawLine(x+1, y-6, x+1, y-3);
+    if (lastBatteryTestValue>25) u8g2.drawLine(x+2, y-6, x+2, y-3);
+    if (lastBatteryTestValue>50) u8g2.drawLine(x+3, y-6, x+3, y-3);
+    if (lastBatteryTestValue>75) u8g2.drawLine(x+4, y-6, x+4, y-3);
+    if (lastBatteryTestValue>90) u8g2.drawLine(x+5, y-6, x+5, y-3);
     
-    u8g2.setFont(FONT_FUNCTION_INDICATORS);
     if (useBatteryPercentAsWellAsIcon) {
-      u8g2.drawStr(13,36, String(String(lastBatteryTestValue)+"%").c_str());
-    }
-    if(lastBatteryTestValue<5) {
-      u8g2.drawStr(13,36, String("LOW").c_str());
+      // x = 13; y = 36;
+      x = 112; y = 10;
+      u8g2.setFont(FONT_FUNCTION_INDICATORS);
+      if(lastBatteryTestValue<5) {
+        u8g2.drawStr(x,y, String("LOW").c_str());
+      } else {
+        u8g2.drawStr(x,y, String(String(lastBatteryTestValue)+"%").c_str());
+      }
     }
   }
 }
