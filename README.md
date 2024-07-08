@@ -349,6 +349,9 @@ Note that once saved, they will be automatically restored at device startup. *If
 
 ## Change Log
 
+### v0.18
+- Bug fix for the ability to store the 'temporary' pot values to non-volatile memory
+
 ### v0.17
 - Add the ability to store the 'temporary' pot values to non-volatile memory, and automatically restore them at startup.
 - eStop bug fix

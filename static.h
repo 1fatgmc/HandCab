@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "              v0.17";
+const String appVersion = "              v0.18";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -201,7 +201,7 @@ typedef enum WhenToUseSmallFonts {
    #define MSG_THROTTLE_NUMBER          "          Throttle #"
 #endif
 #ifndef MSG_NO_LOCO_SELECTED
-   #define MSG_NO_LOCO_SELECTED         "        No Loco selected"
+   #define MSG_NO_LOCO_SELECTED         "         No Loco selected"
 #endif
 #ifndef MSG_ENTER_PASSWORD
    #define MSG_ENTER_PASSWORD           "Enter Password"
@@ -237,9 +237,7 @@ const String label_track_power = "TRK";
 
 const int glyph_heartbeat_off = 0x00b7;
 const int glyph_track_power = 0x00eb;
-// const int glyph_speed_step = 0x008f;
 const int glyph_speed_step = 0x0070;
-// const int glyph_brake_position = 0x008e;
 const int glyph_brake_position = 0x006d;
 const int glyph_target_speed = 0x010d;
 const int glyph_target_direction_forward = 0x00d8;

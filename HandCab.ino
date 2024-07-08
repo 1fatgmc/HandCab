@@ -1093,21 +1093,26 @@ void readPreferences() {
   debug_println("Reading preferences from non-volitile storage ");
   nvsPrefs.begin("HandCabPrefs", true);        //  open it in readonly mode.
   if (nvsInit) {
-    char key[2];
+    char key[3];
+    key[2] = 0;
+
     key[0] = 'T';
     for (int i=0; i<8; i++) {
       key[1] = '0'+i;
-      throttlePotNotchValues[i] = nvsPrefs.getLong(key);
+      throttlePotNotchValues[i] = nvsPrefs.getInt(key);
+      debug_print(key); debug_print(" - "); debug_println(throttlePotNotchValues[i]);
     }
     key[0] = 'R';
     for (int i=0; i<2; i++) {
       key[1] = '0'+i;
-      reverserPotValues[i] = nvsPrefs.getLong(key);
+      reverserPotValues[i] = nvsPrefs.getInt(key);
+      debug_print(key); debug_print(" - "); debug_println(reverserPotValues[i]);
     }
     key[0] = 'B';
     for (int i=0; i<5; i++) {
       key[1] = '0'+i;
-      brakePotValues[i] = nvsPrefs.getLong(key);
+      brakePotValues[i] = nvsPrefs.getInt(key);
+      debug_print(key); debug_print(" - "); debug_println(brakePotValues[i]);
     }
   } else {
     debug_println("Non-volitile storage not initialised");
@@ -1119,22 +1124,28 @@ void writePreferences() {
   debug_println("Writing preferences to non-volitile storage ");
   nvsPrefs.begin("HandCabPrefs", false);        //  open it in readWrite mode.
   if (nvsInit) {
-    char key[2];
+    char key[3];
+    key[2] = 0;
+
     key[0] = 'T';
     for (int i=0; i<8; i++) {
       key[1] = '0'+i;
-      nvsPrefs.putLong(key,throttlePotNotchValues[i]);
+      nvsPrefs.putInt(key,throttlePotNotchValues[i]);
+      debug_print(key); debug_print(" - "); debug_println(throttlePotNotchValues[i]);
     }
     key[0] = 'R';
     for (int i=0; i<2; i++) {
       key[1] = '0'+i;
-      nvsPrefs.putLong(key,reverserPotValues[i]);
+      nvsPrefs.putInt(key,reverserPotValues[i]);
+      debug_print(key); debug_print(" - "); debug_println(reverserPotValues[i]);
     }
     key[0] = 'B';
     for (int i=0; i<5; i++) {
       key[1] = '0'+i;
-       nvsPrefs.putLong(key,brakePotValues[i]);
+      nvsPrefs.putInt(key,brakePotValues[i]);
+      debug_print(key); debug_print(" - "); debug_println(brakePotValues[i]);
     }
+    nvsPrefs.putBool("prefsSaved", true); 
   } else {
     debug_println("Non-volitile storage not initialised");
   }
@@ -2906,7 +2917,7 @@ String getSuggestedThrottlePotNotchValues(int line) {
 }
 
 void recalibatePotValues() {
-  // debug_print("recalibatePotValues() "); debug_println(lastOledPotValuesState);
+  debug_print("recalibatePotValues() "); debug_println(lastOledPotValuesState);
   int noElements = 0;
   if (lastOledPotValuesState==1) {
     noElements = sizeof(brakePotValues) / sizeof(brakePotValues[0]);
@@ -2922,7 +2933,7 @@ void recalibatePotValues() {
 }
 
 void recalibateThrottlePotValues() {
-  // debug_println("recalibateThrottlePotValues() ");
+  debug_println("recalibateThrottlePotValues() ");
   int noElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
   for (int i=0; i<noElements; i++) {
     throttlePotNotchValues[i] = throttlePotRecalibratedValues[i];
@@ -3173,7 +3184,7 @@ void writeOledFunctionList(String soFar) {
     } else {
       oledText[0] = MSG_NO_FUNCTIONS;
       // oledText[2] = MSG_THROTTLE_NUMBER + String(currentThrottleIndex+1);
-      oledText[3] = MSG_NO_LOCO_SELECTED;
+      oledText[4] = MSG_NO_LOCO_SELECTED;
       // oledText[5] = menu_cancel;
       setMenuTextForOled(menu_cancel);
     }
@@ -3238,7 +3249,7 @@ void writeOledMenu(String soFar) {
       // case MENU_ITEM_TOGGLE_DIRECTION: {
           if (wiThrottleProtocol.getNumberOfLocomotives('0') <= 0 ) {
             // oledText[2] = MSG_THROTTLE_NUMBER + String(1);
-            oledText[3] = MSG_NO_LOCO_SELECTED;
+            oledText[4] = MSG_NO_LOCO_SELECTED;
             // oledText[5] = menu_cancel;
             setMenuTextForOled(menu_cancel);
           } 
@@ -3345,7 +3356,7 @@ void writeOledSpeed() {
 
   } else {
     setAppnameForOled();
-    oledText[3] = MSG_NO_LOCO_SELECTED;
+    oledText[4] = MSG_NO_LOCO_SELECTED;
     drawTopLine = true;
   }
 
@@ -3363,17 +3374,21 @@ void writeOledSpeed() {
 
   // currentAccellerationDelayTimeIndex
   u8g2.setDrawColor(1);
-  u8g2.setFont(FONT_GLYPHS);
-  u8g2.drawGlyph(0, 37, glyph_speed_step);
+  // u8g2.setFont(FONT_GLYPHS);
+  // u8g2.drawGlyph(0, 37, glyph_speed_step);
+  u8g2.drawLine(0, 34, 2, 32);
+  u8g2.drawLine(4, 34, 2, 32);
   u8g2.setFont(FONT_DEFAULT);
-  u8g2.drawStr(9, 37, String(currentAccellerationDelayTimeIndex).c_str());
+  u8g2.drawStr(6, 37, String(currentAccellerationDelayTimeIndex).c_str());
 
   // brakeCurrentPosition
   u8g2.setDrawColor(1);
-  u8g2.setFont(FONT_GLYPHS);
-  u8g2.drawGlyph(0, 29, glyph_brake_position);
+  // u8g2.setFont(FONT_GLYPHS);
+  // u8g2.drawGlyph(0, 29, glyph_brake_position);
+  u8g2.drawLine(0, 23, 2, 25);
+  u8g2.drawLine(4, 23, 2, 25);
   u8g2.setFont(FONT_DEFAULT);
-  u8g2.drawStr(9, 28, String(brakeCurrentPosition).c_str());
+  u8g2.drawStr(6, 28, String(brakeCurrentPosition).c_str());
 
   // target speed / throttle position
   if (targetSpeed!=currentSpeed) {
@@ -3452,19 +3467,19 @@ void writeOledBattery() {
     //int lastBatteryTestValue = random(0,100);
     u8g2.setFont(FONT_GLYPHS);
     u8g2.setDrawColor(1);
-    u8g2.drawStr(16, 29, String("Z").c_str());
-    if (lastBatteryTestValue>10) u8g2.drawLine(17, 23, 17, 26);
-    if (lastBatteryTestValue>25) u8g2.drawLine(18, 23, 18, 26);
-    if (lastBatteryTestValue>50) u8g2.drawLine(19, 23, 19, 26);
-    if (lastBatteryTestValue>75) u8g2.drawLine(20, 23, 20, 26);
-    if (lastBatteryTestValue>90) u8g2.drawLine(21, 23, 21, 26);
+    u8g2.drawStr(13, 28, String("Z").c_str());
+    if (lastBatteryTestValue>10) u8g2.drawLine(14, 22, 14, 25);
+    if (lastBatteryTestValue>25) u8g2.drawLine(15, 22, 15, 25);
+    if (lastBatteryTestValue>50) u8g2.drawLine(16, 22, 16, 25);
+    if (lastBatteryTestValue>75) u8g2.drawLine(17, 22, 17, 25);
+    if (lastBatteryTestValue>90) u8g2.drawLine(18, 22, 18, 25);
     
     u8g2.setFont(FONT_FUNCTION_INDICATORS);
     if (useBatteryPercentAsWellAsIcon) {
-      u8g2.drawStr(12,19, String(String(lastBatteryTestValue)+"%").c_str());
+      u8g2.drawStr(13,36, String(String(lastBatteryTestValue)+"%").c_str());
     }
     if(lastBatteryTestValue<5) {
-      u8g2.drawStr(12,19, String("LOW").c_str());
+      u8g2.drawStr(13,36, String("LOW").c_str());
     }
   }
 }
