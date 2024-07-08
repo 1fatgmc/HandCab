@@ -80,10 +80,10 @@ int throttlePotNotch = 0;
 int throttlePotTargetSpeed = 0;
 int lastThrottlePotValue = 0;
 int lastThrottlePotHighValue = 0;  // highest of the most recent
-// int lastThrottlePotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 int lastThrottlePotValues[] = {0, 0, 0, 0, 0};
 int lastThrottlePotReadTime = -1;
 
+// throttle recalibration values
 int throttlePotTempValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 int throttlePotRecalibratedValues[] = THROTTLE_POT_NOTCH_VALUES; 
 int lowestThrottlePotValue = 32768;
@@ -94,11 +94,11 @@ int reverserPotPin = REVERSER_POT_PIN;
 int reverserPotValues[] = REVERSER_POT_VALUES; 
 int lastReverserPotValue = 0;
 int lastReverserPotHighValue = 0;  // highest of the most recent
-// int lastReverserPotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 int lastReverserPotValues[] = {0, 0, 0, 0, 0};
 int reverserCurrentPosition = REVERSER_POSITION_NEUTRAL;
 int lastReverserPotReadTime = -1;
 
+// reverser recalibration values
 int reverserPotRecalibratedValues[] = REVERSER_POT_VALUES; 
 int lowestReverserPotValue = 32768;
 int highestReverserPotValue = -1;
@@ -108,11 +108,11 @@ int brakePotPin = BRAKE_POT_PIN;
 int brakePotValues[] = BRAKE_POT_VALUES;
 int lastBrakePotValue = 0;
 int lastBrakePotHighValue = 0;  // highest of the most recent
-// int lastBrakePotValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 int lastBrakePotValues[] = {0, 0, 0, 0, 0};
 int brakeCurrentPosition = 0;
 int lastBrakePotReadTime = -1;
 
+// brake recalibration values
 int brakePotRecalibratedValues[] = BRAKE_POT_VALUES;
 int lowestBrakePotValue = 32768;
 int highestBrakePotValue = -1;
@@ -529,11 +529,15 @@ void browseSsids() { // show the found SSIDs
   WiFi.setScanMethod(WIFI_ALL_CHANNEL_SCAN);
   WiFi.setSortMethod(WIFI_CONNECT_AP_BY_SIGNAL);
   
+  int tempTimer = millis();
   int numSsids = WiFi.scanNetworks();
   while ( (numSsids == -1)
     && ((nowTime-startTime) <= 10000) ) { // try for 10 seconds
-    delay(250);
-    debug_print(".");
+    // delay(250);
+    if (millis() > tempTimer + 250) {
+      debug_print(".");
+      tempTimer = millis();
+    }
     nowTime = millis();
   }
 
@@ -721,11 +725,15 @@ void connectSsid() {
       nowTime = startTime;      
       WiFi.begin(cSsid, cPassword); 
 
+      int tempTimer = millis();
       debug_print("Trying Network ... Checking status "); debug_print(cSsid); debug_print(" :"); debug_print(cPassword); debug_println(":");
       while ( (WiFi.status() != WL_CONNECTED) 
         && ((nowTime-startTime) <= SSID_CONNECTION_TIMEOUT) ) { // wait for X seconds to see if the connection worked
-        delay(250);
-        debug_print(".");
+        // delay(250);
+        if (millis() > tempTimer + 250) {
+          debug_print(".");
+          tempTimer = millis();
+        }
         nowTime = millis();
       }
 
@@ -818,12 +826,17 @@ void browseWitService() {
     writeOledArray(false, false, true, true);
     delay(500);
   } else {
+    int tempTimer = millis();
     while ( (noOfWitServices == 0) 
       && ((nowTime-startTime) <= 5000) ) { // try for 5 seconds
       noOfWitServices = MDNS.queryService(service, proto);
       if (noOfWitServices == 0 ) {
-        delay(500);
-        debug_print(".");
+        // delay(500);
+        // debug_print(".");
+        if (millis() > tempTimer + 500) {
+          debug_print(".");
+          tempTimer = millis();
+        }
       }
       nowTime = millis();
     }
@@ -1509,7 +1522,7 @@ void speedAdjust_loop() {
 void targetSpeedAndDirectionOverride() {
 
   // check the brake
-  if (brakeCurrentPosition>0) { // ignore throttle and th reverser
+  if (brakeCurrentPosition>0) { // ignore throttle and the reverser
     targetSpeed = 0;
   }
 
@@ -2482,15 +2495,19 @@ String getLocoWithLength(String loco) {
 }
 
 void speedEstop() {
-  wiThrottleProtocol.emergencyStop();
+  eStopEngaged = true;
   currentSpeed = 0;
+  targetSpeed = 0;
+  wiThrottleProtocol.emergencyStop();
   debug_println("Speed EStop"); 
   writeOledSpeed();
 }
 
 void speedEstopCurrentLoco() {
-  wiThrottleProtocol.emergencyStop();
+  eStopEngaged = true;
+  targetSpeed = 0;
   currentSpeed = 0;
+  wiThrottleProtocol.emergencyStop();
   debug_println("Speed EStop Curent Loco"); 
   writeOledSpeed();
 }

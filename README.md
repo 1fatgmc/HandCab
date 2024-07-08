@@ -351,6 +351,7 @@ Note that once saved, they will be automatically restored at device startup. *If
 
 ### v0.17
 - Add the ability to store the 'temporary' pot values to non-volatile memory, and automatically restore them at startup.
+- eStop bug fix
 - change platfom.ini to specifically wemos_d1_mini32 (for VCS users only)
 
 ### v0.16
