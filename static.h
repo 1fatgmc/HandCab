@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "v0.18";
+const String appVersion = "v0.19";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -114,6 +114,12 @@ typedef enum WhenToUseSmallFonts {
     USE_POTS_SMALL_FONTS = 1,
     USE_THROTTLE_POT_SMALL_FONTS = 2
 } WhenToUseSmallFonts;
+
+typedef enum ShowBattery {
+    NONE = 0,
+    ICON_ONLY = 1,
+    ICON_AND_PERCENT = 2
+} ShowBattery;
 
 #ifndef DIRECT_COMMAND_LIST
   #define DIRECT_COMMAND_LIST            "Direct Commands"
@@ -384,7 +390,7 @@ const String menuText[15][3] = {
   {MENU_ITEM_TEXT_TITLE_FUNCTION,              MENU_ITEM_TEXT_MENU_FUNCTION, ""},   //0
   {MENU_ITEM_TEXT_TITLE_ADD_LOCO,              MENU_ITEM_TEXT_MENU_ADD_LOCO, ""},   //1
   {MENU_ITEM_TEXT_TITLE_DROP_LOCO,             MENU_ITEM_TEXT_MENU_DROP_LOCO, ""},   //2
-  {"",      "", ""},   //3        //TODO: remove
+  {"",      "", ""},   //3
   {MENU_ITEM_TEXT_TITLE_SPEED_STEP_MULTIPLIER, MENU_ITEM_TEXT_MENU_SPEED_STEP_MULTIPLIER, ""}, //4     //TODO: remove
   {MENU_ITEM_TEXT_TITLE_THROW_POINT,           MENU_ITEM_TEXT_MENU_THROW_POINT, ""},   //5
   {MENU_ITEM_TEXT_TITLE_CLOSE_POINT,           MENU_ITEM_TEXT_MENU_CLOSE_POINT, ""},   //6

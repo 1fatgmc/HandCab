@@ -267,32 +267,38 @@ Note: you need to edit config_buttons.h to alter these assignments   (copy confi
 
 TBA
 
-To enable the battery monitor, set the following to ``true``. The default is `false``.
+*To enable the battery monitor*, set the following to ``true``. The default is ``false``.
+
 ``#define USE_BATTERY_TEST true``
 
-To set which pin to use The default is `36``.
+*To set which pin to use.* The default is ``36``.
+
 ``#define BATTERY_TEST_PIN 36``
 
-If the battery does not show 100% when plugged into the charger, you may need to adjust this value. The default is `1.7``.
+If the battery does not show 100% when plugged into the charger, you may need to adjust this value. The default is ``1.7``.
+
 ``#define BATTERY_CONVERSION_FACTOR 1.7``
 
-To show the calculated percentage, set the following to ``true`` The default is `false``.
+*To show the calculated percentage*, set the following to ``true`` The default is ``false``.
+
 ``#define USE_BATTERY_PERCENT_AS_WELL_AS_ICON true``
 
-To force the HandCab to go to sleep at a specific level, set this value. e.g to 3 or 5. a value of less than zero (e.g. -1) will disabel the feature. By default it is disabled (-1).
+*To force the HandCab to go to sleep at a specific level*, set this value. (e.g. to 3 or 5.) A value of less than zero (e.g. -1) will disable the feature. By default it is disabled (-1).
+
 ``#define USE_BATTERY_SLEEP_AT_PERCENT 3``
 
+The display of the battery can be temporarily toggled by setting a key or button to ``SHOW_HIDE_BATTERY``.  The display will cycle between none, icon only and icon plus percent value. Note that ``USE_BATTERY_TEST`` must be set to `true` for this to have any effect.
 
-Recommend adding a physical power switch as this will continually drain the battery, even when not being used.
+We recommend including a physical power switch to disconnect the battery as this feature will continually drain the battery, even when not being used.
 
 ---
 
 ### Instructions for temporarily changing the pot values
 
 Normally the pot values are set in config_buttons.h.  
-You can get the appropriate values using the Read_Pot_Values sketch.
+You can get the appropriate values using the **Read_Pot_Values** sketch.
 
-We have found that occasioanlly (for reasons we don't understand) the values can 'dift'.  If that happens you will notice that you can no longer get into the lower or higher break or reverser positions, or the Throttle notch is not the one you expect.
+We have found that occasioanlly (for reasons we don't understand) the values can 'dift'.  If that happens you will notice that you may not be able to get into the lower or higher brake or reverser positions, or the Throttle notch is not the one you expect.
 
 You can use the following feature to temporarily recalibrate the pots and, if you wish, to store the values to non-volatile memory so they will be automatically restored at startup.
 
@@ -364,6 +370,10 @@ Note that once saved, they will be automatically restored at device startup. *If
 ---
 
 ## Change Log
+
+### v0.19
+- Added action ``SHOW_HIDE_BATTERY`` which can be assigned to any key or button
+- Battery shows on most screens now
 
 ### v0.18
 - Bug fix for the ability to store the 'temporary' pot values to non-volatile memory

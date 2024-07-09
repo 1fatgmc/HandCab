@@ -135,6 +135,15 @@ bool eStopEngaged = false;
 
 // battery test values
 bool useBatteryTest = USE_BATTERY_TEST;
+#if USE_BATTERY_TEST
+  #if USE_BATTERY_PERCENT_AS_WELL_AS_ICON
+    ShowBattery showBatteryTest = ICON_AND_PERCENT;
+  #else 
+    ShowBattery showBatteryTest = ICON_ONLY;
+  #endif
+#else
+  ShowBattery showBatteryTest = NONE;
+#endif
 bool useBatteryPercentAsWellAsIcon = USE_BATTERY_PERCENT_AS_WELL_AS_ICON;
 int lastBatteryTestValue = 0; 
 double lastBatteryCheckTime = 0;
@@ -570,7 +579,7 @@ void browseSsids() { // show the found SSIDs
 
     clearOledArray(); oledText[10] = MSG_SSIDS_FOUND;
 
-     writeOledFoundSSids("");
+    writeOledFoundSSids("");
 
     // oledText[5] = menu_select_ssids_from_found;
     setMenuTextForOled(menu_select_ssids_from_found);
@@ -650,7 +659,7 @@ void showListOfSsids() {  // show the list from the specified values in config_n
   } else {
     debug_print(maxSsids);  debug_println(MSG_SSIDS_LISTED);
     clearOledArray(); oledText[10] = MSG_SSIDS_LISTED;
-
+    
     for (int i = 0; i < maxSsids; ++i) {
       debug_print(i+1); debug_print(": "); debug_println(ssids[i]);
       int j = i;
@@ -841,7 +850,6 @@ void browseWitService() {
     }
     debug_println("");
   }
-  
 
   foundWitServersCount = noOfWitServices;
   if (noOfWitServices > 0) {
@@ -981,7 +989,7 @@ void enterWitServer() {
     oledText[1] = MSG_NO_SERVICES_FOUND_ENTRY_REQUIRED;
     oledText[3] = witServerIpAndPortConstructed;
     // oledText[5] = menu_select_wit_entry;
-      setMenuTextForOled(menu_select_wit_entry);
+    setMenuTextForOled(menu_select_wit_entry);
     writeOledArray(false, false, true, true);
     witServerIpAndPortChanged = false;
   }
@@ -2247,6 +2255,10 @@ void doDirectAction(int buttonAction) {
         powerToggle();
         break; 
       }
+      case SHOW_HIDE_BATTERY: {
+        batteryShowToggle();
+        break; 
+      }
       // case NEXT_THROTTLE: {
       //   nextThrottle();
       //   break; 
@@ -2790,6 +2802,22 @@ void powerToggle() {
     powerOnOff(PowerOff);
   } else {
     powerOnOff(PowerOn);
+  }
+}
+
+void batteryShowToggle() {
+  debug_println("batteryShowToggle()");
+  switch (showBatteryTest) {
+    case ICON_ONLY: 
+      showBatteryTest = ICON_AND_PERCENT;
+      break;
+    case ICON_AND_PERCENT: 
+      showBatteryTest = NONE;
+      break;
+    case NONE: 
+    default:
+      showBatteryTest = ICON_ONLY;
+      break;
   }
 }
 
@@ -3469,13 +3497,14 @@ void writeOledSpeed() {
 }
 
 void writeOledBattery() {
-  if (useBatteryTest) {
+  if ( (useBatteryTest) && (showBatteryTest!=NONE) && (lastBatteryCheckTime>0)) {
     //int lastBatteryTestValue = random(0,100);
     u8g2.setFont(FONT_GLYPHS);
     u8g2.setDrawColor(1);
     // int x = 13; int y = 28;
     int x = 120; int y = 11;
-    if (useBatteryPercentAsWellAsIcon) x = 102;
+    // if (useBatteryPercentAsWellAsIcon) x = 102;
+    if (showBatteryTest==ICON_AND_PERCENT) x = 102;
     u8g2.drawStr(x, y, String("Z").c_str());
     if (lastBatteryTestValue>10) u8g2.drawLine(x+1, y-6, x+1, y-3);
     if (lastBatteryTestValue>25) u8g2.drawLine(x+2, y-6, x+2, y-3);
@@ -3483,7 +3512,8 @@ void writeOledBattery() {
     if (lastBatteryTestValue>75) u8g2.drawLine(x+4, y-6, x+4, y-3);
     if (lastBatteryTestValue>90) u8g2.drawLine(x+5, y-6, x+5, y-3);
     
-    if (useBatteryPercentAsWellAsIcon) {
+    // if (useBatteryPercentAsWellAsIcon) {
+    if (showBatteryTest==ICON_AND_PERCENT) {
       // x = 13; y = 36;
       x = 112; y = 10;
       u8g2.setFont(FONT_FUNCTION_INDICATORS);
@@ -3653,8 +3683,12 @@ void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool d
     }
   }
 
-  if (drawTopLine) u8g2.drawHLine(0,11,128);
+  if (drawTopLine) {
+    u8g2.drawHLine(0,11,128);
+    writeOledBattery();
+  }
   u8g2.drawHLine(0,51,128);
+
 
   if (sendBuffer) u8g2.sendBuffer();					// transfer internal memory to the display
   // debug_println("writeOledArray(): end ");
