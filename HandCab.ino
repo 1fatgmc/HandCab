@@ -1321,54 +1321,39 @@ void throttlePot_loop(bool forceRead) {
   if (avgPotValue<lowestThrottlePotValue) lowestThrottlePotValue = avgPotValue;
   if (avgPotValue>highestThrottlePotValue) highestThrottlePotValue = avgPotValue;
 
-  // only do something if the pot value is different
-  // or deliberate read
-  // if ( (avgPotValue!=lastThrottlePotValue) 
+  // only do something if the pot value is sufficiently different
+  // or deliberate read 
   if ( (avgPotValue<lastThrottlePotValue-5) || (avgPotValue>lastThrottlePotValue+5)
   || (forceRead) )  { 
     lastThrottlePotValue = avgPotValue;
     noElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
 
-    // if (throttlePotUseNotches) { // use notches
-
-      throttlePotNotch = -1;
-      for (int i=0; i<noElements; i++) {
-        if (avgPotValue < throttlePotNotchValues[i]) {    /// Check to see if it is in notch i
-          if (i==0) { //notch 1 is always speed zero
-            throttlePotTargetSpeed = 0;
-          } else {// use the speed values element 1 less than the notch number
-            throttlePotTargetSpeed = throttlePotNotchSpeeds[i-1];
-            // debug_print("throttlePot_loop() notch: "); debug_print(i); debug_print(" - "); debug_println(avgPotValue);
-          } 
-          throttlePotNotch = i;
-          break;
-        }                
-      } 
-      if (throttlePotNotch == -1) { //didn't find it, so it must be above the last element in the pot values
-        throttlePotNotch = noElements-1;
-        throttlePotTargetSpeed = throttlePotNotchSpeeds[noElements-1];
-        // debug_print("throttlePot_loop() above max: setting notch: "); debug_print(throttlePotNotch); debug_print(" - ");  debug_println(avgPotValue);
-      }
-      // debug_print("throttlePot_loop() current notch: "); debug_print(currentThrottlePotNotch); debug_print(" new: "); debug_println(throttlePotNotch);
-      if ( (throttlePotNotch!=currentThrottlePotNotch) 
-      || (forceRead) ) {
-          //  debug_print("throttlePot_loop() changing speed to: ");   debug_println(throttlePotTargetSpeed);
-            targetSpeed = throttlePotTargetSpeed;
-            targetSpeedAndDirectionOverride();
-            if (!forceRead) startMomentumTimerMillis = millis(); // don't reset the timer on a forced read
-      }
-
-    // } else { // use a linear speed
-    //   double newSpeed = potValue-throttlePotNotchValues[0];
-    //   newSpeed = newSpeed / (throttlePotNotchValues[7]-throttlePotNotchValues[0]);
-    //   newSpeed = newSpeed * 127;
-    //   if (newSpeed<0) { newSpeed = 0; }
-    //   else if (newSpeed>127) { newSpeed = 127; }
-    //   int iSpeed = newSpeed;
-    //   debug_print("newSpeed: "); debug_print(newSpeed); debug_print(" iSpeed: "); debug_println(iSpeed);
-    //   speedSet(iSpeed);
-    // }  
-
+    throttlePotNotch = -99;
+    for (int i=0; i<noElements; i++) {
+      if (avgPotValue < throttlePotNotchValues[i]) {    /// Check to see if it is in notch i
+        if (i==0) { //notch 1 is always speed zero
+          throttlePotTargetSpeed = 0;
+        } else {// use the speed values element 1 less than the notch number
+          throttlePotTargetSpeed = throttlePotNotchSpeeds[i-1];
+          debug_print("throttlePot_loop() notch: "); debug_print(i); debug_print(" - "); debug_println(avgPotValue);
+        } 
+        throttlePotNotch = i;
+        break;
+      }                
+    } 
+    if (throttlePotNotch == -99) { //didn't find it, so it must be above the last element in the pot values
+      throttlePotNotch = noElements;
+      throttlePotTargetSpeed = throttlePotNotchSpeeds[noElements-1];
+      debug_print("throttlePot_loop() above max: setting notch: "); debug_print(throttlePotNotch); debug_print(" - ");  debug_println(avgPotValue);
+    }
+    debug_print("throttlePot_loop() current notch: "); debug_print(currentThrottlePotNotch); debug_print(" new: "); debug_println(throttlePotNotch);
+    if ( (throttlePotNotch!=currentThrottlePotNotch) 
+    || (forceRead) ) {
+         debug_print("throttlePot_loop() changing speed to: ");   debug_println(throttlePotTargetSpeed);
+          targetSpeed = throttlePotTargetSpeed;
+          targetSpeedAndDirectionOverride();
+          if (!forceRead) startMomentumTimerMillis = millis(); // don't reset the timer on a forced read
+    }
     refreshOled();
   }
 }

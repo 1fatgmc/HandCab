@@ -372,6 +372,9 @@ Note that once saved, they will be automatically restored at device startup. *If
 ## Change Log
 
 ### v0.19
+- fixed bug where it would not reliably go into notch 8
+
+### v0.19
 - Added action ``SHOW_HIDE_BATTERY`` which can be assigned to any key or button
 - Battery shows on most screens now
 
