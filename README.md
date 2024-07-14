@@ -371,8 +371,10 @@ Note that once saved, they will be automatically restored at device startup. *If
 
 ## Change Log
 
-### v0.19
+### v0.20
 - fixed bug where it would not reliably go into notch 8
+- Created a new version of Read_Pot_Values (Read_Pot_Values2).  
+  Calculations are the same for now, code is simpler
 
 ### v0.19
 - Added action ``SHOW_HIDE_BATTERY`` which can be assigned to any key or button

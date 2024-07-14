@@ -57,3 +57,7 @@ build\preproc\*.*
 
 config_network.h
 config_buttons.h
+Read_Pot_Values/config.h
+Read_Pot_Values\config.h
+Read_Pot_Values2/config.h
+Read_Pot_Values2\config.h
