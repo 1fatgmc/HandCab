@@ -281,9 +281,9 @@ void loop() {
   //   ============================ Print the brake values for the config .h file to the screen
 
   Serial.print("#define BRAKE_POT_VALUES  { ");
-  for (int i=1; i<5; i++) { 
+  for (int i=1; i<6; i++) { 
     Serial.print(brakeRangeLow[i]);
-    if (i<4) Serial.print(","); 
+    if (i<5) Serial.print(","); 
   }
   Serial.println(" }");
 
