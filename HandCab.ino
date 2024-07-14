@@ -2904,7 +2904,7 @@ String getThrottlePotNotchValues(int line) {
 }
 
 String getSuggestedThrottlePotNotchValues(int line) {
-  // debug_println("getSuggestedThrottlePotNotchValues() ");
+  debug_println("getSuggestedThrottlePotNotchValues() ");
   String rslt = "";
   int noElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
   int start = 0;
@@ -2917,11 +2917,18 @@ String getSuggestedThrottlePotNotchValues(int line) {
     end = noElements;
   }
   for (int i=0; i<noElements; i++) {
-      throttlePotRecalibratedValues[i] = (throttlePotTempValues[i+1] - throttlePotTempValues[i])/ 2 + throttlePotTempValues[i];
+    throttlePotRecalibratedValues[i] = (throttlePotTempValues[i+1] - throttlePotTempValues[i])/ 2 + throttlePotTempValues[i];
+    debug_print("i: "); debug_print(i);
+    debug_print(" throttlePotTempValues[i]: ");
+    debug_print(throttlePotTempValues[i]);
+    debug_print(" throttlePotTempValues[i+1]: ");
+    debug_print(throttlePotTempValues[i+1]);
+    debug_print(" throttlePotRecalibratedValues[i]: ");
+    debug_print(throttlePotRecalibratedValues[i]);
+    debug_println("");
   }
   
   for (int i=start; i<end; i++) {
-    // throttlePotRecalibratedValues[i] = (throttlePotTempValues[i+1] - (throttlePotTempValues[i])/ 2) + throttlePotTempValues[i];
     if ( (i!=0) && (i!=3) && (i!=6) ) rslt = rslt + ",";
     rslt = rslt + String(throttlePotRecalibratedValues[i]);
   }

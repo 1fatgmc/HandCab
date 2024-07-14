@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "v0.20";
+const String appVersion = "v0.21";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"

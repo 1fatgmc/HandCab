@@ -26,6 +26,7 @@ int notchValue[9] = {0,0,0,0,0,0,0,0,0}; // Notch 0 value
 // Use the following numbers for the config file that shows the range of each throttle notch.
 int notchRangeLow[9] = {0,0,0,0,0,0,0,0,0};  // The bottom range number for notch X
 int notchRangeHigh[9] = {0,0,0,0,0,0,0,0,0};  // The upper range numbe for notch X
+int alternateNotchRangeValue[9] = {0,0,0,0,0,0,0,0,0};  // alternate calculation
 
 // Use these to read in the upper and lower number for the pot range for the brake and reverser.
 
@@ -183,6 +184,11 @@ void loop() {
     else     notchRangeHigh[i] = notchValue[8];
   }
 
+  // alternate calculation
+  for (int i=0; i<8; i++) {
+    alternateNotchRangeValue[i] = (notchValue[i+1] - notchValue[i]) /2 + notchValue[i];
+  }
+
   Serial.println();
   for (int i=0; i<9; i++) {
     Serial.print("Throttle Range "); Serial.print(i); 
@@ -263,14 +269,14 @@ void loop() {
     if (i<8) Serial.print(","); 
   }
   Serial.println(" }");
-  // Serial.println("Enter 'c' to continue");
 
-  // while(true) // remain here until told to break
-  // {
-  //   if(Serial.available() > 0) // did something come in?
-  //     if(Serial.read() == 'c') // is that something the char C?
-  //       break;
-  // }
+  Serial.print("alternate #define THROTTLE_POT_NOTCH_VALUES { ");   
+  for (int i=0; i<8; i++) { 
+    Serial.print(alternateNotchRangeValue[i]);
+    if (i<7) Serial.print(","); 
+  }
+  Serial.println(" }");
+
 
   //   ============================ Print the brake values for the config .h file to the screen
 
@@ -280,14 +286,6 @@ void loop() {
     if (i<4) Serial.print(","); 
   }
   Serial.println(" }");
-  // Serial.println("Enter 'c' to continue");
-
-  // while(true) // remain here until told to break
-  // {
-  //   if(Serial.available() > 0) // did something come in?
-  //     if(Serial.read() == 'c') // is that something the char C?
-  //       break;
-  // }
 
   //   ============================ Print the Reverser values for the config .h file to the screen
  

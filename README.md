@@ -371,6 +371,9 @@ Note that once saved, they will be automatically restored at device startup. *If
 
 ## Change Log
 
+### v0.21
+- added alternate calculation for the THROTTLE_POT_NOTCH_VALUES in Read_Pot_Values2
+
 ### v0.20
 - fixed bug where it would not reliably go into notch 8
 - Created a new version of Read_Pot_Values (Read_Pot_Values2).  
