@@ -327,9 +327,9 @@ void loop() {
   Serial.println(" }");
 
   Serial.print("#define BRAKE_POT_VALUES { ");   
-  for (int i=0; i<6; i++) { 
+  for (int i=0; i<5; i++) { 
     Serial.print(alternateBrakeRangeValue[i]);
-    if (i<5) Serial.print(","); 
+    if (i<4) Serial.print(","); 
   }
   Serial.println(" }");
 
