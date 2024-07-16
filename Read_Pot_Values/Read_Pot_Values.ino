@@ -284,7 +284,7 @@ void loop() {
   printBreak();
 
   Serial.println();
-  Serial.println("Numbers for the config file.  Write/copy these numbers down in order. ");   
+  Serial.println("Numbers for the 'config_buttons.h' file.  Write/copy these numbers down in order. ");   
   Serial.println();
   Serial.print("#define THROTTLE_POT_NOTCH_VALUES { ");   
   for (int i=0; i<9; i++) { 
