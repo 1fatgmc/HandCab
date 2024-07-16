@@ -2,6 +2,7 @@
  // V. 24-06-17 
 
 #include "config.h"       
+#include "static.h"       
   
 // Define Pot pins:
 // These need to be defined in config.h    Copy and alter config_example.h as need to create config.h
@@ -40,10 +41,13 @@ int reverserLow = 0; // the lowest range value for the reverser pot.
 int reverserHigh = 0; // the highest range value for the reverser pot.
 int reverser10Percent = 0;
 
+int alternateReverserRangeValue[2] = {0,0};
+
 // Use the following numbers for the config file that shows the 5 divisions the brake range is divide into.
 
 int brakeRangeLow[6] = {0,0,0,0,0,0};  // the bottom range number for when brake is at position x.
 int brakeRangeHigh[6] = {0,0,0,0,0,0};  // the upper range number for when the brake is at position x.
+int alternateBrakeRangeValue[6] = {0,0,0,0,0,0};  // alternate calculation
 
 // Use the following numbers for the config file that shows the 3 divisions the reverser range is divide into.
 
@@ -224,6 +228,20 @@ void loop() {
   brakeRangeLow[5] = brakeRangeHigh[4] + 1;  // bottom range number when the brake is full on on (range 5).
   brakeRangeHigh[5] = brakeHigh;  // upper range number when the brake is full on (range 5).
 
+  // alternate calculations - should get the same result
+  int brakeRange = brakeHigh - brakeLow;
+  int previousStep = brakeLow;
+  int nextStep = 0;
+  for (int i=0;i<5;i++) {
+    if (i==0) {      
+      nextStep = previousStep + brakeRange*0.1;
+    } else {
+      nextStep = previousStep + brakeRange*0.2;
+    }
+    alternateBrakeRangeValue[i] = nextStep;
+    previousStep = nextStep;
+  }
+
   Serial.println();
   for (int i=0; i<6; i++) {
     Serial.print("Brake Range "); Serial.print(i); 
@@ -232,7 +250,7 @@ void loop() {
   }
       
   // ------------------------------------------------------------------
-  // Find Brake values for Config file
+  // Find Reverser values for Config file
  
   reverser10Percent = ((reverserHigh - reverserLow) * .1);
  
@@ -244,6 +262,11 @@ void loop() {
 
   forwardLow = neutralHigh +1;  // the lower range number for when in neutral.
   forwardHigh = (reverserHigh);  // the upper range number for when in neutral.
+
+  // alternate calulations
+  int reverserRange = reverserHigh - reverserLow;
+  alternateReverserRangeValue[0] = reverserLow + (reverserRange*.30);
+  alternateReverserRangeValue[1] = reverserLow + (reverserRange*.70);
 
   Serial.println();
   Serial.print("Reverser Reverse Low: "); Serial.print(reverseLow); Serial.print(" High: "); Serial.println(reverseHigh);
@@ -261,7 +284,7 @@ void loop() {
   printBreak();
 
   Serial.println();
-  Serial.println("Numbers for the config file.  Write/copy these numbers down in order. ");   
+  Serial.println("Numbers for the 'config_buttons.h' file.  Write/copy these numbers down in order. ");   
   Serial.println();
   Serial.print("#define THROTTLE_POT_NOTCH_VALUES { ");   
   for (int i=0; i<9; i++) { 
@@ -269,14 +292,6 @@ void loop() {
     if (i<8) Serial.print(","); 
   }
   Serial.println(" }");
-
-  Serial.print("alternate #define THROTTLE_POT_NOTCH_VALUES { ");   
-  for (int i=0; i<8; i++) { 
-    Serial.print(alternateNotchRangeValue[i]);
-    if (i<7) Serial.print(","); 
-  }
-  Serial.println(" }");
-
 
   //   ============================ Print the brake values for the config .h file to the screen
 
@@ -292,6 +307,40 @@ void loop() {
   Serial.print("#define REVERSER_POT_VALUES { ");
   Serial.print(neutralLow); Serial.print(","); Serial.print(neutralHigh);
   Serial.println(" }");
+
+  // ------------------------------------------------------------------
+  // alternate values
+
+  Serial.println();
+  Serial.println("OPTIONAL Alternate values");
+  Serial.println();
+  Serial.println("These give slightly different feel/response.");
+  Serial.println("If you use the recalibrate feature in HandCab then the");
+  Serial.println("these are the values that will be calculated.");
+  Serial.println();
+
+  Serial.print("#define THROTTLE_POT_NOTCH_VALUES { ");   
+  for (int i=0; i<8; i++) { 
+    Serial.print(alternateNotchRangeValue[i]);
+    if (i<7) Serial.print(","); 
+  }
+  Serial.println(" }");
+
+  Serial.print("#define BRAKE_POT_VALUES { ");   
+  for (int i=0; i<5; i++) { 
+    Serial.print(alternateBrakeRangeValue[i]);
+    if (i<4) Serial.print(","); 
+  }
+  Serial.println(" }");
+
+  Serial.print("#define REVERSER_POT_VALUES { ");   
+  for (int i=0; i<2; i++) { 
+    Serial.print(alternateReverserRangeValue[i]);
+    if (i<1) Serial.print(","); 
+  }
+  Serial.println(" }");
+
+  // ------------------------------------------------------------------
 
   Serial.println();
   Serial.print("Enter 'c' to continue");
