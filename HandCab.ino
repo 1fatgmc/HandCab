@@ -36,6 +36,7 @@
  #define debug_println(...)
  #define debug_printf(...)
 #endif
+int debugLevel = DEBUG_LEVEL;
 
 // *********************************************************************************
 
@@ -884,7 +885,7 @@ void browseWitService() {
   
   } else {
     debug_print(noOfWitServices);  debug_println(MSG_SERVICES_FOUND);
-    clearOledArray(); oledText[1] = MSG_SERVICES_FOUND;
+    clearOledArray(); oledText[4] = MSG_SERVICES_FOUND;
 
     for (int i = 0; i < foundWitServersCount; ++i) {
       // Print details for each service found
@@ -932,6 +933,7 @@ void connectWitServer() {
   wiThrottleProtocol.setDelegate(&myDelegate);
 #if WITHROTTLE_PROTOCOL_DEBUG == 0
   wiThrottleProtocol.setLogStream(&Serial);
+  wiThrottleProtocol.setLogLevel(DEBUG_LEVEL);
 #endif
 
   debug_println("Connecting to the server...");
@@ -1335,7 +1337,7 @@ void throttlePot_loop(bool forceRead) {
           throttlePotTargetSpeed = 0;
         } else {// use the speed values element 1 less than the notch number
           throttlePotTargetSpeed = throttlePotNotchSpeeds[i-1];
-          debug_print("throttlePot_loop() notch: "); debug_print(i); debug_print(" - "); debug_println(avgPotValue);
+          if (debugLevel > 1) { debug_print("throttlePot_loop() notch: "); debug_print(i); debug_print(" - "); debug_println(avgPotValue); }
         } 
         throttlePotNotch = i;
         break;
@@ -1344,12 +1346,12 @@ void throttlePot_loop(bool forceRead) {
     if (throttlePotNotch == -99) { //didn't find it, so it must be above the last element in the pot values
       throttlePotNotch = noElements;
       throttlePotTargetSpeed = throttlePotNotchSpeeds[noElements-1];
-      debug_print("throttlePot_loop() above max: setting notch: "); debug_print(throttlePotNotch); debug_print(" - ");  debug_println(avgPotValue);
+      if (debugLevel > 1) { debug_print("throttlePot_loop() above max: setting notch: "); debug_print(throttlePotNotch); debug_print(" - ");  debug_println(avgPotValue); }
     }
-    debug_print("throttlePot_loop() current notch: "); debug_print(currentThrottlePotNotch); debug_print(" new: "); debug_println(throttlePotNotch);
+    if(debugLevel > 1) { debug_print("throttlePot_loop() current notch: "); debug_print(currentThrottlePotNotch); debug_print(" new: "); debug_println(throttlePotNotch); }
     if ( (throttlePotNotch!=currentThrottlePotNotch) 
     || (forceRead) ) {
-         debug_print("throttlePot_loop() changing speed to: ");   debug_println(throttlePotTargetSpeed);
+         if(DEBUG_LEVEL>0) { debug_print("throttlePot_loop() request changing speed to: ");   debug_println(throttlePotTargetSpeed); }
           targetSpeed = throttlePotTargetSpeed;
           targetSpeedAndDirectionOverride();
           if (!forceRead) startMomentumTimerMillis = millis(); // don't reset the timer on a forced read
@@ -1494,8 +1496,10 @@ void speedAdjust_loop() {
   if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(0)) > 0) {
     int changeAmount = 0;
     if (currentSpeed!=targetSpeed) {
-      debug_print("speedAdjust_loop() target: "); debug_print(targetSpeed);
-      debug_print(" current: "); debug_println(currentSpeed);
+      if (debugLevel>1) {
+        debug_print("speedAdjust_loop() requested change: target: "); debug_print(targetSpeed);
+        debug_print(" current: "); debug_println(currentSpeed);
+      }
       if (currentSpeed>targetSpeed) {  // need to brake
         if (millis() - startMomentumTimerMillis >= currentBrakeDelayTime) {   // Check to see if the delay period has elasped.
           changeAmount = -1 * DCC_SPEED_CHANGE_AMOUNT;
@@ -1510,6 +1514,10 @@ void speedAdjust_loop() {
         }
       }
       if (changeAmount!=0) {  
+        if (debugLevel>0) {
+          debug_print("speedAdjust_loop() actually changing speed: target: "); debug_print(targetSpeed);
+          debug_print(" current: "); debug_println(currentSpeed);
+        }
         startMomentumTimerMillis = millis(); //restart timer
         speedSet(currentSpeed + changeAmount);
       }
@@ -1623,7 +1631,7 @@ void additionalButtonLoop() {
               }
             }
           } else {
-            debug_print("Additional Button Released: "); debug_print(i); debug_print(" pin:"); debug_print(additionalButtonPin[i]); debug_print(" action:"); debug_println(additionalButtonActions[i]); 
+            if (debugLevel > 1) { debug_print("Additional Button Released: "); debug_print(i); debug_print(" pin:"); debug_print(additionalButtonPin[i]); debug_print(" action:"); debug_println(additionalButtonActions[i]); }
             if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar) > 0) { // only process if there are locos aquired
               doDirectAdditionalButtonCommand(i,false);
             } else { // check for actions not releted to a loco
@@ -2505,7 +2513,7 @@ void speedEstop() {
   eStopEngaged = true;
   currentSpeed = 0;
   targetSpeed = 0;
-  wiThrottleProtocol.emergencyStop();
+  wiThrottleProtocol.emergencyStop(getMultiThrottleChar(0));
   debug_println("Speed EStop"); 
   writeOledSpeed();
 }
@@ -2514,7 +2522,7 @@ void speedEstopCurrentLoco() {
   eStopEngaged = true;
   targetSpeed = 0;
   currentSpeed = 0;
-  wiThrottleProtocol.emergencyStop();
+  wiThrottleProtocol.emergencyStop(getMultiThrottleChar(0));
   debug_println("Speed EStop Curent Loco"); 
   writeOledSpeed();
 }

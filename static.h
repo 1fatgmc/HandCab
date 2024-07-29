@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "v0.21";
+const String appVersion = "v0.22";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -545,6 +545,9 @@ const char ssidPasswordBlankChar = 164;
 
 #ifndef WITHROTTLE_PROTOCOL_DEBUG
   #define WITHROTTLE_PROTOCOL_DEBUG   1
+#endif
+#ifndef DEBUG_LEVEL
+  #define DEBUG_LEVEL   1
 #endif
 
 // *******************************************************************************************************************
