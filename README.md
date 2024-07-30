@@ -2,7 +2,7 @@
  ---
 ##   NOTE/WARNING:  Since the HandCab and software is relatively new you should check back for updates on the HandCab and Read_Pot_Values software/sketches and for any hardware changes.
 
-  ## * 24-07-29 HandCab v0.22 (Correct E-Stop) ---- * 24-07-29 HandCab v0.23 (E-Stop/Library)
+  ### * 24-07-29 HandCab v0.22 (Correct E-Stop) ---- * 24-07-29 HandCab v0.23 (E-Stop/Library)
 
 A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, DCC-EX  EX-CommandStation and many others) using the WiThrottle protocol to control DCC model trains.  HandCab uses 3 potentiometers (50K) for the throttle, brake and reverser controls and is modelled after a GP7/9 'barrel' control stand.  
 
