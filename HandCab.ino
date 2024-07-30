@@ -2513,7 +2513,7 @@ void speedEstop() {
   eStopEngaged = true;
   currentSpeed = 0;
   targetSpeed = 0;
-  wiThrottleProtocol.emergencyStop(getMultiThrottleChar(0));
+  wiThrottleProtocol.emergencyStop();
   debug_println("Speed EStop"); 
   writeOledSpeed();
 }

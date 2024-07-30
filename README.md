@@ -94,7 +94,7 @@ Required Components
     * *U8g2lib.h* -  Search for "U8g2".   Install version 2.34.22
     * *AiEsp32RotaryEncoder.h* - search for "Ai Esp32 Rotary Encoder".  Install Version 1.6
     * *Keypad.h* - Search for "Keypad" by Mark Stanley.   Install version 3.1.1
-    * *WiThrottleProtocol.h* - Search for "WiThrottleProtocol" (not "WiThrottle").  Install version 1.1.19 or later if available
+    * *WiThrottleProtocol.h* - Search for "WiThrottleProtocol" (not "WiThrottle").  Install version 1.1.20 or later if available
     
       Note: <br/> **DO NOT** download these libraries *directly*. Use the *Library Manager*. <br/> **DO NOT** put them in the WiTcontroller folder.
 5.  These should have been automatically installed when you downloaded the esp32 boards. YOU SHOULD NOT NEED TO DO ANYTHING SPECIFIC TO GET THESE 
@@ -144,6 +144,7 @@ You can have four saved ones.
      * If there are problems go to the DCC-EX website (https://discord.com/invite/PuPnNMp8Qf) and go to the 'wifi-throttles' section and post.  Peter A, myself (Sumner) or someone will try and help you.
 
 Notes: 
+   * HandCab version 0.23 or later requires WiThrottleProtocol version 1.1.20 or later.
    * HandCab version 0.22 or later requires WiThrottleProtocol version 1.1.19 or later.
    * HandCab version 0.01 or later requires WiThrottleProtocol version 1.1.14 or later.
    * The *WiFi.h* and *ESPmDNS.h* libraries were automatically installed for me when I installed the esp32 boards, however you may need to install them manually.
