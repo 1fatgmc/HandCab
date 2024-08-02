@@ -109,7 +109,9 @@ You can have four saved ones.
      * I have my network and password shown.  Change it to yours unless you are using JMRI also and it might then work.
      * Save the file.
  
-7.  Upload the Read_Pot_Values program/sketch.
+7.  Upload the Read_Pot_Values program/sketch.r.
+     * NOTE:  The pos/neg wires on the 'throttle' pot are wired opposite to how they are on the 'brake' & 'reverser' pots (very important)..
+     * When you run the Read_Pot_Values sketch the 'throttle' is off (notch 0) when all the way to the right detent.  The 'brake' & 'reverser' handles should start all the way to the left, opposite of the 'throttle.
      * Connect the ESP32 via USB to your computer.
      * The Read_Pot_Values software/sketch is in the Read_Pot_Values folder.  
        * Open the folder and run  Read_Pot_Values.INO       
