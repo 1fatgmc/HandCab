@@ -61,6 +61,7 @@ bool oledTextInvert[18] = {false, false, false, false, false, false, false, fals
 int currentSpeed;
 Direction currentDirection;
 // int speedStepCurrentMultiplier = 1;
+int currentSpeedStepsMode = 1;  // 1 = 128step, 2 = 28step, 4 = 27step or 8 = 14step
 
 TrackPower trackPower = PowerUnknown;
 String turnoutPrefix = "";
@@ -74,7 +75,6 @@ int lastEncoderValue = 0;
 // throttle pot values
 bool useRotaryEncoderForThrottle = false; // TODO: no longer needed - need to remove references to this
 int throttlePotPin = THROTTLE_POT_PIN;
-bool throttlePotUseNotches = THROTTLE_POT_USE_NOTCHES;
 int throttlePotNotchValues[] = THROTTLE_POT_NOTCH_VALUES; 
 int throttlePotNotchSpeeds[] = THROTTLE_POT_NOTCH_SPEEDS;
 int throttlePotNotch = 0;
@@ -394,7 +394,7 @@ class MyDelegate : public WiThrottleProtocolDelegate {
       }
     }
     void receivedSpeedMultiThrottle(char multiThrottle, int speed) {             // Vnnn
-      debug_print("Received Speed: ("); debug_print(millis()); debug_print(") throttle: "); debug_print(multiThrottle);  debug_print(" speed: "); debug_println(speed); 
+      debug_print("Received Speed: ("); debug_print(multiThrottle); debug_print(" : "); debug_print(millis()); debug_print(") throttle: "); debug_print(multiThrottle);  debug_print(" speed: "); debug_println(speed); 
       int multiThrottleIndex = getMultiThrottleIndex(multiThrottle);
 
       if (currentSpeed != speed) {
@@ -410,8 +410,12 @@ class MyDelegate : public WiThrottleProtocolDelegate {
         }
       }
     }
+    void receivedSpeedStepsMultiThrottle(char multiThrottle, int steps) {
+       debug_print("Received Speed Steps Mode: "); debug_print(multiThrottle); debug_print(" : "); debug_println(steps); 
+      currentSpeedStepsMode = steps;
+    }
     void receivedDirectionMultiThrottle(char multiThrottle, Direction dir) {     // R{0,1}
-      debug_print("Received Direction: "); debug_println(dir); 
+      debug_print("Received Direction: "); debug_print(multiThrottle); debug_print(" : "); debug_println(dir); 
       // int multiThrottleIndex = getMultiThrottleIndex(multiThrottle);
 
       if (currentDirection != dir) {
@@ -420,7 +424,7 @@ class MyDelegate : public WiThrottleProtocolDelegate {
       }
     }
     void receivedFunctionStateMultiThrottle(char multiThrottle, uint8_t func, bool state) { 
-      debug_print("Received Fn: "); debug_print(func); debug_print(" State: "); debug_println( (state) ? "True" : "False" );
+      debug_print("Received Function: "); debug_print(multiThrottle); debug_print(" Fn: "); debug_print(func); debug_print(" State: "); debug_println( (state) ? "True" : "False" );
       // int multiThrottleIndex = getMultiThrottleIndex(multiThrottle);
 
       if (functionStates[func] != state) {
@@ -429,7 +433,7 @@ class MyDelegate : public WiThrottleProtocolDelegate {
       }
     }
     void receivedRosterFunctionListMultiThrottle(char multiThrottle, String functions[MAX_FUNCTIONS]) { 
-      debug_println("Received Fn List: "); 
+      debug_print("Received Fn List: "); debug_println(multiThrottle); 
       // int multiThrottleIndex = getMultiThrottleIndex(multiThrottle);
 
       for(int i = 0; i < MAX_FUNCTIONS; i++) {
@@ -1659,11 +1663,13 @@ void batteryTest_loop() {
 #if USE_BATTERY_TEST
   if(millis()-lastBatteryCheckTime>10000) {
     lastBatteryCheckTime = millis();
-    // debug_print("battery pin: "); debug_print(BATTERY_TEST_PIN);
-    // debug_print("  battery pin Value: "); debug_println(analogRead(batteryTestPin));  //Reads the analog value on the throttle pin.
+    if (debugLevel > 1) { 
+      debug_print("battery pin: "); debug_print(BATTERY_TEST_PIN);
+      debug_print("  battery pin Value: "); debug_println(analogRead(BATTERY_TEST_PIN));  //Reads the analog value on the throttle pin.
+    }
     int batteryTestValue = BL.getBatteryChargeLevel();
     
-    // debug_print("batteryTestValue: "); debug_println(batteryTestValue); 
+    if (debugLevel > 1) { debug_print("batteryTestValue: "); debug_println(batteryTestValue); }
 
     if (batteryTestValue!=lastBatteryTestValue) { 
       lastBatteryTestValue = BL.getBatteryChargeLevel();
@@ -2307,7 +2313,8 @@ void doMenu() {
           debug_print("add Loco: "); debug_println(loco);
           wiThrottleProtocol.addLocomotive('0', loco);
           wiThrottleProtocol.getDirection('0', loco);
-          wiThrottleProtocol.getSpeed();
+          wiThrottleProtocol.getSpeed('0');
+          wiThrottleProtocol.getSpeedSteps('0');
           resetFunctionStates();
           writeOledSpeed();
         } else {
@@ -2423,6 +2430,11 @@ void doMenu() {
                 } else {
                   connectWitServer();
                 }
+                break;
+              }
+            case EXTRA_MENU_CHAR_SPEED_STEP_TOGGLE: {
+                toggleSpeedStepMode(); 
+                writeOledSpeed();
                 break;
               }
             case EXTRA_MENU_CHAR_OFF_SLEEP:
@@ -2681,6 +2693,17 @@ void toggleAccelerationDelayTime() {
   }
   currentAccellerationDelayTimeIndex = newIndex;
   currentAccellerationDelayTime = accellerationDelayTimes[newIndex];
+  refreshOled();
+}
+
+void toggleSpeedStepMode() {
+  debug_println("toggleSpeedStepMode(): "); 
+  if (currentSpeedStepsMode==1) {
+    currentSpeedStepsMode = 2;
+  } else {
+    currentSpeedStepsMode = 1;
+  }
+  wiThrottleProtocol.setSpeedSteps(getMultiThrottleChar(0), currentSpeedStepsMode);
   refreshOled();
 }
 
@@ -3291,7 +3314,7 @@ void writeOledMenu(String soFar) {
         }
       case MENU_ITEM_EXTRAS: { // extra menu
           writeOledExtraSubMenu();
-          drawTopLine = true;
+          drawTopLine = false;
           break;
         }
     }
@@ -3304,10 +3327,11 @@ void writeOledExtraSubMenu() {
   lastOledScreen = last_oled_screen_extra_submenu;
 
   int j = 0;
-  for (int i=0; i<8; i++) {
-    j = (i<4) ? i : i+2;
-    oledText[j+1] = (extraSubMenuText[i].length()==0) ? "" : String(i) + ": " + extraSubMenuText[i];
+  for (int i=1; i<10; i++) {
+    j = (i<6) ? i : i+1;
+    oledText[j-1] = (extraSubMenuText[i].length()==0) ? "" : String(i) + ": " + extraSubMenuText[i];
   }
+
 }
 
 void writeOledAllLocos(bool hideLeadLoco) {
@@ -3459,6 +3483,7 @@ void writeOledSpeed() {
   }
 
   writeOledBattery();
+  writeOledSpeedStepMode();
 
   // track power
   if (trackPower == PowerOn) {
@@ -3494,6 +3519,14 @@ void writeOledSpeed() {
   u8g2.sendBuffer();
 
   // debug_println("writeOledSpeed(): end");
+}
+
+void writeOledSpeedStepMode() {
+  if (currentSpeedStepsMode!=1) {   // only write it if it is not 128 steps (i.e value 1)
+    u8g2.setFont(FONT_GLYPHS);
+    u8g2.setDrawColor(1);
+    u8g2.drawGlyph(120, 31, glyph_128_step_mode);
+  }
 }
 
 void writeOledBattery() {

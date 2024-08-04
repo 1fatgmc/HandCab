@@ -1,5 +1,5 @@
 const String appName = "HandCab";
-const String appVersion = "v0.23";
+const String appVersion = "v0.24";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -250,6 +250,7 @@ const int glyph_target_direction_forward = 0x00d8;
 const int glyph_target_direction_neutral = 0x00d2;
 const int glyph_target_direction_reverse = 0x00d7;
 const int glyph_eStop = 0x0079;
+const int glyph_128_step_mode = 0x0103;
 
 #define SLEEP_REASON_COMMAND 0
 #define SLEEP_REASON_INACTIVITY 1
@@ -439,6 +440,9 @@ const int menuCharsRequired[15] = {  // 0=none effectively a direct command / 1=
 #ifndef EXTRA_MENU_TEXT_CHAR_TBA
    #define EXTRA_MENU_TEXT_CHAR_TBA                    "" 
 #endif
+#ifndef EXTRA_MENU_TEXT_CHAR_SPEED_STEP_TOGGLE
+   #define EXTRA_MENU_TEXT_CHAR_SPEED_STEP_TOGGLE      "Spd Step Tgl" 
+#endif
 #ifndef EXTRA_MENU_TEXT_CHAR_HEARTBEAT_TOGGLE
    #define EXTRA_MENU_TEXT_CHAR_HEARTBEAT_TOGGLE       "Heartbt Tgl"
 #endif
@@ -449,22 +453,24 @@ const int menuCharsRequired[15] = {  // 0=none effectively a direct command / 1=
    #define EXTRA_MENU_TEXT_CHAR_OFF_SLEEP              "OFF / Sleep"
 #endif
 
-const String extraSubMenuText[8] = { 
+const String extraSubMenuText[10] = { 
    EXTRA_MENU_TEXT_CHAR_FUNCTION_KEY_TOGGLE,      //0
    EXTRA_MENU_TEXT_CHAR_EDIT_CONSIST,             //1
    EXTRA_MENU_TEXT_CHAR_POT_VALUES,               //2
    EXTRA_MENU_TEXT_CHAR_HEARTBEAT_TOGGLE,         //3  
    EXTRA_MENU_TEXT_CHAR_THROTTLE_POT_VALUES,      //4
-   EXTRA_MENU_TEXT_CHAR_TBA,                      //5
+   EXTRA_MENU_TEXT_CHAR_SPEED_STEP_TOGGLE,        //5
    EXTRA_MENU_TEXT_CHAR_DISCONNECT,               //6
-   EXTRA_MENU_TEXT_CHAR_OFF_SLEEP };              //7
+   EXTRA_MENU_TEXT_CHAR_OFF_SLEEP,                //7
+   EXTRA_MENU_TEXT_CHAR_TBA,                      //8
+   EXTRA_MENU_TEXT_CHAR_TBA};                     //9
 
 #define EXTRA_MENU_CHAR_FUNCTION_KEY_TOGGLE    '0'
 #define EXTRA_MENU_CHAR_EDIT_CONSIST           '1'
 #define EXTRA_MENU_CHAR_POT_VALUES             '2'
 #define EXTRA_MENU_CHAR_HEARTBEAT_TOGGLE       '3'
 #define EXTRA_MENU_CHAR_THROTTLE_POT_VALUES    '4'
-#define EXTRA_MENU_CHAR_DECREASE_MAX_THROTTLES '5'  //TODO: remove
+#define EXTRA_MENU_CHAR_SPEED_STEP_TOGGLE      '5'
 #define EXTRA_MENU_CHAR_DISCONNECT             '6'
 #define EXTRA_MENU_CHAR_OFF_SLEEP              '7'
 #define EXTRA_MENU_CHAR_OFF_SLEEP_HIDDEN       '9'  // doesn't appear in the menu
@@ -733,9 +739,6 @@ const char ssidPasswordBlankChar = 164;
 
 #ifndef THROTTLE_POT_PIN
    #define THROTTLE_POT_PIN 39
-#endif
-#ifndef THROTTLE_POT_USE_NOTCHES
-   #define THROTTLE_POT_USE_NOTCHES true
 #endif
 #ifndef THROTTLE_POT_NOTCH_VALUES   
    #define THROTTLE_POT_NOTCH_VALUES {20,585,1170,1755,2340,2925,3510,4000}

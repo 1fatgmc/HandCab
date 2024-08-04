@@ -233,8 +233,12 @@ Notes:
   - 9 = Extras. Followed by...
       - 0 then \# to toggle the action the the \# key does as a direct action, either to show the direct action key definitions, or the Function labels.  
       - 1 to change the facing of locos in a consist.
-      - 3 to toggle the heartbeat check.- 6 then \# to Disconnect/Reconnect.  
-      - 4 (or 9) then \# to put into deep sleep
+      - 2 Show/Recalibrate POT values (see below)
+      - 3 to toggle the heartbeat check.
+      - 4 Show/Recalibrate throttle POT (see below)
+      - 5 128/28 speed step mode toggle (default is 128)
+      - 6 Disconnect/Reconnect.  
+      - 7 (or 9) to put into deep sleep
 Pressing '\*' again before the '\#' will terminate the current command (but not start a new command)
  - \# = Pressing # alone will show the function the the numbered keys (0-9) perform, outside the menu.
        Optionally, you can configure it so that the the Function labels from the roster show 
@@ -309,9 +313,9 @@ We recommend including a physical power switch to disconnect the battery as this
 Normally the pot values are set in config_buttons.h.  
 You can get the appropriate values using the **Read_Pot_Values** sketch.
 
-We have found that occasioanlly (for reasons we don't understand) the values can 'dift'.  If that happens you will notice that you may not be able to get into the lower or higher brake or reverser positions, or the Throttle notch is not the one you expect.
+We have found that occasionally (for reasons we don't understand) the values can 'drift'.  If that happens you will notice that you may not be able to get into the lower or higher brake or reverser positions, or the Throttle notch is not the one you expect.
 
-You can use the following feature to temporarily recalibrate the pots and, if you wish, to store the values to non-volatile memory so they will be automatically restored at startup.
+You can use the following feature to temporarily recalibrate the pots and, if you wish, to store the values to non-volatile memory so they will be automatically restored at start-up.
 
 #### To Temporarily Change the Brake values.
 
@@ -381,6 +385,11 @@ Note that once saved, they will be automatically restored at device startup. *If
 ---
 
 ## Change Log
+
+### v0.24
+- removed THROTTLE_POT_USE_NOTCHES references (left over from WiTcontroller)
+- Added an option to toggle the Speed Step Mode 128/28 steps
+  Now requires version 1.1.21 of the WiThrottleProtocol library.
 
 ### v0.22
 - Fix for the EStop not working correctly
