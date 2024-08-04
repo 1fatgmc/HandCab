@@ -2,7 +2,7 @@
  ---
 ##   NOTE/WARNING:  Since the HandCab and software is relatively new you should check back for updates on the HandCab and Read_Pot_Values software/sketches and for any hardware changes.
 
-# 24-07-29 Last Version update to correct E-Stop -- v 0.22
+  ### * 24-07-29 HandCab v0.22 (Correct E-Stop) ---- * 24-07-29 HandCab v0.23 (E-Stop/Library)
 
 A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, DCC-EX  EX-CommandStation and many others) using the WiThrottle protocol to control DCC model trains.  HandCab uses 3 potentiometers (50K) for the throttle, brake and reverser controls and is modelled after a GP7/9 'barrel' control stand.  
 
@@ -26,7 +26,9 @@ https://youtu.be/oAGohxnNBME
 
 2. Loading the code (sketch) requires downloading of one of the IDEs, this sketch, the libraries, etc. so some experience with Arduinos is helpful, but not critical.
 
-3. The HandCab Throttle along with most Android and Apple devices running supported throttle apps will work with any WiThrottle Server such as JMRI, DCC-EX, MRC WiFi, Digitrax LnWi, NCE (WiFi/DCC NCE Cab Bus Interface), TCS CS-105 (Using WiFiTrax WFD-30 or WFD-31)  and others.
+3. The HandCab Throttle along with most Android and Apple devices running supported throttle apps 'should' (please let me know if it doesn't work with one of the followin) work with any WiThrottle Server such as JMRI, DCC-EX, MRC WiFi, Digitrax LnWi, NCE (WiFi/DCC NCE Cab Bus Interface), TCS CS-105 (Using WiFiTrax WFD-30 or WFD-31)  and others..
+
+4. You should have your decoder in **128 speed step mode**.
 
 ---
 ## Building
@@ -109,7 +111,9 @@ You can have four saved ones.
      * I have my network and password shown.  Change it to yours unless you are using JMRI also and it might then work.
      * Save the file.
  
-7.  Upload the Read_Pot_Values program/sketch.
+7.  Upload the Read_Pot_Values program/sketch.r.
+     * **NOTE:** The pos/neg wires on the 'throttle' pot are wired opposite to how they are on the 'brake' & 'reverser' pots (very important)..
+     * **NOTE:** When you run the Read_Pot_Values sketch the 'throttle' is off (notch 0) when all the way to the right detent.  The 'brake' & 'reverser' handles should start all the way to the left, opposite of the 'throttle.
      * Connect the ESP32 via USB to your computer.
      * The Read_Pot_Values software/sketch is in the Read_Pot_Values folder.  
        * Open the folder and run  Read_Pot_Values.INO       
