@@ -286,29 +286,65 @@ Note: you need to edit config_buttons.h to alter these assignments   (copy confi
 
 TBA
 
-*To enable the battery monitor*, set the following to ``true``. The default is ``false``.
+#### USE_BATTERY_TEST
 
 ``#define USE_BATTERY_TEST true``
 
-*To set which pin to use.* The default is ``36``.
+*To enable the battery monitor*, set the following to ``true``. The default is ``false``.
+
+#### BATTERY_TEST_PIN
 
 ``#define BATTERY_TEST_PIN 36``
 
-If the battery does not show 100% when plugged into the charger, you may need to adjust this value. The default is ``1.7``.
+*To set which pin to use.* The default is ``36``.
+
+#### BATTERY_CONVERSION_FACTOR
 
 ``#define BATTERY_CONVERSION_FACTOR 1.7``
 
-*To show the calculated percentage*, set the following to ``true`` The default is ``false``.
+If the battery does not show 100% when plugged into the charger, you may need to adjust this value. The default is ``1.7``.
+
+    To help work out the correct BATTERY_CONVERSION_FACTOR, you can enable so serial monitor message that will assist.
+
+    In your ``config_buttons.h`` add (or uncomment) these defines:
+    
+      #define WITCONTROLLER_DEBUG    0
+      #define DEBUG_LEVEL   2
+
+    DEBUG_LEVEL must be 2 or greater
+
+    a) Make sure your battery is fully charged.
+    b) Upload the code and open the serial monitor. 
+    c) Wait. Don't connect.
+    You will see lines like...
+
+      BATTERY TestValue: 100 (10003)
+      BATTERY lastAnalogReadValue: 2491 (10003)
+      BATTERY If Battery full, BATTERY_CONVERSION_FACTOR should be: 1.69 (10014)
+
+    Let it run for a while.
+    d) Note one of the recommend values (it will vary a bit) and enter it into the define in your config_buttons.h
+    e) Re-upload code and connect to a server
+    f) Confirm that the battery reads 100% (repeat if not)
+    g) Run the HandCab on battery for few hours and confirm the battery level is droping at an expected rate. (adjust the conversion factor if not.)
+
+#### USE_BATTERY_PERCENT_AS_WELL_AS_ICON
 
 ``#define USE_BATTERY_PERCENT_AS_WELL_AS_ICON true``
 
-*To force the HandCab to go to sleep at a specific level*, set this value. (e.g. to 3 or 5.) A value of less than zero (e.g. -1) will disable the feature. By default it is disabled (-1).
+*To show the calculated percentage*, set the following to ``true`` The default is ``false``.
+
+#### USE_BATTERY_SLEEP_AT_PERCENT
 
 ``#define USE_BATTERY_SLEEP_AT_PERCENT 3``
 
-The display of the battery can be temporarily toggled by setting a key or button to ``SHOW_HIDE_BATTERY``.  The display will cycle between none, icon only and icon plus percent value. Note that ``USE_BATTERY_TEST`` must be set to `true` for this to have any effect.
+*To force the HandCab to go to sleep at a specific level*, set this value. (e.g. to 3 or 5.) A value of less than zero (e.g. -1) will disable the feature. By default it is disabled (-1).
 
-We recommend including a physical power switch to disconnect the battery as this feature will continually drain the battery, even when not being used.
+#### Battery Test Notes
+
+* The display of the battery can be temporarily toggled by setting a key or button to ``SHOW_HIDE_BATTERY``.  The display will cycle between none, icon only and icon plus percent value. Note that ``USE_BATTERY_TEST`` must be set to `true` for this to have any effect.
+
+* We recommend including a physical power switch to disconnect the battery as this feature will, slowly, continually drain the battery, even when not being used.
 
 ---
 
@@ -370,7 +406,7 @@ The values shown as a result of this process can be used instead of using the Re
 
 #### Starting again and clearing the non-volatile memory
 
-If you wish to start the temporary recalibartion again.
+If you wish to start the temporary recalibration again.
 
 1. Open the 'potentiometer Values' screen via the menu `#` -> `9` -> `2` 
 2. Press `#`
@@ -389,6 +425,9 @@ Note that once saved, they will be automatically restored at device startup. *If
 ---
 
 ## Change Log
+
+### v0.25
+- added code to help work out the BATTERY_CONVERSION_FACTOR
 
 ### v0.24
 - removed THROTTLE_POT_USE_NOTCHES references (left over from WiTcontroller)

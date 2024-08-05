@@ -315,8 +315,10 @@
 
 // *******************************************************************************************************************
 // Battery Test
-// To use a battery test
-// set USE_BATTERY_SLEEP_AT_PERCENT to a value less than zero e.g. -1) to disable the automatic sleep
+// To use a battery test. See details in the readme
+//
+// To disable the automatic sleep, set USE_BATTERY_SLEEP_AT_PERCENT to a value less than zero e.g. -1)
+//
 // #define USE_BATTERY_TEST true
 // #define BATTERY_TEST_PIN 36
 // #define BATTERY_CONVERSION_FACTOR 1.7

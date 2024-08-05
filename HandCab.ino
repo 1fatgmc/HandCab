@@ -147,6 +147,7 @@ bool useBatteryTest = USE_BATTERY_TEST;
 #endif
 bool useBatteryPercentAsWellAsIcon = USE_BATTERY_PERCENT_AS_WELL_AS_ICON;
 int lastBatteryTestValue = 0; 
+int lastBatteryAnalogReadValue = 0;
 double lastBatteryCheckTime = 0;
 #if USE_BATTERY_TEST
  Pangodream_18650_CL BL(BATTERY_TEST_PIN,BATTERY_CONVERSION_FACTOR);
@@ -1664,15 +1665,22 @@ void batteryTest_loop() {
   if(millis()-lastBatteryCheckTime>10000) {
     lastBatteryCheckTime = millis();
     if (debugLevel > 1) { 
-      debug_print("battery pin: "); debug_print(BATTERY_TEST_PIN);
-      debug_print("  battery pin Value: "); debug_println(analogRead(BATTERY_TEST_PIN));  //Reads the analog value on the throttle pin.
+      debug_print("BATTERY pin: "); debug_print(BATTERY_TEST_PIN);
+      debug_print("BATTERY pin Value: "); debug_println(analogRead(BATTERY_TEST_PIN));  //Reads the analog value on the throttle pin.
     }
     int batteryTestValue = BL.getBatteryChargeLevel();
-    
-    if (debugLevel > 1) { debug_print("batteryTestValue: "); debug_println(batteryTestValue); }
+    lastBatteryAnalogReadValue = BL.getLastAnalogReadValue();
+
+    if (debugLevel > 1) { 
+      debug_print("BATTERY TestValue: "); debug_println(batteryTestValue); 
+      debug_print("BATTERY lastAnalogReadValue: "); debug_println(lastBatteryAnalogReadValue); 
+      double analogValue = lastBatteryAnalogReadValue;
+      analogValue = 4.2 / analogValue * 1000;
+      debug_print("BATTERY If Battery full, BATTERY_CONVERSION_FACTOR should be: "); debug_println(analogValue); 
+    }
 
     if (batteryTestValue!=lastBatteryTestValue) { 
-      lastBatteryTestValue = BL.getBatteryChargeLevel();
+      lastBatteryTestValue = batteryTestValue;
       if ( (keypadUseType==KEYPAD_USE_OPERATION) && (!menuIsShowing)) {
         writeOledSpeed();
       }

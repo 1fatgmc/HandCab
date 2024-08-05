@@ -1,5 +1,12 @@
+//
+// DO NOT alter this file
+//
+// If you need to alter/override one of the defines in here, 
+// do so in config_buttons.h  NOT HERE
+//
+
 const String appName = "HandCab";
-const String appVersion = "v0.24";
+const String appVersion = "v0.25";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"

@@ -1,4 +1,11 @@
-///Keypad + encoder + oLed config
+//
+// DO NOT alter this file
+// 
+// If you need to alter/override one of the defines in here, 
+// do so in config_buttons.h  NOT HERE
+//
+
+//Keypad + encoder + oLed config
 
 // *******************************************************************************************************************
 // encoder
