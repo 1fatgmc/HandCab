@@ -350,7 +350,7 @@ If the battery does not show 100% when plugged into the charger, you may need to
 
 ### Instructions for temporarily changing the pot values
 
-Normally the pot values are set in config_buttons.h.  
+Normally the pot values are set in ``config_buttons.h``.  
 You can get the appropriate values using the **Read_Pot_Values** sketch.
 
 We have found that occasionally (for reasons we don't understand) the values can 'drift'.  If that happens you will notice that you may not be able to get into the lower or higher brake or reverser positions, or the Throttle notch is not the one you expect.
@@ -387,7 +387,7 @@ The values shown as a result of this process can be used instead of using the Re
 3. Move the Reverser pot (lever) back and forwards several times
 4. press `9` to temporarily set the values it has discovered to be used for the current session (till you turn the device)
 
-The values shown as a result of this process can be used instead of using the Read_Pot_Values sketch and added into config_buttons.h. The values will be similar.
+The values shown as a result of this process can be used instead of using the **Read_Pot_Values** sketch and added into ``config_buttons.h``. The values will be similar.
 
 #### To Temporarily change the Throttle values.
 
@@ -396,13 +396,13 @@ The values shown as a result of this process can be used instead of using the Re
 3. press `0` 
 4. Move the Throttle pot (lever) to the second notch (throttle one)
 5. press `1` 
-... repeat for the reamining positions (2 to 8)
+... repeat for the remaining positions (2 to 8)
 
    The proposed values will be shown in the right side of the screen.
 
 6. Press '9' to temporarily set the values it has discovered to be used for the current session (till you turn the device)
 
-The values shown as a result of this process can be used instead of using the Read_Pot_Values sketch and added into config_buttons.h. The values will be similar.
+The values shown as a result of this process can be used instead of using the **Read_Pot_Values** sketch and added into ``config_buttons.h``. The values will be similar, but may not be identical.
 
 #### Starting again and clearing the non-volatile memory
 
@@ -411,14 +411,18 @@ If you wish to start the temporary recalibration again.
 1. Open the 'potentiometer Values' screen via the menu `#` -> `9` -> `2` 
 2. Press `#`
 
-**Note that this also clears the values from non-volatile memory.**
+    **Note that this also clears all the values from non-volatile memory.**
 
 #### Saving the values to non-volatile memory
 
 1. Open the 'potentiometer Values' screen via the menu `#` -> `9` -> `2` 
 2. Press `8` to save the values to non-volatile memory
 
-Note that once saved, they will be automatically restored at device startup. *If you no longer wish them to be restored at startup you must clear the values from non-volatile memory (see above).*
+#### Notes 
+
+  * **Once saved, these 'temporary' values will be automatically restored at device startup.**
+
+  * **<span style="color:red;">If you no longer wish them to be restored at startup you must clear the values from non-volatile memory (see above).</span>**
 
 
 ---
@@ -427,10 +431,10 @@ Note that once saved, they will be automatically restored at device startup. *If
 ## Change Log
 
 ### v0.25
-- added code to help work out the BATTERY_CONVERSION_FACTOR
+- Added code to help work out the BATTERY_CONVERSION_FACTOR
 
 ### v0.24
-- removed THROTTLE_POT_USE_NOTCHES references (left over from WiTcontroller)
+- Removed THROTTLE_POT_USE_NOTCHES references (left over from WiTcontroller)
 - Added an option to toggle the Speed Step Mode 128/28 steps
   Now requires version 1.1.21 of the WiThrottleProtocol library.
 
@@ -440,7 +444,7 @@ Note that once saved, they will be automatically restored at device startup. *If
   Now requires version 1.1.19 of the WiThrottleProtocol library.
 
 ### v0.21
-- added alternate calculation for the THROTTLE_POT_NOTCH_VALUES in Read_Pot_Values2
+- Added alternate calculation for the THROTTLE_POT_NOTCH_VALUES in Read_Pot_Values2
 
 ### v0.20
 - fixed bug where it would not reliably go into notch 8
