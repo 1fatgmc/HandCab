@@ -7,14 +7,24 @@
   - Flash the sketch 
  */
 
+// Use the Arduino IDE 'Boards' Manager to get these libraries
+// They will be installed with the 'ESP32' Board library
+// DO NOT DOWNLOAD THEM DIRECTLY!!!
 #include <WiFi.h>                 // https://github.com/espressif/arduino-esp32/tree/master/libraries/WiFi     GPL 2.1
-#include <ESPmDNS.h>              // https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS (You should be able to download it from here https://github.com/espressif/arduino-esp32 Then unzip it and copy 'just' the ESPmDNS folder to your own libraries folder )
+#include <ESPmDNS.h>              // https://github.com/espressif/arduino-esp32/blob/master/libraries/ESPmDNS  GPL 2.1
+
+// ----------------------
+
 #include <Preferences.h>
+
+// use the Arduino IDE 'Library' Manager to get these libraries
 #include <WiThrottleProtocol.h>   // https://github.com/flash62au/WiThrottleProtocol                           Creative Commons 4.0  Attribution-ShareAlike
 #include <AiEsp32RotaryEncoder.h> // https://github.com/igorantolic/ai-esp32-rotary-encoder                    GPL 2.0
 #include <Keypad.h>               // https://www.arduinolibraries.info/libraries/keypad                        GPL 3.0
 #include <U8g2lib.h>              // https://github.com/olikraus/u8g2  (Just get "U8g2" via the Arduino IDE Library Manager)   new-bsd
 #include <string>
+
+// ----------------------
 
 #include "Pangodream_18650_CL.h"  // https://github.com/pangodream/18650CL  
 
@@ -248,7 +258,7 @@ char currentThrottleIndexChar = '0';
 
 int heartBeatPeriod = 10; // default to 10 seconds
 long lastServerResponseTime;  // seconds since start of Arduino
-boolean heartbeatCheckEnabled = true;
+boolean heartbeatCheckEnabled = HEARTBEAT_ENABLED;
 
 // used to stop speed bounces
 long lastSpeedSentTime = 0;
@@ -969,6 +979,9 @@ void connectWitServer() {
     wiThrottleProtocol.setDeviceName(deviceName);  
     wiThrottleProtocol.setDeviceID(String(deviceId));  
     wiThrottleProtocol.setCommandsNeedLeadingCrLf(commandsNeedLeadingCrLf);
+    if (HEARTBEAT_ENABLED) {
+      wiThrottleProtocol.requireHeartbeat(true);
+    }
 
     witConnectionState = CONNECTION_STATE_CONNECTED;
     setLastServerResponseTime(true);
@@ -1175,7 +1188,7 @@ void clearPreferences() {
 // *********************************************************************************
 
 AiEsp32RotaryEncoder rotaryEncoder = AiEsp32RotaryEncoder(ROTARY_ENCODER_A_PIN, ROTARY_ENCODER_B_PIN, ROTARY_ENCODER_BUTTON_PIN, ROTARY_ENCODER_VCC_PIN, ROTARY_ENCODER_STEPS);
-void IRAM_ATTR readEncoderISR() {
+void IRAM_ATTR readEncoderISR(void) {
   rotaryEncoder.readEncoder_ISR();
 }
 
@@ -1304,8 +1317,8 @@ void throttlePot_loop(bool forceRead) {
 
   // Read the throttle pot to see what notch it is on.
   int currentThrottlePotNotch = throttlePotNotch;
-  int potValue = ( analogRead(throttlePotPin) );  //Reads the analog value on the throttle pin.
-  potValue = ( analogRead(throttlePotPin) );  //Reads the analog value on the throttle pin.
+  int potValue = analogRead(throttlePotPin);  //Reads the analog value on the throttle pin.
+  potValue = analogRead(throttlePotPin);  //Reads the analog value on the throttle pin.
 
   // average out the last x values from the pot
   int noElements = sizeof(lastThrottlePotValues) / sizeof(lastThrottlePotValues[0]);
@@ -2720,8 +2733,10 @@ void toggleHeartbeatCheck() {
   debug_print("Heartbeat Check: "); 
   if (heartbeatCheckEnabled) {
     debug_println("Enabled");
+    wiThrottleProtocol.requireHeartbeat(true);
   } else {
     debug_println("Disabled");
+    wiThrottleProtocol.requireHeartbeat(false);
   }
   writeHeartbeatCheck();
 }
@@ -2875,7 +2890,7 @@ void setLastServerResponseTime(bool force) {
 }
 
 void checkForShutdownOnNoResponse() {
-  if (millis()-startWaitForSelection > 240000) {  // 4 minutes
+  if (millis()-startWaitForSelection > MAX_HEARTBEAT_PERIOD) {  // default is 4 minutes
       debug_println("Waited too long for a selection. Shutting down");
       deepSleepStart();
   }

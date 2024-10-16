@@ -327,3 +327,12 @@
 
 // ********************************** End of config_buttons **********************************************************
 
+// ********************************************************************************************
+// Heartbeat 
+
+// if no response is received from the server in the specified period (milliseconds), shut down.
+// default is 4 minutes = 240000
+// #define MAX_HEARTBEAT_PERIOD 240000
+
+// enable heartbeat by default.  Can be turned on or off in the menus
+// #define HEARTBEAT_ENABLED true 

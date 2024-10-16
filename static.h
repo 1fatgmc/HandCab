@@ -6,7 +6,7 @@
 //
 
 const String appName = "HandCab";
-const String appVersion = "v0.25";
+const String appVersion = "v0.26";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -808,4 +808,16 @@ const char ssidPasswordBlankChar = 164;
   #define ESPMDNS_IP_ATTRIBUTE_NAME MDNS.IP(i)
 #else
   #define ESPMDNS_IP_ATTRIBUTE_NAME MDNS.address(i)
+#endif
+
+// ***************************************************
+// Heartbeat 
+
+// max period 
+#ifndef MAX_HEARTBEAT_PERIOD
+   #define MAX_HEARTBEAT_PERIOD 240000
+#endif
+
+#ifndef HEARTBEAT_ENABLED
+   #define HEARTBEAT_ENABLED true
 #endif

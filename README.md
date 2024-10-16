@@ -148,6 +148,7 @@ You can have four saved ones.
      * If there are problems go to the DCC-EX website (https://discord.com/invite/PuPnNMp8Qf) and go to the 'wifi-throttles' section and post.  Peter A, myself (Sumner) or someone will try and help you.
 
 Notes: 
+   * HandCab version 0.26 or later requires WiThrottleProtocol version 1.1.25 or later.
    * HandCab version 0.23 or later requires WiThrottleProtocol version 1.1.20 or later.
    * HandCab version 0.22 or later requires WiThrottleProtocol version 1.1.19 or later.
    * HandCab version 0.01 or later requires WiThrottleProtocol version 1.1.14 or later.
@@ -429,6 +430,11 @@ If you wish to start the temporary recalibration again.
 ---
 
 ## Change Log
+
+### v0.26
+- Now requires version 1.1.25 of the WiThrottleProtocol library.
+- Add define to enable or disable the heartbeat by default    ``#define HEARTBEAT_ENABLED true``
+- New define added for if no response is received from the server in the specified period (milliseconds), shut down. MAX_HEARTBEAT_PERIOD   default is 4 minutes = 240000 
 
 ### v0.25
 - Added code to help work out the BATTERY_CONVERSION_FACTOR
