@@ -4,7 +4,7 @@
 
   ### * 25-01-31 HandCab v0.27 (Added optional linear throttle (instead of notches)
 
-  ### * HandCab v0.26 
+  ### * 24-??-?? HandCab v0.26 
     Now requires version 1.1.25 of the WiThrottleProtocol library.
     Add define to enable or disable the heartbeat by default #define HEARTBEAT_ENABLED true
     New define added for if no response is received from the server in the specified period (milliseconds), shut down. MAX_HEARTBEAT_PERIOD default is 4 minutes = 240000
