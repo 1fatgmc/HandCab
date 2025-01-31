@@ -11,6 +11,8 @@
 
   ### * 24-08-04 HandCab v0.25 (Revision to Voltmeter code)
 
+---
+
 A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, DCC-EX  EX-CommandStation and many others) using the WiThrottle protocol to control DCC model trains.  HandCab uses 3 potentiometers (50K) for the throttle, brake and reverser controls and is modelled after a GP7/9 'barrel' control stand.  
 
 Special thanks to Peter Akers who is responsible for the software on the throttle.  Without it this throttle would never have materialized.
