@@ -1380,12 +1380,13 @@ void throttlePot_loop(bool forceRead) {
       if ( (throttlePotNotch!=currentThrottlePotNotch) 
       || (forceRead) ) {
           if(DEBUG_LEVEL>0) { debug_print("throttlePot_loop() request changing speed to: ");   debug_println(throttlePotTargetSpeed); }
-            targetSpeed = throttlePotTargetSpeed;
-            targetSpeedAndDirectionOverride();
-            if (!forceRead) startMomentumTimerMillis = millis(); // don't reset the timer on a forced read
+          targetSpeed = throttlePotTargetSpeed;
+          targetSpeedAndDirectionOverride();
+          if (!forceRead) startMomentumTimerMillis = millis(); // don't reset the timer on a forced read
       }
 
     } else {  // no steps/notches.  using linear value between first and last pot value
+
       linearMinPot = throttlePotNotchValues[0];
       linearMaxPot = throttlePotNotchValues[noThrottlePotNotchElements-1];
       linearPcntSpeed = (avgPotValue - linearMinPot) / (linearMaxPot - linearMinPot);
@@ -1397,14 +1398,19 @@ void throttlePot_loop(bool forceRead) {
       if(linearTargetSpeed<0) linearTargetSpeed = 0;
       if(linearTargetSpeed>126) linearTargetSpeed = 126;
 
-      debug_print("avgPotValue: ");debug_println(avgPotValue);
-      debug_print("linearMinPot: ");debug_println(linearMinPot);
-      debug_print("linearMaxPot: ");debug_println(linearMaxPot);
-      debug_print("linearPcntSpeed: ");debug_println(linearPcntSpeed);
-      debug_print("linearTargetSpeed: ");debug_println(linearTargetSpeed);
+      // debug_print("avgPotValue: ");debug_println(avgPotValue);
+      // debug_print("linearMinPot: ");debug_println(linearMinPot);
+      // debug_print("linearMaxPot: ");debug_println(linearMaxPot);
+      // debug_print("linearPcntSpeed: ");debug_println(linearPcntSpeed);
+      // debug_print("linearTargetSpeed: ");debug_println(linearTargetSpeed);
 
       if(debugLevel > 1) { debug_print("throttlePot_loop() linear: current pot: "); debug_print(avgPotValue); debug_print(" new speed: "); debug_println(linearTargetSpeed); }
-      targetSpeed = linearTargetSpeed;
+      if ( (targetSpeed != ((int) linearTargetSpeed)) 
+      || (forceRead) ) {
+        targetSpeed = linearTargetSpeed;
+        targetSpeedAndDirectionOverride();
+        if (!forceRead) startMomentumTimerMillis = millis(); // don't reset the timer on a forced read
+      }
     }
     refreshOled();
   }
