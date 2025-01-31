@@ -93,9 +93,17 @@ int lastThrottlePotValue = 0;
 int lastThrottlePotHighValue = 0;  // highest of the most recent
 int lastThrottlePotValues[] = {0, 0, 0, 0, 0};
 int lastThrottlePotReadTime = -1;
+int noThrottlePotNotchElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
+int noLastThrottlePotElements = sizeof(lastThrottlePotValues) / sizeof(lastThrottlePotValues[0]);
+
+// throttle pots values when using linearn ratehr than notches
+double linearMinPot = 0;
+double linearMaxPot = 0;
+double linearPcntSpeed = 0;
+double linearTargetSpeed = 0;
 
 // throttle recalibration values
-int throttlePotTempValues[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+int throttlePotTempValues[] = THROTTLE_POT_NOTCH_VALUES;
 int throttlePotRecalibratedValues[] = THROTTLE_POT_NOTCH_VALUES; 
 int lowestThrottlePotValue = 32768;
 int highestThrottlePotValue = -1;
@@ -108,6 +116,7 @@ int lastReverserPotHighValue = 0;  // highest of the most recent
 int lastReverserPotValues[] = {0, 0, 0, 0, 0};
 int reverserCurrentPosition = REVERSER_POSITION_NEUTRAL;
 int lastReverserPotReadTime = -1;
+int noReverserPotElements = sizeof(lastReverserPotValues) / sizeof(lastReverserPotValues[0]);
 
 // reverser recalibration values
 int reverserPotRecalibratedValues[] = REVERSER_POT_VALUES; 
@@ -122,6 +131,7 @@ int lastBrakePotHighValue = 0;  // highest of the most recent
 int lastBrakePotValues[] = {0, 0, 0, 0, 0};
 int brakeCurrentPosition = 0;
 int lastBrakePotReadTime = -1;
+int noBrakePotElements = sizeof(lastBrakePotValues) / sizeof(lastBrakePotValues[0]);
 
 // brake recalibration values
 int brakePotRecalibratedValues[] = BRAKE_POT_VALUES;
@@ -1124,7 +1134,7 @@ void readPreferences() {
     key[2] = 0;
 
     key[0] = 'T';
-    for (int i=0; i<8; i++) {
+    for (int i=0; i<noThrottlePotNotchElements; i++) {
       key[1] = '0'+i;
       throttlePotNotchValues[i] = nvsPrefs.getInt(key);
       debug_print(key); debug_print(" - "); debug_println(throttlePotNotchValues[i]);
@@ -1155,7 +1165,7 @@ void writePreferences() {
     key[2] = 0;
 
     key[0] = 'T';
-    for (int i=0; i<8; i++) {
+    for (int i=0; i<noThrottlePotNotchElements; i++) {
       key[1] = '0'+i;
       nvsPrefs.putInt(key,throttlePotNotchValues[i]);
       debug_print(key); debug_print(" - "); debug_println(throttlePotNotchValues[i]);
@@ -1321,18 +1331,17 @@ void throttlePot_loop(bool forceRead) {
   potValue = analogRead(throttlePotPin);  //Reads the analog value on the throttle pin.
 
   // average out the last x values from the pot
-  int noElements = sizeof(lastThrottlePotValues) / sizeof(lastThrottlePotValues[0]);
   int avgPotValue = 0;
-  for (int i=1; i<noElements; i++) {
+  for (int i=1; i<noLastThrottlePotElements; i++) {
     lastThrottlePotValues[i-1] = lastThrottlePotValues[i];
     avgPotValue = avgPotValue + lastThrottlePotValues[i-1];
   }
-  lastThrottlePotValues[noElements-1] = potValue;
-  avgPotValue = (avgPotValue + potValue) / noElements;
+  lastThrottlePotValues[noLastThrottlePotElements-1] = potValue;
+  avgPotValue = (avgPotValue + potValue) / noLastThrottlePotElements;
 
   // get the highest recent value
   lastThrottlePotHighValue = -1;
-  for (int i=0; i<noElements; i++) {
+  for (int i=0; i<noLastThrottlePotElements; i++) {
     if (lastThrottlePotValues[i] > lastThrottlePotHighValue) 
     lastThrottlePotHighValue = lastThrottlePotValues[i];
   }
@@ -1346,33 +1355,56 @@ void throttlePot_loop(bool forceRead) {
   if ( (avgPotValue<lastThrottlePotValue-5) || (avgPotValue>lastThrottlePotValue+5)
   || (forceRead) )  { 
     lastThrottlePotValue = avgPotValue;
-    noElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
 
-    throttlePotNotch = -99;
-    for (int i=0; i<noElements; i++) {
-      if (avgPotValue < throttlePotNotchValues[i]) {    /// Check to see if it is in notch i
-        if (i==0) { //notch 1 is always speed zero
-          throttlePotTargetSpeed = 0;
-        } else {// use the speed values element 1 less than the notch number
-          throttlePotTargetSpeed = throttlePotNotchSpeeds[i-1];
-          if (debugLevel > 1) { debug_print("throttlePot_loop() notch: "); debug_print(i); debug_print(" - "); debug_println(avgPotValue); }
-        } 
-        throttlePotNotch = i;
-        break;
-      }                
-    } 
-    if (throttlePotNotch == -99) { //didn't find it, so it must be above the last element in the pot values
-      throttlePotNotch = noElements;
-      throttlePotTargetSpeed = throttlePotNotchSpeeds[noElements-1];
-      if (debugLevel > 1) { debug_print("throttlePot_loop() above max: setting notch: "); debug_print(throttlePotNotch); debug_print(" - ");  debug_println(avgPotValue); }
-    }
-    if(debugLevel > 1) { debug_print("throttlePot_loop() current notch: "); debug_print(currentThrottlePotNotch); debug_print(" new: "); debug_println(throttlePotNotch); }
-    if ( (throttlePotNotch!=currentThrottlePotNotch) 
-    || (forceRead) ) {
-         if(DEBUG_LEVEL>0) { debug_print("throttlePot_loop() request changing speed to: ");   debug_println(throttlePotTargetSpeed); }
-          targetSpeed = throttlePotTargetSpeed;
-          targetSpeedAndDirectionOverride();
-          if (!forceRead) startMomentumTimerMillis = millis(); // don't reset the timer on a forced read
+    if (USE_THROTTLE_NOTCHES) {
+
+      throttlePotNotch = -99;
+      for (int i=0; i<noThrottlePotNotchElements; i++) {
+        if (avgPotValue < throttlePotNotchValues[i]) {    /// Check to see if it is in notch i
+          if (i==0) { //notch 1 is always speed zero
+            throttlePotTargetSpeed = 0;
+          } else {// use the speed values element 1 less than the notch number
+            throttlePotTargetSpeed = throttlePotNotchSpeeds[i-1];
+            if (debugLevel > 1) { debug_print("throttlePot_loop() notch: "); debug_print(i); debug_print(" - "); debug_println(avgPotValue); }
+          } 
+          throttlePotNotch = i;
+          break;
+        }                
+      } 
+      if (throttlePotNotch == -99) { //didn't find it, so it must be above the last element in the pot values
+        throttlePotNotch = noThrottlePotNotchElements;
+        throttlePotTargetSpeed = throttlePotNotchSpeeds[noThrottlePotNotchElements-1];
+        if (debugLevel > 1) { debug_print("throttlePot_loop() above max: setting notch: "); debug_print(throttlePotNotch); debug_print(" - ");  debug_println(avgPotValue); }
+      }
+      if(debugLevel > 1) { debug_print("throttlePot_loop() current notch: "); debug_print(currentThrottlePotNotch); debug_print(" new: "); debug_println(throttlePotNotch); }
+      if ( (throttlePotNotch!=currentThrottlePotNotch) 
+      || (forceRead) ) {
+          if(DEBUG_LEVEL>0) { debug_print("throttlePot_loop() request changing speed to: ");   debug_println(throttlePotTargetSpeed); }
+            targetSpeed = throttlePotTargetSpeed;
+            targetSpeedAndDirectionOverride();
+            if (!forceRead) startMomentumTimerMillis = millis(); // don't reset the timer on a forced read
+      }
+
+    } else {  // no steps/notches.  using linear value between first and last pot value
+      linearMinPot = throttlePotNotchValues[0];
+      linearMaxPot = throttlePotNotchValues[noThrottlePotNotchElements-1];
+      linearPcntSpeed = (avgPotValue - linearMinPot) / (linearMaxPot - linearMinPot);
+
+      if (avgPotValue < (linearMinPot + LINEAR_THROTTLE_POT_DEAD_ZONE) ) linearPcntSpeed = 0;
+      if (avgPotValue > (linearMaxPot - LINEAR_THROTTLE_POT_DEAD_ZONE) ) linearPcntSpeed = 100;
+      
+      linearTargetSpeed = throttlePotNotchSpeeds[noThrottlePotNotchElements-1] * linearPcntSpeed;
+      if(linearTargetSpeed<0) linearTargetSpeed = 0;
+      if(linearTargetSpeed>126) linearTargetSpeed = 126;
+
+      debug_print("avgPotValue: ");debug_println(avgPotValue);
+      debug_print("linearMinPot: ");debug_println(linearMinPot);
+      debug_print("linearMaxPot: ");debug_println(linearMaxPot);
+      debug_print("linearPcntSpeed: ");debug_println(linearPcntSpeed);
+      debug_print("linearTargetSpeed: ");debug_println(linearTargetSpeed);
+
+      if(debugLevel > 1) { debug_print("throttlePot_loop() linear: current pot: "); debug_print(avgPotValue); debug_print(" new speed: "); debug_println(linearTargetSpeed); }
+      targetSpeed = linearTargetSpeed;
     }
     refreshOled();
   }
@@ -1393,18 +1425,17 @@ void reverserPot_loop() {
   potValue = ( analogRead(reverserPotPin) );  //Reads the analog value on the reverser pin.
 
   // average out the last x values from the pot
-  int noElements = sizeof(lastReverserPotValues) / sizeof(lastReverserPotValues[0]);
   int avgPotValue = 0;
-  for (int i=1; i<noElements; i++) {
+  for (int i=1; i<noReverserPotElements; i++) {
     lastReverserPotValues[i-1] = lastReverserPotValues[i];
     avgPotValue = avgPotValue + lastReverserPotValues[i-1];
   }
-  lastReverserPotValues[noElements-1] = potValue;
-  avgPotValue = (avgPotValue + potValue) / noElements;
+  lastReverserPotValues[noReverserPotElements-1] = potValue;
+  avgPotValue = (avgPotValue + potValue) / noReverserPotElements;
 
   // get the highest recent value
   lastReverserPotHighValue = -1;
-  for (int i=0; i<noElements; i++) {
+  for (int i=0; i<noReverserPotElements; i++) {
     if (lastReverserPotValues[i] > lastReverserPotHighValue) 
     lastReverserPotHighValue = lastReverserPotValues[i];
   }
@@ -1459,18 +1490,18 @@ void brakePot_loop() {
   potValue = ( analogRead(brakePotPin) );  //Reads the analog value on the brake pin.
 
   // average out the last x values from the pot
-  int noElements = sizeof(lastBrakePotValues) / sizeof(lastBrakePotValues[0]);
+  int nolastBrakePotElements = sizeof(lastBrakePotValues) / sizeof(lastBrakePotValues[0]);
   int avgPotValue = 0;
-  for (int i=1; i<noElements; i++) {
+  for (int i=1; i<nolastBrakePotElements; i++) {
     lastBrakePotValues[i-1] = lastBrakePotValues[i];
     avgPotValue = avgPotValue + lastBrakePotValues[i-1];
   }
-  lastBrakePotValues[noElements-1] = potValue;
-  avgPotValue = (avgPotValue + potValue) / noElements;
+  lastBrakePotValues[nolastBrakePotElements-1] = potValue;
+  avgPotValue = (avgPotValue + potValue) / nolastBrakePotElements;
 
   // get the highest recent value
   lastBrakePotHighValue = -1;
-  for (int i=0; i<noElements; i++) {
+  for (int i=0; i<nolastBrakePotElements; i++) {
     if (lastBrakePotValues[i] > lastBrakePotHighValue) 
     lastBrakePotHighValue = lastBrakePotValues[i];
   }
@@ -1484,17 +1515,16 @@ void brakePot_loop() {
     // debug_print("Brake Pot Value: "); debug_println(potValue);
     lastBrakePotValue = avgPotValue;
 
-    noElements = sizeof(brakePotValues) / sizeof(brakePotValues[0]);
     currentBrakeDelayTime = -1;
     brakeCurrentPosition = -1;
-    for (int i=0; i<noElements; i++) {
+    for (int i=0; i<noBrakePotElements; i++) {
       if (avgPotValue < brakePotValues[i]) {    /// Check to see if it is < value in i
         brakeCurrentPosition = i;
         break;
       }
     }
     if (brakeCurrentPosition == -1)  { // didn't find it the list 
-      brakeCurrentPosition = noElements;  // use the last value (brakeDelayTimes has n-one more element than brakePotValues)
+      brakeCurrentPosition = noBrakePotElements;  // use the last value (brakeDelayTimes has n-one more element than brakePotValues)
     }
 
     currentBrakeDelayTime = brakeDelayTimes[brakeCurrentPosition];
@@ -1749,6 +1779,10 @@ void setup() {
 
   clearLastPotValues();
   setupPreferences(false);
+
+  // reset some values  
+  for (int i = 0; i<noThrottlePotNotchElements; i++ )
+    throttlePotTempValues[i] = 0;
 }
 
 // *********************************************************************************
@@ -2111,7 +2145,7 @@ void doKeyPress(char key, bool pressed) {
             writePreferences();
             break;
           case '9': 
-            recalibatePotValues();
+            recalibratePotValues();
             break;
           case '*':  // cancel
             resetMenu();
@@ -2132,7 +2166,8 @@ void doKeyPress(char key, bool pressed) {
         switch (key){
           case '0': case '1': case '2': case '3': case '4': 
           case '5': case '6': case '7': case '8':
-            throttlePotTempValues[(key - '0')] = lastThrottlePotHighValue;
+            if((key - '0') <= noThrottlePotNotchElements)
+              throttlePotTempValues[(key - '0')] = lastThrottlePotHighValue;
             break;
           case '9': 
             recalibateThrottlePotValues();
@@ -2705,11 +2740,11 @@ void releaseOneLoco(String loco) {
 
 void toggleAccelerationDelayTime() {
   int newIndex = currentAccellerationDelayTimeIndex + 1;
-  int noElements = sizeof(accellerationDelayTimes) / sizeof(accellerationDelayTimes[0]);
+  int noAccellerationDelayElements = sizeof(accellerationDelayTimes) / sizeof(accellerationDelayTimes[0]);
 
   if (newIndex<0) {
     newIndex = 0;
-  } else if (newIndex>=noElements) {
+  } else if (newIndex>=noAccellerationDelayElements) {
     newIndex = 0;
   }
   currentAccellerationDelayTimeIndex = newIndex;
@@ -2938,68 +2973,89 @@ String getSuggestedReverserPotRange() {
 }
 
 String getThrottlePotNotchValues(int line) {
-  // debug_println("getThrottlePotNotchValues() ");
+  debug_print("getThrottlePotNotchValues() line: ");debug_println(line);
+  // debug_print("noThrottlePotNotchElements: ");debug_println(noThrottlePotNotchElements);
   String rslt = "";
-  int noElements = sizeof(throttlePotTempValues) / sizeof(throttlePotTempValues[0]);
   int start = 0;
   int end = 3;
+  if (noThrottlePotNotchElements<3) end = noThrottlePotNotchElements;
+
   if (line==1) {
     start = 3;
     end = 6;
+
+    if (noThrottlePotNotchElements<=3) return "";
+    if (noThrottlePotNotchElements<6) end = noThrottlePotNotchElements;
+
   } else if (line==2) {
     start = 6;
-    end = noElements;
+    end = noThrottlePotNotchElements;
+
+    if (noThrottlePotNotchElements<=6) return "";
   }
+
   for (int i=start; i<end; i++) {
-    if ( (i!=0) && (i!=3) && (i!=6) ) rslt = rslt + ",";
+    if ( (i!=0) && (i!=end) ) rslt = rslt + ",";
     rslt = rslt + String(throttlePotTempValues[i]);
   }  
+  // debug_print("start: ");debug_println(start);
+  // debug_print("end: ");debug_println(end);
+  // debug_print("rslt: ");debug_println(rslt);
   return rslt;
 }
 
 String getSuggestedThrottlePotNotchValues(int line) {
-  debug_println("getSuggestedThrottlePotNotchValues() ");
+  debug_print("getSuggestedThrottlePotNotchValues() line: ");debug_println(line);
   String rslt = "";
-  int noElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
   int start = 0;
   int end = 3;
+  if (noThrottlePotNotchElements<3) end = noThrottlePotNotchElements;
+
   if (line==1) {
     start = 3;
     end = 6;
+
+    if (noThrottlePotNotchElements<=3) return "";
+    if (noThrottlePotNotchElements<6) end = noThrottlePotNotchElements;
+
   } else if (line==2) {
     start = 6;
-    end = noElements;
+    end = noThrottlePotNotchElements;
+
+    if (noThrottlePotNotchElements<=6) return "";
   }
-  for (int i=0; i<noElements; i++) {
-    throttlePotRecalibratedValues[i] = (throttlePotTempValues[i+1] - throttlePotTempValues[i])/ 2 + throttlePotTempValues[i];
-    debug_print("i: "); debug_print(i);
-    debug_print(" throttlePotTempValues[i]: ");
-    debug_print(throttlePotTempValues[i]);
-    debug_print(" throttlePotTempValues[i+1]: ");
-    debug_print(throttlePotTempValues[i+1]);
-    debug_print(" throttlePotRecalibratedValues[i]: ");
-    debug_print(throttlePotRecalibratedValues[i]);
-    debug_println("");
+
+  for (int i=0; i<noThrottlePotNotchElements; i++) {
+    if (USE_THROTTLE_NOTCHES) {
+      throttlePotRecalibratedValues[i] = (throttlePotTempValues[i+1] - throttlePotTempValues[i])/ 2 + throttlePotTempValues[i];
+    } else {
+      throttlePotRecalibratedValues[i] = throttlePotTempValues[i];
+    }
+    // debug_print("i: "); debug_print(i);
+    // debug_print(" throttlePotTempValues[i]: ");
+    // debug_print(throttlePotTempValues[i]);
+    // debug_print(" throttlePotTempValues[i+1]: ");
+    // debug_print(throttlePotTempValues[i+1]);
+    // debug_print(" throttlePotRecalibratedValues[i]: ");
+    // debug_print(throttlePotRecalibratedValues[i]);
+    // debug_println("");
   }
   
   for (int i=start; i<end; i++) {
-    if ( (i!=0) && (i!=3) && (i!=6) ) rslt = rslt + ",";
+    if ( (i!=0) && (i<end) ) rslt = rslt + ",";
     rslt = rslt + String(throttlePotRecalibratedValues[i]);
   }
   return rslt;
 }
 
-void recalibatePotValues() {
-  debug_print("recalibatePotValues() "); debug_println(lastOledPotValuesState);
-  int noElements = 0;
+void recalibratePotValues() {
+  debug_print("recalibratePotValues() "); debug_println(lastOledPotValuesState);
   if (lastOledPotValuesState==1) {
-    noElements = sizeof(brakePotValues) / sizeof(brakePotValues[0]);
-    for (int i=0; i<noElements; i++) {
+    for (int i=0; i<noBrakePotElements; i++) {
       brakePotValues[i] = brakePotRecalibratedValues[i];
     }
   } else { // 2
-    noElements = sizeof(reverserPotValues) / sizeof(reverserPotValues[0]);;
-    for (int i=0; i<noElements; i++) {
+    for (int i=0; i<noReverserPotElements; i++) {
       reverserPotValues[i] = reverserPotRecalibratedValues[i];
     }
   }
@@ -3007,8 +3063,7 @@ void recalibatePotValues() {
 
 void recalibateThrottlePotValues() {
   debug_println("recalibateThrottlePotValues() ");
-  int noElements = sizeof(throttlePotNotchValues) / sizeof(throttlePotNotchValues[0]);
-  for (int i=0; i<noElements; i++) {
+  for (int i=0; i<noThrottlePotNotchElements; i++) {
     throttlePotNotchValues[i] = throttlePotRecalibratedValues[i];
   }
 }
@@ -3644,11 +3699,11 @@ void writeOledEitherPotValues(bool throttleOnly) {
     oledText[5] = menuText[12][1];
     writeOledArray(false, false, true, true, USE_POTS_SMALL_FONTS);
 
-  } else { // trhrottle only
+  } else { // throttle only
 
     bool ready = true;
-    int noElements = sizeof(throttlePotTempValues) / sizeof(throttlePotTempValues[0]);
-    for (int i=1; i<noElements; i++) {
+    int noThrottlePotTempElements = sizeof(throttlePotTempValues) / sizeof(throttlePotTempValues[0]);
+    for (int i=1; i<noThrottlePotTempElements; i++) {
       if (throttlePotTempValues[i]<=throttlePotTempValues[i-1]) { 
         ready = false;
         break;

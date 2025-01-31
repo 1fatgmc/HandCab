@@ -6,7 +6,7 @@
 //
 
 const String appName = "HandCab";
-const String appVersion = "v0.26";
+const String appVersion = "v0.27";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -696,7 +696,7 @@ const char ssidPasswordBlankChar = 164;
 
 
 // *******************************************************************************************************************
-// defult direct functions
+// default direct functions
 
 #ifndef CHOSEN_KEYPAD_0_FUNCTION
    #define CHOSEN_KEYPAD_0_FUNCTION     FUNCTION_0
@@ -751,7 +751,13 @@ const char ssidPasswordBlankChar = 164;
    #define THROTTLE_POT_NOTCH_VALUES {20,585,1170,1755,2340,2925,3510,4000}
 #endif
 #ifndef THROTTLE_POT_NOTCH_SPEEDS
-#define THROTTLE_POT_NOTCH_SPEEDS {4, 10,  15,  25,  35,  45, 55, 65}
+   #define THROTTLE_POT_NOTCH_SPEEDS {4, 10,  15,  25,  35,  45, 55, 65}
+#endif
+#ifndef USE_THROTTLE_NOTCHES
+   #define USE_THROTTLE_NOTCHES true
+#endif
+#ifndef LINEAR_THROTTLE_POT_DEAD_ZONE
+   #define LINEAR_THROTTLE_POT_DEAD_ZONE 5
 #endif
 
 #ifndef REVERSER_POT_PIN
