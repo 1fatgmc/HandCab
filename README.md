@@ -4,14 +4,7 @@
 
   ### * 25-01-31 HandCab v0.27 (Added optional linear throttle (instead of notches  -- Don't install the spring and ball for the detent control)
 
-  ### * 24-??-?? HandCab v0.26 
-    Now requires version 1.1.25 of the WiThrottleProtocol library.
-    Add define to enable or disable the heartbeat by default #define HEARTBEAT_ENABLED true
-    New define added for if no response is received from the server in the specified period (milliseconds), shut down. MAX_HEARTBEAT_PERIOD default is 4 minutes = 240000
-
-  ### * 24-08-04 HandCab v0.25 (Revision to Voltmeter code)
-
----
+ ---
 
 A HandCab is a DIY handheld controller that talks to a WiThrottle Server (JMRI, DCC-EX  EX-CommandStation and many others) using the WiThrottle protocol to control DCC model trains.  HandCab uses 3 potentiometers (50K) for the throttle, brake and reverser controls and is modelled after a GP7/9 'barrel' control stand.  
 
