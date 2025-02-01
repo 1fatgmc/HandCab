@@ -2,7 +2,7 @@
  ---
 ##   NOTE/WARNING:  Since the HandCab and software is relatively new you should check back for updates on the HandCab and Read_Pot_Values software/sketches and for any hardware changes.
 
-  ### * 25-01-31 HandCab v0.27 (Added optional linear throttle (instead of notches  -- Don't install the spring and ball for the detent control)
+  ### * 25-01-31 HandCab v0.27 (Added optional linear throttle instead of notches -- Don't install the spring and ball for the detent control)
 
  ---
 
