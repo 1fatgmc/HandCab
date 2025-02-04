@@ -463,6 +463,9 @@ If the throttle bounces at zero and maximum travel, uncomment and increase this 
 
 ## Change Log
 
+### v0.28
+- change to a font that has accented characters
+
 ### v0.27
 - added optional linear throttle (instead of notches)
 

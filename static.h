@@ -6,7 +6,7 @@
 //
 
 const String appName = "HandCab";
-const String appVersion = "v0.27";
+const String appVersion = "v0.28";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -533,7 +533,7 @@ const char ssidPasswordBlankChar = 164;
 
 // *******************************************************************************************************************
 
-#define FONT_DEFAULT u8g2_font_NokiaSmallPlain_tf
+#define FONT_DEFAULT u8g2_font_NokiaSmallPlain_te
 #define FONT_FUNCTION_INDICATORS u8g2_font_tiny_simon_tr
 #define FONT_THROTTLE_NUMBER u8g2_font_neuecraft_tr
 #define FONT_PASSWORD u8g2_font_9x15_tf

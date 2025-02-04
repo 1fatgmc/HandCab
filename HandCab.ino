@@ -3789,7 +3789,8 @@ void writeOledArray(bool isThreeColums, bool isPassword, bool sendBuffer, bool d
       u8g2.drawBox(x,y-8,62,10);
       u8g2.setDrawColor(0);
     }
-    u8g2.drawStr(x,y, cLine1);
+    // u8g2.drawStr(x,y, cLine1);
+    u8g2.drawUTF8(x,y, cLine1);
     u8g2.setDrawColor(1);
 
     if ((isPassword) && (i==2)) u8g2.setFont(FONT_DEFAULT); 
