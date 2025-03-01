@@ -2,9 +2,9 @@
 
 **NOTE/WARNING:**  
 
-    Since the HandCab and software is relatively new you should check back for updates on the HandCab and Read_Pot_Values software/sketches and for any hardware changes.
+Since the HandCab and software is relatively new you should check back for updates on the HandCab and Read_Pot_Values software/sketches and for any hardware changes.
 
-  [See full change log/ version history](change_log.md)
+[See full change log/ version history](change_log.md)
 
  ---
 
