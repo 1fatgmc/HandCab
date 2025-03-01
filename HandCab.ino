@@ -37,16 +37,15 @@
 
 #include "HandCab.h"
 
-#if WITCONTROLLER_DEBUG == 0
- #define debug_print(params...) Serial.print(params)
- #define debug_println(params...) Serial.print(params); Serial.print(" ("); Serial.print(millis()); Serial.println(")")
- #define debug_printf(params...) Serial.printf(params)
+#if HANDCAB_DEBUG == 0
+  #define debug_print(params...) Serial.print(params)
+  #define debug_println(params...) Serial.print(params); Serial.print(" ("); Serial.print(millis()); Serial.println(")")
+  #define debug_printf(params...) Serial.printf(params)
 #else
- #define debug_print(...)
- #define debug_println(...)
- #define debug_printf(...)
+  #define debug_print(...)
+  #define debug_println(...)
+  #define debug_printf(...)
 #endif
-int debugLevel = DEBUG_LEVEL;
 
 // *********************************************************************************
 
@@ -144,9 +143,19 @@ bool potValuesInitiallyCleared = false;
 // Momentum - acceleration and brake
 int brakeDelayTimes[] = BRAKE_DELAY_TIMES;
 int currentBrakeDelayTime = 0;
+
+#ifndef COAST_DELAY_TIMES
+  int coastDelayTimes[] = BRAKE_DELAY_TIMES;
+#else
+  int coastDelayTimes[] = COAST_DELAY_TIMES;
+#endif
+int currentCoastDelayTime = coastDelayTimes[0];
+
 int accellerationDelayTimes[] = ACCELLERATION_DELAY_TIMES;
 int currentAccellerationDelayTime = accellerationDelayTimes[0];
 int currentAccellerationDelayTimeIndex = 0;
+
+// target direction and speed
 int targetSpeed = 0;
 PotDirection targetDirection = FORWARD;
 double startMomentumTimerMillis = -1;
@@ -1365,7 +1374,9 @@ void throttlePot_loop(bool forceRead) {
             throttlePotTargetSpeed = 0;
           } else {// use the speed values element 1 less than the notch number
             throttlePotTargetSpeed = throttlePotNotchSpeeds[i-1];
-            if (debugLevel > 1) { debug_print("throttlePot_loop() notch: "); debug_print(i); debug_print(" - "); debug_println(avgPotValue); }
+            #if DEBUG_LEVEL > 1
+              debug_print("throttlePot_loop() notch: "); debug_print(i); debug_print(" - "); debug_println(avgPotValue);
+            #endif
           } 
           throttlePotNotch = i;
           break;
@@ -1374,12 +1385,18 @@ void throttlePot_loop(bool forceRead) {
       if (throttlePotNotch == -99) { //didn't find it, so it must be above the last element in the pot values
         throttlePotNotch = noThrottlePotNotchElements;
         throttlePotTargetSpeed = throttlePotNotchSpeeds[noThrottlePotNotchElements-1];
-        if (debugLevel > 1) { debug_print("throttlePot_loop() above max: setting notch: "); debug_print(throttlePotNotch); debug_print(" - ");  debug_println(avgPotValue); }
+        #if DEBUG_LEVEL > 1
+              debug_print("throttlePot_loop() above max: setting notch: "); debug_print(throttlePotNotch); debug_print(" - ");  debug_println(avgPotValue);
+        #endif
       }
-      if(debugLevel > 1) { debug_print("throttlePot_loop() current notch: "); debug_print(currentThrottlePotNotch); debug_print(" new: "); debug_println(throttlePotNotch); }
+      #if DEBUG_LEVEL > 1
+        debug_print("throttlePot_loop() current notch: "); debug_print(currentThrottlePotNotch); debug_print(" new: "); debug_println(throttlePotNotch);
+      #endif
       if ( (throttlePotNotch!=currentThrottlePotNotch) 
       || (forceRead) ) {
-          if(DEBUG_LEVEL>0) { debug_print("throttlePot_loop() request changing speed to: ");   debug_println(throttlePotTargetSpeed); }
+          #if DEBUG_LEVEL > 0
+            debug_print("throttlePot_loop() request changing speed to: ");   debug_println(throttlePotTargetSpeed);
+          #endif
           targetSpeed = throttlePotTargetSpeed;
           targetSpeedAndDirectionOverride();
           if (!forceRead) startMomentumTimerMillis = millis(); // don't reset the timer on a forced read
@@ -1404,7 +1421,10 @@ void throttlePot_loop(bool forceRead) {
       // debug_print("linearPcntSpeed: ");debug_println(linearPcntSpeed);
       // debug_print("linearTargetSpeed: ");debug_println(linearTargetSpeed);
 
-      if(debugLevel > 1) { debug_print("throttlePot_loop() linear: current pot: "); debug_print(avgPotValue); debug_print(" new speed: "); debug_println(linearTargetSpeed); }
+      #if DEBUG_LEVEL > 1
+        debug_print("throttlePot_loop() linear: current pot: "); debug_print(avgPotValue); debug_print(" new speed: "); debug_println(linearTargetSpeed);
+      #endif
+
       if ( (targetSpeed != ((int) linearTargetSpeed)) 
       || (forceRead) ) {
         targetSpeed = linearTargetSpeed;
@@ -1533,7 +1553,21 @@ void brakePot_loop() {
       brakeCurrentPosition = noBrakePotElements;  // use the last value (brakeDelayTimes has n-one more element than brakePotValues)
     }
 
-    currentBrakeDelayTime = brakeDelayTimes[brakeCurrentPosition];
+    if (brakeCurrentPosition > 0) {  // brake is applied
+      currentBrakeDelayTime = brakeDelayTimes[brakeCurrentPosition];
+
+      #if DEBUG_LEVEL > 0
+        debug_print("Brake Pot Value: Using currentBrakeDelayTime: "); debug_println(currentBrakeDelayTime);
+      #endif
+
+    } else { // for use if in neutral and coasting
+      currentBrakeDelayTime = currentCoastDelayTime;
+
+      #if DEBUG_LEVEL > 0
+        debug_print("Brake Pot Value: Using currentCoastDelayTime: "); debug_println(currentCoastDelayTime);
+      #endif
+    }
+
     throttlePot_loop(true);  // recheck the throttle position
     targetSpeedAndDirectionOverride();
 
@@ -1550,14 +1584,16 @@ void speedAdjust_loop() {
   if (wiThrottleProtocol.getNumberOfLocomotives(getMultiThrottleChar(0)) > 0) {
     int changeAmount = 0;
     if (currentSpeed!=targetSpeed) {
-      if (debugLevel>1) {
+
+      #if DEBUG_LEVEL > 1
         debug_print("speedAdjust_loop() requested change: target: "); debug_print(targetSpeed);
         debug_print(" current: "); debug_println(currentSpeed);
-      }
+      #endif
+
       if (currentSpeed>targetSpeed) {  // need to brake
         if (millis() - startMomentumTimerMillis >= currentBrakeDelayTime) {   // Check to see if the delay period has elasped.
           changeAmount = -1 * DCC_SPEED_CHANGE_AMOUNT;
-          if (currentSpeed-changeAmount < targetSpeed) changeAmount = targetSpeed-currentSpeed;  // only relevant if the spped change is greater that 1
+          if (currentSpeed-changeAmount < targetSpeed) changeAmount = targetSpeed-currentSpeed;  // only relevant if the speed change is greater that 1
         }
       }
       else { // need to accelerate
@@ -1568,10 +1604,11 @@ void speedAdjust_loop() {
         }
       }
       if (changeAmount!=0) {  
-        if (debugLevel>0) {
+        #if DEBUG_LEVEL > 0
           debug_print("speedAdjust_loop() actually changing speed: target: "); debug_print(targetSpeed);
           debug_print(" current: "); debug_println(currentSpeed);
-        }
+        #endif
+        
         startMomentumTimerMillis = millis(); //restart timer
         speedSet(currentSpeed + changeAmount);
       }
@@ -1587,7 +1624,7 @@ void speedAdjust_loop() {
 void targetSpeedAndDirectionOverride() {
 
   // check the brake
-  if (brakeCurrentPosition>0) { // ignore throttle and the reverser
+  if (brakeCurrentPosition > 0) { // brake is applied. Ignore throttle and the reverser
     targetSpeed = 0;
   }
 
@@ -1685,7 +1722,11 @@ void additionalButtonLoop() {
               }
             }
           } else {
-            if (debugLevel > 1) { debug_print("Additional Button Released: "); debug_print(i); debug_print(" pin:"); debug_print(additionalButtonPin[i]); debug_print(" action:"); debug_println(additionalButtonActions[i]); }
+
+            #if DEBUG_LEVEL > 1
+              debug_print("Additional Button Released: "); debug_print(i); debug_print(" pin:"); debug_print(additionalButtonPin[i]); debug_print(" action:"); debug_println(additionalButtonActions[i]);
+            #endif
+
             if (wiThrottleProtocol.getNumberOfLocomotives(currentThrottleIndexChar) > 0) { // only process if there are locos aquired
               doDirectAdditionalButtonCommand(i,false);
             } else { // check for actions not releted to a loco
@@ -1713,20 +1754,22 @@ void batteryTest_loop() {
 #if USE_BATTERY_TEST
   if(millis()-lastBatteryCheckTime>10000) {
     lastBatteryCheckTime = millis();
-    if (debugLevel > 1) { 
+
+    #if DEBUG_LEVEL > 1
       debug_print("BATTERY pin: "); debug_print(BATTERY_TEST_PIN);
       debug_print("BATTERY pin Value: "); debug_println(analogRead(BATTERY_TEST_PIN));  //Reads the analog value on the throttle pin.
-    }
+    #endif
+
     int batteryTestValue = BL.getBatteryChargeLevel();
     lastBatteryAnalogReadValue = BL.getLastAnalogReadValue();
 
-    if (debugLevel > 1) { 
+    #if DEBUG_LEVEL > 1
       debug_print("BATTERY TestValue: "); debug_println(batteryTestValue); 
       debug_print("BATTERY lastAnalogReadValue: "); debug_println(lastBatteryAnalogReadValue); 
       double analogValue = lastBatteryAnalogReadValue;
       analogValue = 4.2 / analogValue * 1000;
       debug_print("BATTERY If Battery full, BATTERY_CONVERSION_FACTOR should be: "); debug_println(analogValue); 
-    }
+    #endif
 
     if (batteryTestValue!=lastBatteryTestValue) { 
       lastBatteryTestValue = batteryTestValue;
@@ -2755,6 +2798,7 @@ void toggleAccelerationDelayTime() {
   }
   currentAccellerationDelayTimeIndex = newIndex;
   currentAccellerationDelayTime = accellerationDelayTimes[newIndex];
+  currentCoastDelayTime = coastDelayTimes[newIndex];
   refreshOled();
 }
 

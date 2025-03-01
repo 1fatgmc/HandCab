@@ -6,7 +6,7 @@
 //
 
 const String appName = "HandCab";
-const String appVersion = "v0.28";
+const String appVersion = "v0.29";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -552,8 +552,8 @@ const char ssidPasswordBlankChar = 164;
 
 // *******************************************************************************************************************
 
-#ifndef WITCONTROLLER_DEBUG 
-  #define WITCONTROLLER_DEBUG    0
+#ifndef HANDCAB_DEBUG 
+  #define HANDCAB_DEBUG    0
 #endif
 
 #ifndef WITHROTTLE_PROTOCOL_DEBUG
@@ -784,6 +784,9 @@ const char ssidPasswordBlankChar = 164;
 #ifndef ACCELLERATION_DELAY_TIMES
    #define ACCELLERATION_DELAY_TIMES {182,415,600}; 
 #endif
+// #ifndef COAST_DELAY_TIMES
+// note this is defined in HandCab.ino - Not here
+// #endif
 #ifndef DCC_SPEED_CHANGE_AMOUNT
    #define DCC_SPEED_CHANGE_AMOUNT 1
 #endif

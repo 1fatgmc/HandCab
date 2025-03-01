@@ -134,7 +134,7 @@
 
 // DccExController console debug messages are ENABLED by default
 // to disable to console messages, uncomment and set the following to  1    (i.e. 0 = on  1 = off)
-// #define DCCEXCONTROLLER_DEBUG    0
+// #define HANDCAB_DEBUG    0
 
 // DCCEXProtocol console debug messages are DISABLED by default
 // to enable to console messages, uncomment and set the following to  0    (i.e. 0 = on  1 = off)
@@ -300,9 +300,11 @@
 #define REVERSER_POT_VALUES {0000,0000}  //Run the Read_Pot-Values program and add your REVERSER_POT_VALUES to the left.
 
 // *******************************************************************************************************************
+// Momentum definitions:
+//
 // Acceleration definitions:
 //
-// Acceleration delays (momentum) are defined by you 'not' the Read_Pot-Values program.) 
+// Acceleration delays (momentum) are defined by you 'not' the Read_Pot-Values program. 
 //
 // The numbers you input here will set up the acceleration delays (momentum). They are defined by you and your needs.
 // On a smaller layout you might want the acceleration and delays (momentum) shorter and on a larger layout longer.  
@@ -313,6 +315,14 @@
 
 // With the above numbers & my top speed step set at 65 the '182' results in 15 sec. for 0 to 65, '415' = 30 sec. 0 to 65 and '600' = 40 sec. 0 to 65.
 
+// Coast definitions:
+//
+// Coast delays (momentum) are defined by you 'not' the Read_Pot-Values program.
+// If NOT included they will be the same as the acceleration delays (momentum) above.
+// If included, it must have the same number of elements as the ACCELLERATION_DELAY_TIMES
+
+// #define COAST_DELAY_TIMES {500,800,1200} // I'd start with my numbers and then experiment and change them to what you like.
+
 // *******************************************************************************************************************
 // Braking definitions:
 //
@@ -322,9 +332,9 @@
 // The first number below, '500', is the delay between speed steps when coasting down with the brake off.
 // The next 5 numbers are the delay time (rate) between speed steps in the 5 braking notches when stepping down the speed steps. 
 //
-// EXAMPLE: #define BRAKE_DELAY_TIMES {500,200,125,50,25,0} // Numbers to the left are Sumner's.
+// EXAMPLE: #define BRAKE_DELAY_TIMES {500,200,125,50,25,0}
 
- #define BRAKE_DELAY_TIMES {0000,0000,0000,0000,0000,0000}  //I'd start with my numbers and then experiment and change them to what you like.
+ #define BRAKE_DELAY_TIMES {500,200,125,50,25,0}  //I'd start with these numbers and then experiment and change them to what you like.
 
 // *******************************************************************************************************************
 // Speed Step Setting  definition:

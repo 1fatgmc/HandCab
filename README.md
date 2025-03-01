@@ -1,8 +1,10 @@
 # HandCab  
- ---
-##   NOTE/WARNING:  Since the HandCab and software is relatively new you should check back for updates on the HandCab and Read_Pot_Values software/sketches and for any hardware changes.
 
-  ### * 25-01-31 HandCab v0.27 (Added optional linear throttle instead of notches -- Don't install the spring and ball for the detent control)
+**NOTE/WARNING:**  
+
+    Since the HandCab and software is relatively new you should check back for updates on the HandCab and Read_Pot_Values software/sketches and for any hardware changes.
+
+  [See full change log/ version history](change_log.md)
 
  ---
 
@@ -13,8 +15,10 @@ Special thanks to Peter Akers who is responsible for the software on the throttl
 ![Alt text](https://github.com/1fatgmc/HandCab/blob/main/24-03-27%20HandCab%20vs%20GP9-1.jpg?raw=true)
 
 ---
-  ##  Contact me at contactsumner1(at)gmail(dot)com
----
+##  Contact details 
+
+  Contact me at contactsumner1(at)gmail(dot)com
+
 ## Video Overview of the throttle in use.
 
 https://www.youtube.com/watch?v=8vLRVYeE0dU
@@ -28,7 +32,7 @@ https://youtu.be/oAGohxnNBME
 
 2. Loading the code (sketch) requires downloading of one of the IDEs, this sketch, the libraries, etc. so some experience with Arduinos is helpful, but not critical.
 
-3. The HandCab Throttle along with most Android and Apple devices running supported throttle apps 'should' (please let me know if it doesn't work with one of the followin) work with any WiThrottle Server such as JMRI, DCC-EX, MRC WiFi, Digitrax LnWi, NCE (WiFi/DCC NCE Cab Bus Interface), TCS CS-105 (Using WiFiTrax WFD-30 or WFD-31)  and others..
+3. The HandCab Throttle along with most Android and Apple devices running supported throttle apps 'should' (please let me know if it doesn't work with one of the following) work with any WiThrottle Server such as JMRI, DCC-EX, MRC WiFi, Digitrax LnWi, NCE (WiFi/DCC NCE Cab Bus Interface), TCS CS-105 (Using WiFiTrax WFD-30 or WFD-31)  and others..
 
 4. You should have your decoder in **128 speed step mode**.
 
@@ -311,7 +315,7 @@ If the battery does not show 100% when plugged into the charger, you may need to
 
     In your ``config_buttons.h`` add (or uncomment) these defines:
     
-      #define WITCONTROLLER_DEBUG    0
+      #define HANDCAB_DEBUG    0
       #define DEBUG_LEVEL   2
 
     DEBUG_LEVEL must be 2 or greater
@@ -463,105 +467,4 @@ If the throttle bounces at zero and maximum travel, uncomment and increase this 
 
 ## Change Log
 
-### v0.28
-- change to a font that has accented characters
-
-### v0.27
-- added optional linear throttle (instead of notches)
-
-### v0.26
-- Now requires version 1.1.25 of the WiThrottleProtocol library.
-- Add define to enable or disable the heartbeat by default    ``#define HEARTBEAT_ENABLED true``
-- New define added for if no response is received from the server in the specified period (milliseconds), shut down. MAX_HEARTBEAT_PERIOD   default is 4 minutes = 240000 
-
-### v0.25
-- Added code to help work out the BATTERY_CONVERSION_FACTOR
-
-### v0.24
-- Removed THROTTLE_POT_USE_NOTCHES references (left over from WiTcontroller)
-- Added an option to toggle the Speed Step Mode 128/28 steps
-  Now requires version 1.1.21 of the WiThrottleProtocol library.
-
-### v0.22
-- Fix for the EStop not working correctly
-- Added support for the additional logging options in the WiThrottleProtocol library.  
-  Now requires version 1.1.19 of the WiThrottleProtocol library.
-
-### v0.21
-- Added alternate calculation for the THROTTLE_POT_NOTCH_VALUES in Read_Pot_Values2
-
-### v0.20
-- fixed bug where it would not reliably go into notch 8
-- Created a new version of Read_Pot_Values (Read_Pot_Values2).  
-  Calculations are the same for now, code is simpler
-
-### v0.19
-- Added action ``SHOW_HIDE_BATTERY`` which can be assigned to any key or button
-- Battery shows on most screens now
-
-### v0.18
-- Bug fix for the ability to store the 'temporary' pot values to non-volatile memory
-- Added the ability override the conversion factor used to calculate the pattery level ``#define BATTERY_CONVERSION_FACTOR``. Default is 1.7
-- Moved the battery indicator to the top right corner
-- Brake and Accelleration indicators are hidden if zero
-
-### v0.17
-- Add the ability to store the 'temporary' pot values to non-volatile memory, and automatically restore them at startup.
-- eStop bug fix
-- change platfom.ini to specifically wemos_d1_mini32 (for VCS users only)
-
-### v0.16
-- Additional work to smooth out the pot values
-- UI changes the pot value screens
-
-### v0.15
-- UI improvements for the Throttle Pot (temporary) recalibration
-
-### v0.14
-- Added dynamic (temporary) recalibration of the Reverser and Brake pots to the *92 menu  
-- Added dynamic (temporary) recalibration of the 8 throttle pot notches to the *94 menu  
-
-### v0.13
-- automated fix the latest versions of the ESP32 Board Library (3.0.0 and later) having renamed an attribute. The code now automatically adjusts for this.  
-
-## v0.12
-- manual fix the latest versions of the ESP32 Board Library (3.0.0 and later) having renamed an attribute.
-
-### v0.11
-- add support for the Battery test from WiTController
-
-### v0.10
-- change target direction indicator
-
-### v0.09
-- bug fix brake position 6 [5] 
-
-### v0.08
-- added eStop toggle
-
-### v0.07
-- bug fix for brake last position
-- reverse reverser
-
-### v0.06
-- revised throttle processing
-
-### v0.05
-- change to need one less entry in BRAKE_POT_VALUES than BRAKE_DELAY_TIMES
-
-### v0.04
-- added support for brake overriding the throttle setting.
-- added support for neutral overriding the throttle setting.
-
-### v0.03
-- rudimentary momentum added
-- support the acceleration multiplier   default to keypad-6
-
-### v0.02
-- added pot test. menu 9 -> 2 
-
-### v0.02
-- basic support of the reverser pot
-
-### v0.01 
-- setup
+[See full change log/ version history](change_log.md)
