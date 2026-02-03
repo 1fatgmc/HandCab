@@ -6,7 +6,7 @@
 //
 
 const String appName = "HandCab";
-const String appVersion = "v0.29";
+const String appVersion = "v0.30";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
@@ -829,4 +829,11 @@ const char ssidPasswordBlankChar = 164;
 
 #ifndef HEARTBEAT_ENABLED
    #define HEARTBEAT_ENABLED true
+#endif
+
+// ***************************************************
+// loco release from consist
+
+#ifndef CONSIST_RELEASE_BY_INDEX
+   #define CONSIST_RELEASE_BY_INDEX true
 #endif

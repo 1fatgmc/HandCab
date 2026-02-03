@@ -1,5 +1,9 @@
 # Change Log
 
+### v0.30
+- Bug fix for the consists where the locos are reversed
+- Option to release locos in consist/mu by the index rather than the Address. New optional ``#define DROP_LOCO_BY_INDEX true``
+
 ### v0.29
 - Added optional define for ``COAST_DELAY_TIMES`` separate from the ``ACCELLERATION_DELAY_TIMES``
 - Removed #define for ``WITCONTROLLER_DEBUG`` and replaced it with ``HABDCAB_DEBUG``

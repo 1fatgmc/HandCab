@@ -366,3 +366,11 @@
 
 // enable heartbeat by default.  Can be turned on or off in the menus
 // #define HEARTBEAT_ENABLED true 
+
+// *******************************************************************************************************************
+// Release Loco from Consist Options
+
+// By default, to release a single loco from a consist/mu, you must enter the address of the loco
+// Uncomment this line if you wish to release locos by just entering the index number (1-8) of 
+// the loco in the consist
+// #define DROP_LOCO_BY_INDEX true

@@ -2431,8 +2431,12 @@ void doMenu() {
     case MENU_ITEM_DROP_LOCO: { // de-select loco
         loco = menuCommand.substring(1, menuCommand.length());
         if (loco!="") { // a loco is specified
-          loco = getLocoWithLength(loco);
-          releaseOneLoco(loco);
+          if (!CONSIST_RELEASE_BY_INDEX) {
+            loco = getLocoWithLength(loco);
+            releaseOneLoco(loco);
+          } else {
+            releaseOneLocoByIndex(loco.toInt());
+          }
         } else { //not loco specified so release all
           releaseAllLocos();
         }
@@ -2770,6 +2774,16 @@ void releaseOneLoco(String loco) {
   debug_println("releaseOneLoco(): end"); 
 }
 
+void releaseOneLocoByIndex(int index) {
+  debug_print("releaseOneLocoByIndex(): "); debug_print(": "); debug_println(index);
+  if (index <= wiThrottleProtocol.getNumberOfLocomotives('0')) {
+    String loco = wiThrottleProtocol.getLocomotiveAtPosition('0', index);
+    wiThrottleProtocol.releaseLocomotive('0', loco);
+    resetFunctionLabels();
+  }
+  debug_println("releaseOneLocoByIndex(): end");
+}
+
 // void toggleAdditionalMultiplier() {
 //   switch (speedStepCurrentMultiplier) {
 //     case 1: 
@@ -2844,20 +2858,21 @@ void changeDirection(Direction direction) {
     debug_print("Change direction(): "); debug_println( (direction==Forward) ? "Forward" : "Reverse");
 
     if (locoCount == 1) {
-      // debug_println("Change direction(): one loco");
+      debug_println("Change direction(): one loco");
       wiThrottleProtocol.setDirection('0', direction);  // change all
 
     } else {
-      // debug_println("Change direction(): multiple locos");
+      debug_println("Change direction(): multiple locos");
       leadLoco = wiThrottleProtocol.getLeadLocomotive('0');
       leadLocoCurrentDirection = wiThrottleProtocol.getDirection('0', leadLoco);
 
       for (int i=1; i<locoCount; i++) {
         loco = wiThrottleProtocol.getLocomotiveAtPosition('0', i);
-        if (wiThrottleProtocol.getDirection('0', loco) == leadLocoCurrentDirection) {
+        Direction currentDirection = wiThrottleProtocol.getDirection('0', loco);
+        if (currentDirection == leadLocoCurrentDirection) {
           wiThrottleProtocol.setDirection('0', loco, direction);
         } else {
-          if (wiThrottleProtocol.getDirection('0', loco) == Reverse) {
+          if (direction == Reverse) {
             wiThrottleProtocol.setDirection('0', loco, Forward);
           } else {
             wiThrottleProtocol.setDirection('0', loco, Reverse);
