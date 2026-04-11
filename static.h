@@ -6,7 +6,7 @@
 //
 
 const String appName = "HandCab";
-const String appVersion = "v0.30";
+const String appVersion = "v0.31";
 
 #ifndef DEVICE_NAME
    #define DEVICE_NAME "HandCab"
